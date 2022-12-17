@@ -1,0 +1,8 @@
+//
+// Created by ownstreamer on 16.12.22.
+//
+
+#ifndef EARLEY_PARSER_SRC_BASICLR1PARSER_H_
+#define EARLEY_PARSER_SRC_BASICLR1PARSER_H_
+
+#endif //EARLEY_PARSER_SRC_BASICLR1PARSER_H_

@@ -1,0 +1,5 @@
+S`e
+T
+a`b
+S -> a`S`a | b`S`b | a`S`b | b`S`a | a`T`b | b`T`a
+T -> a`T`a | b`T`b | a | b | e

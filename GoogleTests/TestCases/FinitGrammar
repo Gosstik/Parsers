@@ -1,0 +1,7 @@
+S`e
+A`B`C
+a`b`c
+S -> A`B`C
+A -> aaa | aa | a | e
+B -> bbb | bb | b | e
+C -> ccc | cc | c | e

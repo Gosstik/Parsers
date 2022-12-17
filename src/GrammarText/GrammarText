@@ -1,0 +1,11 @@
+S`E
+F`M`T
+A`\``\|` `\\
+S -> S` \| `S | F
+F -> M | `\``\\`\```\`` | `\``\\`\```\``M | M`\``\\`\```\`` | `\``\\`\```\``M`\``\\`\```\``
+M -> M`\``M | T
+T -> A | \\\| | \\\\ | \\`\``
+
+// grammar for parse right parts of rules that consist only of nonterminals
+// and special symbols
+// todo: create grammar as path to the root

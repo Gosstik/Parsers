@@ -1,0 +1,6 @@
+S`'empty'
+A`B
+a`b
+S -> A`S`B | 'empty'
+A -> a | 'empty'
+B -> 'empty' | b

@@ -1,0 +1,8 @@
+BEGIN`'empty'
+NAME`ADJ_CONSONANT`ADJ_VOWEL`OCCUPATION
+a`b`c`d`e`f`g`h`i`j`k`l`m`n`o`p`q`r`s`t`u`v`w`x`y`z`A`B`C`D`E`F`G`H`I`J`K`L`M`N`O`P`Q`R`S`T`U`V`W`X`Y`Z` `.
+BEGIN -> NAME` `is a `ADJ_CONSONANT` `OCCUPATION`. | NAME` is an `ADJ_VOWEL` `OCCUPATION`.
+NAME -> Max | Dan | Jack | Thomas | Harry
+ADJ_CONSONANT -> carefree | brilliant
+ADJ_VOWEL -> impartial | immaculate
+OCCUPATION -> teacher | student | programmer | designer

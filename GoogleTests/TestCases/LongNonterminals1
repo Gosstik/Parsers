@@ -1,0 +1,7 @@
+S`e
+A1`A2`A3
+a`b`c
+S -> A1`A2`A3
+A1 -> a`A1`b | e
+A2 -> b`A2`c | e
+A3 -> c`A3`a | e
