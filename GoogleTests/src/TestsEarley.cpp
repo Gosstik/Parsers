@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
-#include <fstream>
 #include <random>
-#include "BasicEarleyParser.h"
 
-// todo: case with 'noun' and 'n'
+#include "BasicEarleyParser.h"
 
 class EarleyBBSConsts {
  protected:
@@ -27,13 +25,41 @@ class EarleyBBS2 : public ::testing::Test, public EarleyBBSConsts {
   EarleyBBS2() : parser_("../TestCases/BBS2") {}
 };
 
-TEST(EarleyFinitGrammar, FinitGrammar) {
-  WEarleyParser parser("../TestCases/FinitGrammar");
+TEST(EarleyFinitGrammar, FinitGrammar1) {
+  WEarleyParser parser("../TestCases/FinitGrammar1");
   EXPECT_EQ(parser.Parse(L""), true);
   EXPECT_EQ(parser.Parse(L"a"), true);
   EXPECT_EQ(parser.Parse(L"b"), true);
   EXPECT_EQ(parser.Parse(L"c"), true);
+  EXPECT_EQ(parser.Parse(L"ab"), true);
   EXPECT_EQ(parser.Parse(L"ac"), true);
+  EXPECT_EQ(parser.Parse(L"bc"), true);
+  EXPECT_EQ(parser.Parse(L"abc"), true);
+  EXPECT_EQ(parser.Parse(L"aabcc"), false);
+  EXPECT_EQ(parser.Parse(L"aaa"), false);
+  EXPECT_EQ(parser.Parse(L"ccc"), false);
+  EXPECT_EQ(parser.Parse(L"accc"), false);
+  EXPECT_EQ(parser.Parse(L"aaabbbccc"), false);
+  EXPECT_EQ(parser.Parse(L"cba"), false);
+  EXPECT_EQ(parser.Parse(L"aba"), false);
+  EXPECT_EQ(parser.Parse(L"abba"), false);
+  EXPECT_EQ(parser.Parse(L"ca"), false);
+  EXPECT_EQ(parser.Parse(L"aabbcca"), false);
+  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+}
+
+TEST(EarleyFinitGrammar, FinitGrammar2) {
+  WEarleyParser parser("../TestCases/FinitGrammar2");
+  EXPECT_EQ(parser.Parse(L""), true);
+  EXPECT_EQ(parser.Parse(L"a"), true);
+  EXPECT_EQ(parser.Parse(L"b"), true);
+  EXPECT_EQ(parser.Parse(L"c"), true);
+  EXPECT_EQ(parser.Parse(L"ab"), true);
+  EXPECT_EQ(parser.Parse(L"ac"), true);
+  EXPECT_EQ(parser.Parse(L"bc"), true);
   EXPECT_EQ(parser.Parse(L"abc"), true);
   EXPECT_EQ(parser.Parse(L"aabcc"), true);
   EXPECT_EQ(parser.Parse(L"aaa"), true);
@@ -45,10 +71,10 @@ TEST(EarleyFinitGrammar, FinitGrammar) {
   EXPECT_EQ(parser.Parse(L"abba"), false);
   EXPECT_EQ(parser.Parse(L"ca"), false);
   EXPECT_EQ(parser.Parse(L"aabbcca"), false);
-  EXPECT_EQ(parser.Parse(L"abcd"), false);
-  EXPECT_EQ(parser.Parse(L"A"), false) << "A is nonterminal";
-  EXPECT_EQ(parser.Parse(L"S"), false) << "S is start nonterminal";
-  EXPECT_EQ(parser.Parse(L"e"), false) << "e is name for empty symbol";
+  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
 }
 
 TEST(EarleyPalindromes, Palindromes) {
@@ -65,7 +91,6 @@ TEST(EarleyPalindromes, Palindromes) {
   EXPECT_EQ(parser.Parse(L"aaaab"), false);
   EXPECT_EQ(parser.Parse(L"aababababa"), false);
   EXPECT_EQ(parser.Parse(L"babaaaabb"), false);
-  EXPECT_EQ(parser.Parse(L"aaccbb"), false) << "'c' is not a grammar terminal";
 }
 
 TEST(EarleyPalindromes, NonPalindromes) {

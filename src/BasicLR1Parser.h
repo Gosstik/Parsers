@@ -68,6 +68,7 @@ class BasicLRParser<CharT, 1> {
   size_t Goto(USetBuckets& buckets, Vector<RefW<const Bucket>>& buckets_vec,
               size_t bucket_id, std::stack<Situation>& unhandled_sits);
   void CreateTable();
+  Bitset First(const Situation& sit) const;
   void Closure(Bucket& bucket, std::stack<Situation>& unhandled_sits);
   void Clear();
 };
@@ -112,20 +113,24 @@ struct BasicLRParser<CharT, 1>::Action {
 
 template <typename CharT>
 struct BasicLRParser<CharT, 1>::Situation {
-  RefW<const Vector<IndexT>> right;
+ private:
+  RefW<const Vector<IndexT>> right_;
+ public:
   IndexT left;
   IndexT context;
   size_t pos;
   Situation(RefW<const std::vector<IndexT>> right, IndexT left,
             IndexT context, size_t pos)
-      : right(right), left(left), context(context), pos(pos) {}
-  [[nodiscard]] bool RoolEnded() const {
-    return pos == right.get().size() || Grammar::IsEpsilon(right.get()[pos]);
-  }
-  [[nodiscard]] IndexT CurrSymbol() const { return right.get()[pos]; }
+      : right_(right), left(left), context(context), pos(pos) {}
+  [[nodiscard]] bool RoolEnded() const { return pos == RightSize(); }
+  [[nodiscard]] IndexT CurrSymbol() const { return right_.get()[pos]; }
   bool IsAccepted() const {
     return left == Grammar::kAuxiliaryStartSymbolInd && pos == 1;
   }
+  size_t RightSize() const {
+    return right_.get().size() - size_t(right_.get().back() == Grammar::kEpsilonInd);
+  }
+  IndexT RightSymbol(size_t ind) const { return right_.get()[ind]; }
   struct SituationHasher {
     static constexpr size_t kMult1 = 0x45d9f3b;
     static constexpr size_t kOff1 = 6;
@@ -140,16 +145,16 @@ struct BasicLRParser<CharT, 1>::Situation {
       }
     };
     constexpr size_t operator()(const Situation& sit) const {
-      return VectorHasher()(sit.right.get()) + (sit.left << kOff1) +
+      return VectorHasher()(sit.right_.get()) + (sit.left << kOff1) +
              (sit.pos >> kOff2);
     }
   };
   bool operator==(const Situation& sit) const {
-    return &right.get() == &sit.right.get() && left == sit.left &&
+    return &right_.get() == &sit.right_.get() && left == sit.left &&
             context == sit.context && pos == sit.pos;
   }
 };
-
+// todo: add USetSits
 template <typename CharT>
 struct BasicLRParser<CharT, 1>::Bucket {
   UMap<IndexT, USet<Situation, SitsHasher>> shift_sits; // index is curr symbol
@@ -204,6 +209,9 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
   IndexT FromBitsetInd(size_t ind) const {
     return IndexT(ind) - terminals_count_;
   }
+  bool ProduceEpsilon(IndexT ind) const {
+    return first_.find(ind)->second.test(ToBitsetInd(this->kEpsilonInd));
+  }
   IndexT MinIndex() const { return -terminals_count_; }
   IndexT MaxIndex() const { return nonterminals_count_ + 1; }
   Situation StartSituation() const {
@@ -214,6 +222,7 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
   const RulesRightT& RightPart(IndexT ind) const {
     return rules_.find(ind)->second;
   }
+  size_t BitsetSize() const { return bitset_size_; }
   static bool IsEpsilon(IndexT ind) { return ind == kEpsilonInd; }
 
  protected:
@@ -226,15 +235,15 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
   void AfterRead() override {
     /// create first_
     // terminals
-    size_t bitset_size = terminals_count_ + nonterminals_count_ + 2;
+    bitset_size_ = terminals_count_ + nonterminals_count_ + 2;
     for (IndexT i = MinIndex(); i <= kEpsilonInd; ++i) {
-      Bitset bitset(bitset_size);
+      Bitset bitset(bitset_size_);
       bitset.set(ToBitsetInd(i));
       first_[i] = std::move(bitset);
     }
     // nonterminals
     for (IndexT i = kStartSymbolInd; i <= MaxIndex(); ++i) {
-      first_[i] = Bitset(bitset_size);
+      first_[i] = Bitset(bitset_size_);
     }
     bool change = true;
     while (change) {
@@ -250,24 +259,17 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
         change |= first_[i] != prev_bitset;
       }
     }
-//    /// add epsilon to end of rules (needs in Closure)
-//    for (auto& rules : rules_) {
-//      for (auto& right : rules.second) {
-//        right.push_back(kEpsilonInd);
-//      }
-//    }
   }
 
   void AfterClear() override {
     first_.clear();
+    bitset_size_ = 0;
   }
 
  private:
   UMap<IndexT, Bitset> first_;
+  size_t bitset_size_;
   size_t ToBitsetInd(IndexT ind) const { return ind + terminals_count_; }
-  bool ProduceEpsilon(IndexT ind) const {
-    return first_.find(ind)->second.test(ToBitsetInd(this->kEpsilonInd));
-  }
 };
 
 template <typename CharT>
@@ -325,13 +327,17 @@ bool BasicLRParser<CharT, 1>::Parse(const String<CharT>& word) const {
   stack.Push(0);
   size_t curr_pos = 0;
   IndexT left; // index of left nonterminal in rule for reduce
+  IndexT curr_ind;
   while (true) {
-    IndexT ind = (curr_pos == word.size()) ? Grammar::kEpsilonInd :
-                                             grammar_.ToInd(word[curr_pos]);
-    if (ind == grammar_.kIncorrectSymbolInd) {
-      return false;
+    if (curr_pos < word.size()) {
+      curr_ind = grammar_.ToInd(word[curr_pos]);
+      if (grammar_.IncorrectInput(curr_ind)) {
+        return false;
+      }
+    } else {
+      curr_ind = Grammar::kEpsilonInd;
     }
-    auto iter = table_[stack.Top()].find(ind);
+    auto iter = table_[stack.Top()].find(curr_ind);
     if (iter == table_[stack.Top()].end()) {
       return false;
     }
@@ -417,16 +423,42 @@ void BasicLRParser<CharT, 1>::CreateTable() {
 }
 
 template <typename CharT>
+BasicLRParser<CharT, 1>::Bitset BasicLRParser<CharT, 1>::First(const Situation& sit) const {
+  /// this function may be called ONLY for sits that have not ended
+  Bitset res(grammar_.BitsetSize());
+  size_t curr_pos = sit.pos + 1;
+  if (curr_pos == sit.RightSize()) {
+    res = grammar_.First(sit.context);
+    return res;
+  }
+  res |= grammar_.First(sit.RightSymbol(curr_pos));
+  while (grammar_.ProduceEpsilon(sit.RightSymbol(curr_pos++))) {
+    if (curr_pos == sit.RightSize()) {
+      res |= grammar_.First(sit.context);
+      break;
+    }
+    res |= grammar_.First(sit.RightSymbol(curr_pos));
+  }
+  return res;
+}
+
+template <typename CharT>
 void BasicLRParser<CharT, 1>::Closure(Bucket& bucket,
                                       std::stack<Situation>& unhandled_sits) {
+  size_t count = unhandled_sits.size();
+  USetSits prev_sits;
   while (!unhandled_sits.empty()) {
     Situation sit = unhandled_sits.top();
     unhandled_sits.pop();
+    if (count > 0) {
+      prev_sits.insert(sit);
+      --count;
+    }
     if (sit.RoolEnded()) {
       if (sit.IsAccepted()) {
         bucket.contains_accept = true;
       } else {
-        Action action(sit.right.get().size(), sit.left);
+        Action action(sit.RightSize(), sit.left);
         bool inserted = bucket.reduce_sits.insert({sit.context, action}).second;
         if (!inserted) {
           std::wcerr << "reduce-reduce conflict, grammar is not LR(1)\n";
@@ -439,13 +471,14 @@ void BasicLRParser<CharT, 1>::Closure(Bucket& bucket,
       bool inserted = bucket.shift_sits[sit.CurrSymbol()].insert(sit).second;
       if (inserted && grammar_.IsNonterminal(sit.CurrSymbol())) {
         IndexT left = sit.CurrSymbol();
-        IndexT context = (sit.pos + 1 == sit.right.get().size()) ?
-                         sit.context : sit.right.get()[sit.pos + 1];
-        const Bitset& bitset = grammar_.First(context);
+        Bitset bitset = First(sit);
         for (size_t i = 0; i < bitset.size(); ++i) {
           if (bitset.test(i)) {
             for (const auto& right : grammar_.RightPart(left)) {
-              unhandled_sits.push({right, left, grammar_.FromBitsetInd(i), 0});
+              Situation new_sit(right, left, grammar_.FromBitsetInd(i), 0);
+              if (prev_sits.insert(new_sit).second) {
+                unhandled_sits.push(new_sit);
+              }
             }
           }
         }

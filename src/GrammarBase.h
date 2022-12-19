@@ -42,11 +42,9 @@ class GrammarBase {
   }
   [[nodiscard]] IndexT NonterminalsCount() const { return nonterminals_count_; }
   [[nodiscard]] IndexT TerminalsCount() const { return terminals_count_; }
-  [[nodiscard]] IndexT AuxiliaryStartSymbolInd() const {
-    return kAuxiliaryStartSymbolInd;
-  }
   [[nodiscard]] bool IsTerminal(IndexT symbol) const { return symbol < 0; }
   [[nodiscard]] bool IsNonterminal(IndexT symbol) const { return symbol > 0; }
+  bool IncorrectInput(IndexT ind) const { return ind >= 0; }
   [[nodiscard]] bool Empty() const { return num_to_symbol_.empty(); }
   void Clear() {
     num_to_symbol_.clear();

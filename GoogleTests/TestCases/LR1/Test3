@@ -1,0 +1,7 @@
+S`e
+A
+a`b`c
+S -> A`a | b
+A -> A`b | c
+
+// same as Test 2, but `S` does not produce `e`
