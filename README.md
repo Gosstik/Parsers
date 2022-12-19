@@ -38,7 +38,7 @@ To set grammar you should put it in the file `./Parsers/GrammarText/GrammarText.
 On other strings rules are defined according to the following template:\
 `<nonterminal>` -> `<sequence.1>` | `<sequence.2>` | ... | `<sequence.n>`
 
->1) `Terminals` may consist of any **one** symbol. Symbols `` \ `` and `|` must be escaped (`\\` and `\|` accordingly). Symbol `` ` `` always must be escaped as `` `\`` ``
+>1) `Terminals` may consist of any **one** symbol. Symbols `` \ `` and `|` must be escaped (`\\` and `\|` accordingly). Symbol `` ` `` always must be escaped as ``` `\`` ```
 >2) `Start nonterminal` must not be listed among nonterminals.
 >3) `Nonterminals` may consist of several symbols, but must not contain escape symbols.
 >4) If `start nonterminal` is the only one nonterminal in grammar, 2-nd line must be empty.
