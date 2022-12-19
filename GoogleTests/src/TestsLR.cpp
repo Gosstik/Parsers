@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <random>
 
 #include "BasicLR1Parser.h"
@@ -6,6 +7,28 @@
 // todo: add tests for non-LR grammar
 // 1. shift-reduce conflict: palindromes
 // 2. reduce-reduce conflict:
+
+class LR1BBSConsts {
+ protected:
+  static constexpr size_t kRandomLowerBound = 5;
+  static constexpr size_t kRandomUpperBound = 10;
+  static constexpr size_t kRandomNumOfIters = 30;
+  static constexpr size_t kStressLowerBound = 90000;
+  static constexpr size_t kStressUpperBound = 99999;
+  static constexpr size_t kStressNumOfIters = 20;
+};
+
+class LR1BBS1 : public ::testing::Test, public LR1BBSConsts {
+ protected:
+  WLRParser<1> parser_;
+  LR1BBS1() : parser_("../TestCases/BBS1") {}
+};
+
+class LR1BBS2 : public ::testing::Test, public LR1BBSConsts {
+ protected:
+  WLRParser<1> parser_;
+  LR1BBS2() : parser_("../TestCases/BBS2") {}
+};
 
 TEST(LR1Test1, Test1) {
   WLRParser<1> parser("../TestCases/LR1/Test1");
@@ -55,28 +78,6 @@ TEST(LR1Test3, Test3) {
   EXPECT_EQ(parser.Parse(L"cbbac"), false);
 }
 
-class LR1BBSConsts {
- protected:
-  static constexpr size_t kRandomLowerBound = 5;
-  static constexpr size_t kRandomUpperBound = 10;
-  static constexpr size_t kRandomNumOfIters = 5;
-  static constexpr size_t kStressLowerBound = 100;
-  static constexpr size_t kStressUpperBound = 199;
-  static constexpr size_t kNumOfIters = 5;
-};
-
-class LR1BBS1 : public ::testing::Test, public LR1BBSConsts {
- protected:
-  WLRParser<1> parser_;
-  LR1BBS1() : parser_("../TestCases/BBS1") {}
-};
-
-class LR1BBS2 : public ::testing::Test, public LR1BBSConsts {
- protected:
-  WLRParser<1> parser_;
-  LR1BBS2() : parser_("../TestCases/BBS2") {}
-};
-
 TEST(LRFinitGrammar, FinitGrammar1) {
   WLRParser<1> parser("../TestCases/FinitGrammar1");
   EXPECT_EQ(parser.Parse(L""), true);
@@ -97,7 +98,8 @@ TEST(LRFinitGrammar, FinitGrammar1) {
   EXPECT_EQ(parser.Parse(L"abba"), false);
   EXPECT_EQ(parser.Parse(L"ca"), false);
   EXPECT_EQ(parser.Parse(L"aabbcca"), false);
-  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"abcd"), false)
+      << "`d` does not belong to language\n";
   EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
   EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
   EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
@@ -123,7 +125,8 @@ TEST(LRFinitGrammar, FinitGrammar2) {
   EXPECT_EQ(parser.Parse(L"abba"), false);
   EXPECT_EQ(parser.Parse(L"ca"), false);
   EXPECT_EQ(parser.Parse(L"aabbcca"), false);
-  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"abcd"), false)
+      << "`d` does not belong to language\n";
   EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
   EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
   EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
@@ -150,7 +153,7 @@ TEST_F(LR1BBS1, BBS1Random) {
                                                 kRandomUpperBound);
   for (size_t iter_i = 0; iter_i < kRandomNumOfIters; ++iter_i) {
     size_t brackets_count = distrib(gen);
-    brackets_count += brackets_count % 2; // to make 'brackets_count' even
+    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
     std::wstring sequence;
     size_t left_count = 0;
     size_t left_balance = 0;
@@ -174,7 +177,8 @@ TEST_F(LR1BBS1, BBS1Random) {
       sequence += L')';
       --left_balance;
     }
-    EXPECT_EQ(parser_.Parse(sequence), true) << "Fail sequence: " << sequence << '\n';
+    EXPECT_EQ(parser_.Parse(sequence), true)
+        << "Fail sequence: " << sequence << '\n';
   }
 }
 
@@ -182,9 +186,9 @@ TEST_F(LR1BBS1, BBS1Stress) {
   std::mt19937_64 gen(std::random_device().operator()());
   std::uniform_int_distribution<size_t> distrib(kStressLowerBound,
                                                 kStressUpperBound);
-  for (size_t iter_i = 0; iter_i < kNumOfIters; ++iter_i) {
+  for (size_t iter_i = 0; iter_i < kStressNumOfIters; ++iter_i) {
     size_t brackets_count = distrib(gen);
-    brackets_count += brackets_count % 2; // to make 'brackets_count' even
+    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
     std::wstring sequence;
     size_t left_count = 0;
     size_t left_balance = 0;
@@ -208,7 +212,8 @@ TEST_F(LR1BBS1, BBS1Stress) {
       sequence += L')';
       --left_balance;
     }
-    EXPECT_EQ(parser_.Parse(sequence), true) << "Fail sequence: " << sequence << '\n';
+    EXPECT_EQ(parser_.Parse(sequence), true)
+        << "Fail sequence: " << sequence << '\n';
   }
 }
 

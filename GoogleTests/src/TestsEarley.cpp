@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+
 #include <random>
 
 #include "BasicEarleyParser.h"
@@ -7,10 +8,10 @@ class EarleyBBSConsts {
  protected:
   static constexpr size_t kRandomLowerBound = 5;
   static constexpr size_t kRandomUpperBound = 10;
-  static constexpr size_t kRandomNumOfIters = 5;
-  static constexpr size_t kStressLowerBound = 100;
-  static constexpr size_t kStressUpperBound = 199;
-  static constexpr size_t kNumOfIters = 5;
+  static constexpr size_t kRandomNumOfIters = 30;
+  static constexpr size_t kStressLowerBound = 9000;
+  static constexpr size_t kStressUpperBound = 9999;
+  static constexpr size_t kStressNumOfIters = 20;
 };
 
 class EarleyBBS1 : public ::testing::Test, public EarleyBBSConsts {
@@ -45,7 +46,8 @@ TEST(EarleyFinitGrammar, FinitGrammar1) {
   EXPECT_EQ(parser.Parse(L"abba"), false);
   EXPECT_EQ(parser.Parse(L"ca"), false);
   EXPECT_EQ(parser.Parse(L"aabbcca"), false);
-  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"abcd"), false)
+      << "`d` does not belong to language\n";
   EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
   EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
   EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
@@ -71,7 +73,8 @@ TEST(EarleyFinitGrammar, FinitGrammar2) {
   EXPECT_EQ(parser.Parse(L"abba"), false);
   EXPECT_EQ(parser.Parse(L"ca"), false);
   EXPECT_EQ(parser.Parse(L"aabbcca"), false);
-  EXPECT_EQ(parser.Parse(L"abcd"), false) << "`d` does not belong to language\n";
+  EXPECT_EQ(parser.Parse(L"abcd"), false)
+      << "`d` does not belong to language\n";
   EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
   EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
   EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
@@ -130,7 +133,7 @@ TEST_F(EarleyBBS1, BBS1Random) {
                                                 kRandomUpperBound);
   for (size_t iter_i = 0; iter_i < kRandomNumOfIters; ++iter_i) {
     size_t brackets_count = distrib(gen);
-    brackets_count += brackets_count % 2; // to make 'brackets_count' even
+    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
     std::wstring sequence;
     size_t left_count = 0;
     size_t left_balance = 0;
@@ -154,7 +157,8 @@ TEST_F(EarleyBBS1, BBS1Random) {
       sequence += L')';
       --left_balance;
     }
-    EXPECT_EQ(parser_.Parse(sequence), true) << "Fail sequence: " << sequence << '\n';
+    EXPECT_EQ(parser_.Parse(sequence), true)
+        << "Fail sequence: " << sequence << '\n';
   }
 }
 
@@ -162,9 +166,9 @@ TEST_F(EarleyBBS1, BBS1Stress) {
   std::mt19937_64 gen(std::random_device().operator()());
   std::uniform_int_distribution<size_t> distrib(kStressLowerBound,
                                                 kStressUpperBound);
-  for (size_t iter_i = 0; iter_i < kNumOfIters; ++iter_i) {
+  for (size_t iter_i = 0; iter_i < kStressNumOfIters; ++iter_i) {
     size_t brackets_count = distrib(gen);
-    brackets_count += brackets_count % 2; // to make 'brackets_count' even
+    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
     std::wstring sequence;
     size_t left_count = 0;
     size_t left_balance = 0;
@@ -188,7 +192,8 @@ TEST_F(EarleyBBS1, BBS1Stress) {
       sequence += L')';
       --left_balance;
     }
-    EXPECT_EQ(parser_.Parse(sequence), true) << "Fail sequence: " << sequence << '\n';
+    EXPECT_EQ(parser_.Parse(sequence), true)
+        << "Fail sequence: " << sequence << '\n';
   }
 }
 
@@ -236,7 +241,8 @@ TEST(EarleyEscapeSymbols, EscapeSymbols) {
   EXPECT_EQ(parser.Parse(L"`\\``"), true) << "right part is `\n";
   EXPECT_EQ(parser.Parse(L"A`\\``A"), true) << "result right part is A\\`A\n";
   EXPECT_EQ(parser.Parse(L"\\\\"), true) << "right part is \\\n";
-  EXPECT_EQ(parser.Parse(L"A`\\\\`A"), true) << "Result right part is A`\\\\`A\n";
+  EXPECT_EQ(parser.Parse(L"A`\\\\`A"), true)
+      << "Result right part is A`\\\\`A\n";
   EXPECT_EQ(parser.Parse(L"A`\\|`A`\\``A`\\\\`A"), true);
   EXPECT_EQ(parser.Parse(L"A | A`A"), true);
   EXPECT_EQ(parser.Parse(L"A`\\|`A | A`\\\\`A | A`\\\\`A"), true);

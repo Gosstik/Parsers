@@ -15,18 +15,23 @@
 
 enum ExitStatus { IncorrectGrammarInput = 11 };
 
+// abstract class for reading grammar
 template <typename CharT>
 class GrammarBase {
  public:
+  using String = utl::BasicString<CharT>;
   using IndexT = int64_t;
-  template <typename Key, typename Value>
-  using UMap = std::unordered_map<Key, Value>;
-  template <typename Key>
-  using USet = std::unordered_set<Key>;
-  using RulesRightT = std::vector<std::vector<IndexT>>;
+  template <typename T>
+  using Vector = std::vector<T>;
+  template <class Key, class Value, class Hash = std::hash<Key>>
+  using UMap = std::unordered_map<Key, Value, Hash>;
+  template <class Key, class Hash = std::hash<Key>>
+  using USet = std::unordered_set<Key, Hash>;
+  using RulesRightT = Vector<Vector<IndexT>>;
   using RulesT = UMap<IndexT, RulesRightT>;
-  static constexpr IndexT kIncorrectSymbolInd = std::numeric_limits<IndexT>::max();
 
+  static constexpr IndexT kIncorrectSymbolInd =
+      std::numeric_limits<IndexT>::max();
   static constexpr int64_t kEpsilonInd = 0;
   static constexpr int64_t kAuxiliaryStartSymbolInd = 1;
   static constexpr int64_t kStartSymbolInd = 2;
@@ -36,39 +41,32 @@ class GrammarBase {
   void Read(std::basic_istream<CharT>& input);
   virtual void Print(std::basic_ostream<CharT>& out) const;
 
-  IndexT ToInd(CharT symbol) const {
-    auto itr = symbol_to_num_.find(String<CharT>(1, symbol));
-    return (itr == symbol_to_num_.end()) ? kIncorrectSymbolInd : itr->second;
-  }
-  [[nodiscard]] IndexT NonterminalsCount() const { return nonterminals_count_; }
-  [[nodiscard]] IndexT TerminalsCount() const { return terminals_count_; }
-  [[nodiscard]] bool IsTerminal(IndexT symbol) const { return symbol < 0; }
-  [[nodiscard]] bool IsNonterminal(IndexT symbol) const { return symbol > 0; }
-  bool IncorrectInput(IndexT ind) const { return ind >= 0; }
-  [[nodiscard]] bool Empty() const { return num_to_symbol_.empty(); }
-  void Clear() {
-    num_to_symbol_.clear();
-    symbol_to_num_.clear();
-    nonterminals_count_ = terminals_count_ = 0;
-    rules_.clear();
-  }
+  IndexT ToInd(CharT symbol) const;
+  IndexT NonterminalsCount() const;
+  IndexT TerminalsCount() const;
+  bool IsTerminal(IndexT symbol) const;
+  bool IsNonterminal(IndexT symbol) const;
+  bool IncorrectInput(IndexT ind) const;
+  bool Empty() const;
+  void Clear();
 
  protected:
+  static const String kAuxiliaryStr;
   static constexpr CharT kSlash = L'\\';
   static constexpr std::basic_string_view<CharT> kSlashStr = L"\\";
   static constexpr std::basic_string_view<CharT> kSlashEscape = L"\\\\";
   static constexpr CharT kDelim = L'`';
-  static const std::basic_string<CharT> kDelimSpecial;
-  static const std::basic_string<CharT> kRulesDelim;
+  static const String kDelimSpecial;
+  static const String kRulesDelim;
   static constexpr CharT kRulesDelimSymbol = L'|';
   static constexpr std::basic_string_view<CharT> kRulesDelimEscape = L"\\|";
   static constexpr std::basic_string_view<CharT> kArrowStr = L" -> ";
 
   // terminals are <= -1, nonterminals >= 1
   // epsilon is 0, auxiliary start symbol is 1, start symbol is 2
-  UMap<IndexT, String<CharT>> num_to_symbol_;
-  UMap<String<CharT>, IndexT> symbol_to_num_;
-  IndexT terminals_count_; // except for epsilon
+  UMap<IndexT, String> map_ind_str_;
+  UMap<String, IndexT> map_str_ind_;
+  IndexT terminals_count_;     // except for epsilon
   IndexT nonterminals_count_;  // except for auxiliary start symbol
   RulesT rules_;
 
@@ -81,85 +79,105 @@ class GrammarBase {
   // reading
   void ReadFirstLine(std::basic_istream<CharT>& input);
   void ReadSymbols(std::basic_istream<CharT>& input);
+  bool ReadEscapeTerminals(const Vector<String>& split_res, IndexT& ind_i,
+                           IndexT ind_j);
   void ReadRules(std::basic_istream<CharT>& input);
   IndexT ReadLeftNonterminal(std::basic_istream<CharT>& input);
-  void ReadRightPart(IndexT start_ind, const String<CharT>& right_part);
-  void ReadRightPartHandleSymbol(IndexT start_ind, size_t& offset_for_error,
-                                 const std::vector<String<CharT>>& symbols,
-                                 std::vector<IndexT>& right_part_inds,
-                                 CharT symbol);
-  void ReadRightPartHandleSpecialSymbol(
-      IndexT start_ind, size_t& offset_for_error,
-      const std::vector<String<CharT>>& symbols,
-      std::vector<IndexT>& right_part_inds, size_t& i, CharT symbol);
+  void ReadRightPart(IndexT left, const String& right_part);
+  void ReadNonterminalSequence(const Vector<String>& parts, size_t r_i,
+                               IndexT left, size_t& err_offt,
+                               Vector<IndexT>& right);
+  void ReadRuleSymbol(IndexT left, size_t& err_offt,
+                      const Vector<String>& symbols, Vector<IndexT>& right,
+                      CharT symbol);
+  void ReadEscapeSymbol(IndexT start_ind, size_t& err_offt,
+                        const Vector<String>& symbols, Vector<IndexT>& right,
+                        size_t& pos, CharT symbol);
   void ReadRightPartPrintError(IndexT start_ind, size_t offset_for_error,
-                               const std::vector<String<CharT>>& symbols);
-  bool ContainArrow(const std::vector<String<CharT>>& symbols) const;
+                               const std::vector<String>& symbols);
+  bool ContainArrow(const std::vector<String>& symbols) const;
   void PrintRightPartOfRule(std::basic_ostream<CharT>& out,
-                            std::vector<String<CharT>> symbols);
-
-  // for debugging // todo: make static
- public:
-  template <typename T>
-  void PrintUSet(const USet<T>& u_set) const;
-  template <typename T, typename U>
-  void PrintUMap(const UMap<T, U>& u_map) const;
-  void PrintUMap(
-      const UMap<IndexT, std::vector<std::vector<IndexT>>>& u_map) const;
-  void PrintUMap(const UMap<IndexT, std::vector<USet<IndexT>>>& u_map) const;
-  template <typename T>
-  void PrintVecMap(const std::vector<USet<T>>& u_map) const;
-  template <typename T>
-  void PrintVec2(const std::vector<std::vector<T>>& vec2) const;
-  template <typename T>
-  static void PrintVec(const std::vector<T>& vec) {
-    for (const auto& elem : vec) {
-      std::cout << elem << ' ';
-    }
-    std::cout << '\n';
-  }
+                            Vector<String> symbols);
 };
 
 template <typename CharT>
-const std::basic_string<CharT> GrammarBase<CharT>::kDelimSpecial = L"";
+const GrammarBase<CharT>::String GrammarBase<CharT>::kAuxiliaryStr =
+    L"AUXILIARY";
 template <typename CharT>
-const std::basic_string<CharT> GrammarBase<CharT>::kRulesDelim = L" | ";
+const GrammarBase<CharT>::String GrammarBase<CharT>::kDelimSpecial = L"";
+template <typename CharT>
+const GrammarBase<CharT>::String GrammarBase<CharT>::kRulesDelim = L" | ";
+
+template <typename CharT>
+GrammarBase<CharT>::IndexT GrammarBase<CharT>::ToInd(CharT symbol) const {
+  auto itr = map_str_ind_.find(String(1, symbol));
+  return (itr == map_str_ind_.end()) ? kIncorrectSymbolInd : itr->second;
+}
+template <typename CharT>
+GrammarBase<CharT>::IndexT GrammarBase<CharT>::NonterminalsCount() const {
+  return nonterminals_count_;
+}
+
+template <typename CharT>
+GrammarBase<CharT>::IndexT GrammarBase<CharT>::TerminalsCount() const {
+  return terminals_count_;
+}
+
+template <typename CharT>
+bool GrammarBase<CharT>::IsTerminal(IndexT symbol) const {
+  return symbol < 0;
+}
+
+template <typename CharT>
+bool GrammarBase<CharT>::IsNonterminal(IndexT symbol) const {
+  return symbol > 0;
+}
+
+template <typename CharT>
+bool GrammarBase<CharT>::IncorrectInput(IndexT ind) const {
+  return ind >= 0;
+}
+
+template <typename CharT>
+bool GrammarBase<CharT>::Empty() const {
+  return map_ind_str_.empty();
+}
+
+template <typename CharT>
+void GrammarBase<CharT>::Clear() {
+  map_ind_str_.clear();
+  map_str_ind_.clear();
+  nonterminals_count_ = terminals_count_ = 0;
+  rules_.clear();
+}
 
 template <typename CharT>
 void GrammarBase<CharT>::Print(std::basic_ostream<CharT>& out) const {
   if (Empty()) {
     out << "Grammar is not set\n";
+    return;
   }
   // start nonterminal and epsilon
-  auto n_to_s_itr = num_to_symbol_.find(kStartSymbolInd);
-  out << n_to_s_itr->second << kDelim;
-  n_to_s_itr = num_to_symbol_.find(kEpsilonInd);
-  out << n_to_s_itr->second << '\n';
+  out << map_ind_str_.find(kStartSymbolInd)->second << kDelim;
+  out << map_ind_str_.find(kEpsilonInd)->second << '\n';
   // nonterminals
   for (IndexT i = 3; i <= nonterminals_count_; ++i) {
-    n_to_s_itr = num_to_symbol_.find(i);
-    out << n_to_s_itr->second << kDelim;
+    out << map_ind_str_.find(i)->second << kDelim;
   }
-  n_to_s_itr = num_to_symbol_.find(nonterminals_count_ + 1);
-  out << n_to_s_itr->second << '\n';
+  out << map_ind_str_.find(nonterminals_count_ + 1)->second << '\n';
   // terminals
-  for (IndexT i = 1; i < terminals_count_; ++i) {
-    n_to_s_itr = num_to_symbol_.find(-i);
-    if (n_to_s_itr->second == String<CharT>(1, kDelim)) {
-      out << kSlash << kDelim << kDelim;
-    } else if (n_to_s_itr->second == String<CharT>(1, kRulesDelimSymbol)) {
-      out << kSlash << kRulesDelimSymbol << kDelim;
+  for (IndexT i = 1; i <= terminals_count_; ++i) {
+    CharT end = (i == terminals_count_) ? '\n' : kDelim;
+    String symbol = map_ind_str_.find(-i)->second;
+    if (symbol == String(1, kDelim)) {
+      out << kSlash << kDelim << end;
+    } else if (symbol == kSlashStr) {
+      out << kSlash << kSlash << end;
+    } else if (symbol == String(1, kRulesDelimSymbol)) {
+      out << kSlash << kRulesDelimSymbol << end;
     } else {
-      out << n_to_s_itr->second << kDelim;
+      out << symbol << end;
     }
-  }
-  n_to_s_itr = num_to_symbol_.find(-terminals_count_);
-  if (n_to_s_itr->second == String<CharT>(1, kDelim)) {
-    out << kSlash << kDelim << '\n';
-  } else if (n_to_s_itr->second == String<CharT>(1, kRulesDelimSymbol)) {
-    out << kSlash << kRulesDelimSymbol << '\n';
-  } else {
-    out << n_to_s_itr->second << '\n';
   }
   PrintRules(out);
 }
@@ -167,42 +185,40 @@ void GrammarBase<CharT>::Print(std::basic_ostream<CharT>& out) const {
 template <typename CharT>
 void GrammarBase<CharT>::PrintRules(std::basic_ostream<CharT>& out) const {
   for (IndexT i = 2; i <= nonterminals_count_ + 1; ++i) {
-    auto n_to_s_itr = num_to_symbol_.find(i);
-    out << n_to_s_itr->second << kArrowStr;
-    auto map_itr = rules_.find(i);
-    std::vector<std::vector<IndexT>> right_parts = map_itr->second;
-    bool prev_is_nonterm;
+    out << map_ind_str_.find(i)->second << kArrowStr;
+    RulesRightT right_parts = rules_.find(i)->second;
+    bool prev_was_nonterminal;
+    auto pred = [&prev_was_nonterminal, this](IndexT ind, size_t s_i) -> bool {
+      return (IsNonterminal(ind) && s_i != 0) ||
+             (IsTerminal(ind) && prev_was_nonterminal);
+    };
+    auto end_pred = [&right_parts, this](size_t r_i, size_t s_i) -> bool {
+      if (s_i == right_parts[r_i].size() - 1) {
+        return true;
+      }
+      String next_symbol = map_ind_str_.find(right_parts[r_i][s_i + 1])->second;
+      return next_symbol == String(1, kDelim);
+    };
     // r_i = right_index, s_i = symbol_index
     for (size_t r_i = 0; r_i < right_parts.size(); ++r_i) {
-      n_to_s_itr = num_to_symbol_.find(right_parts[r_i][0]);
-      if (n_to_s_itr->second == String<CharT>(1, kDelim)) {
-        out << kSlash << kDelim;
-      } else if (n_to_s_itr->second == String<CharT>(1, kSlash)) {
-        out << kSlash << kSlash;
-      } else if (n_to_s_itr->second == String<CharT>(1, kRulesDelimSymbol)) {
-        out << kSlash << kRulesDelimSymbol;
-      } else {
-        out << n_to_s_itr->second;
-      }
-      prev_is_nonterm = IsNonterminal(n_to_s_itr->first);
-      for (size_t s_i = 1; s_i < right_parts[r_i].size(); ++s_i) {
-        n_to_s_itr = num_to_symbol_.find(right_parts[r_i][s_i]);
-        if (IsNonterminal(n_to_s_itr->first) ||
-            (IsTerminal(n_to_s_itr->first) && prev_is_nonterm) ||
-            n_to_s_itr->second == String<CharT>(1, kDelim)) {
-          out << kDelim;
+      prev_was_nonterminal = false;
+      for (size_t s_i = 0; s_i < right_parts[r_i].size(); ++s_i) {
+        auto iter_ind_str = map_ind_str_.find(right_parts[r_i][s_i]);
+        String delim = pred(iter_ind_str->first, s_i) ? String(1, kDelim) : L"";
+        if (iter_ind_str->second == String(1, kDelim)) {
+          String end = end_pred(r_i, s_i) ? String(1, kDelim) : L"";
+          out << kDelim << kSlash << kDelim << end;
+          prev_was_nonterminal = true;
+          continue;  // to avoid changing `prev_was_nonterminal`
         }
-        prev_is_nonterm = IsNonterminal(n_to_s_itr->first);
-        if (n_to_s_itr->second == String<CharT>(1, kDelim)) {
-          prev_is_nonterm = true;
-          out << kSlash << kDelim;
-        } else if (n_to_s_itr->second == String<CharT>(1, kSlash)) {
-          out << kSlash << kSlash;
-        } else if (n_to_s_itr->second == String<CharT>(1, kRulesDelimSymbol)) {
-          out << kSlash << kRulesDelimSymbol;
+        if (iter_ind_str->second == String(1, kSlash)) {
+          out << delim << kSlash << kSlash;
+        } else if (iter_ind_str->second == String(1, kRulesDelimSymbol)) {
+          out << delim << kSlash << kRulesDelimSymbol;
         } else {
-          out << n_to_s_itr->second;
+          out << delim << iter_ind_str->second;
         }
+        prev_was_nonterminal = IsNonterminal(iter_ind_str->first);
       }
       if (r_i != right_parts.size() - 1) {
         out << kRulesDelim;
@@ -223,76 +239,92 @@ void GrammarBase<CharT>::Read(std::basic_istream<CharT>& input) {
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadFirstLine(std::basic_istream<CharT>& input) {
-  String<CharT> line;
-  std::vector<String<CharT>> split_res;
+  String line;
+  Vector<String> split_res;
   std::getline<CharT>(input, line, '\n');
-  split_res = Split(line, String<CharT>(1, kDelim));
-  symbol_to_num_.insert({split_res[0], kStartSymbolInd});
-  num_to_symbol_.insert({kStartSymbolInd, split_res[0]});
-  symbol_to_num_.insert({split_res[1], kEpsilonInd});
-  num_to_symbol_.insert({kEpsilonInd, split_res[1]});
-  symbol_to_num_.insert({L"AUXILIARY", kAuxiliaryStartSymbolInd});
-  num_to_symbol_.insert({kAuxiliaryStartSymbolInd, L"AUXILIARY"});
+  split_res = utl::Split(line, String(1, kDelim));
+  map_str_ind_.insert({split_res[0], kStartSymbolInd});
+  map_ind_str_.insert({kStartSymbolInd, split_res[0]});
+  map_str_ind_.insert({split_res[1], kEpsilonInd});
+  map_ind_str_.insert({kEpsilonInd, split_res[1]});
+  map_str_ind_.insert({kAuxiliaryStr, kAuxiliaryStartSymbolInd});
+  map_ind_str_.insert({kAuxiliaryStartSymbolInd, kAuxiliaryStr});
 }
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadSymbols(std::basic_istream<CharT>& input) {
   // nonterminals
-  String<CharT> line;
-  std::vector<String<CharT>> split_res;
+  String line;
   std::getline(input, line, L'\n');
-  split_res = Split(line, String<CharT>(1, kDelim));
-  nonterminals_count_ = static_cast<IndexT>(split_res.size() + 1);
-  for (IndexT i = 0; i < split_res.size(); ++i) {
-    symbol_to_num_.insert({split_res[i], i + 3});
-    num_to_symbol_.insert({i + 3, split_res[i]});
+  Vector<String> split_res = utl::Split(line, String(1, kDelim));
+  if (split_res.size() == 1 && split_res[0].empty()) {
+    // case when S is the only nonterminal
+    nonterminals_count_ = 1;
+  } else {
+    nonterminals_count_ = static_cast<IndexT>(split_res.size() + 1);
+  }
+  for (IndexT i = 0; i < nonterminals_count_ - 1; ++i) {
+    map_str_ind_.insert({split_res[i], i + 3});
+    map_ind_str_.insert({i + 3, split_res[i]});
   }
   // terminals
   std::getline(input, line, L'\n');
-  split_res = Split(line, String<CharT>(1, kDelim));
+  split_res = utl::Split(line, String(1, kDelim));
   terminals_count_ = static_cast<IndexT>(split_res.size());
   for (IndexT i = 0, j = 0; i < split_res.size(); ++i, ++j) {
-    if (split_res[i].empty()) {
-      std::wcerr
-          << L"Empty symbol in terminals\n";  // todo: make more informative
-      exit(ExitStatus::IncorrectGrammarInput);
-    } else if (split_res[i] == kRulesDelimEscape) {
-      symbol_to_num_.insert({String<CharT>(1, kRulesDelimSymbol), -j - 1});
-      num_to_symbol_.insert({-j - 1, String<CharT>(1, kRulesDelimSymbol)});
+    if (ReadEscapeTerminals(split_res, i, j)) {
       continue;
-    } else if (split_res[i] == kSlashEscape) {
-      symbol_to_num_.insert({String<CharT>(1, kSlash), -j - 1});
-      num_to_symbol_.insert({-j - 1, String<CharT>(1, kSlash)});
-      continue;
-    } else if (split_res[i] == kSlashStr && i != split_res.size() - 1 &&
-               split_res[i + 1] == kDelimSpecial) {
-      symbol_to_num_.insert({String<CharT>(1, kDelim), -j - 1});
-      num_to_symbol_.insert({-j - 1, String<CharT>(1, kDelim)});
-      --terminals_count_;
-      ++i;
-      continue;
-    } else if (split_res[i].size() > 1) {
-      std::wcerr
-          << L"Symbol in terminals consists of more then one character\n";
-      exit(ExitStatus::IncorrectGrammarInput);
     }
-    symbol_to_num_.insert({split_res[i], -j - 1});
-    num_to_symbol_.insert({-j - 1, split_res[i]});
+    map_str_ind_.insert({split_res[i], -j - 1});
+    map_ind_str_.insert({-j - 1, split_res[i]});
   }
 }
 
 template <typename CharT>
+bool GrammarBase<CharT>::ReadEscapeTerminals(const Vector<String>& split_res,
+                                             IndexT& ind_i, IndexT ind_j) {
+  if (split_res[ind_i].empty()) {
+    // todo: make more informative
+    std::wcerr << L"Empty symbol in terminals\n";
+    exit(ExitStatus::IncorrectGrammarInput);
+  }
+  if (split_res[ind_i] == kRulesDelimEscape) {
+    map_str_ind_.insert({String(1, kRulesDelimSymbol), -ind_j - 1});
+    map_ind_str_.insert({-ind_j - 1, String(1, kRulesDelimSymbol)});
+    return true;
+  }
+  if (split_res[ind_i] == kSlashEscape) {
+    map_str_ind_.insert({String(1, kSlash), -ind_j - 1});
+    map_ind_str_.insert({-ind_j - 1, String(1, kSlash)});
+    return true;
+  }
+  if (split_res[ind_i] == kSlashStr && ind_i != split_res.size() - 1 &&
+      split_res[ind_i + 1] == kDelimSpecial) {
+    map_str_ind_.insert({String(1, kDelim), -ind_j - 1});
+    map_ind_str_.insert({-ind_j - 1, String(1, kDelim)});
+    --terminals_count_;
+    ++ind_i;
+    return true;
+  }
+  if (split_res[ind_i].size() > 1) {
+    std::wcerr << L"Symbol in terminals consists of more then one character\n";
+    exit(ExitStatus::IncorrectGrammarInput);
+  }
+  return false;
+}
+
+template <typename CharT>
 void GrammarBase<CharT>::ReadRules(std::basic_istream<CharT>& input) {
-  String<CharT> line;
-  std::vector<String<CharT>> split_res;
-  for (size_t i = 0; i < nonterminals_count_;
-       ++i) {  // todo: add case bad reading
-    IndexT start_ind = ReadLeftNonterminal(input);
+  String line;
+  Vector<String> split_res;
+  // todo: add case bad reading
+  for (size_t i = 0; i < nonterminals_count_; ++i) {
+    IndexT left = ReadLeftNonterminal(input);
     std::getline(input, line, L' ');   // reading ->
     std::getline(input, line, L'\n');  // reading all right parts
-    split_res = Split(line, kRulesDelim);
+    split_res = utl::Split(line, kRulesDelim);
     for (const auto& right_part : split_res) {
-      ReadRightPart(start_ind, right_part);
+      ReadRightPart(left, right_part);
     }
   }
 }
@@ -300,10 +332,10 @@ void GrammarBase<CharT>::ReadRules(std::basic_istream<CharT>& input) {
 template <typename CharT>
 typename GrammarBase<CharT>::IndexT GrammarBase<CharT>::ReadLeftNonterminal(
     std::basic_istream<CharT>& input) {
-  String<CharT> line;
+  String line;
   std::getline(input, line, L' ');  // reading left nonterminal
-  auto iter_symbol_to_num = symbol_to_num_.find(line);
-  if (iter_symbol_to_num == symbol_to_num_.end() ||
+  auto iter_symbol_to_num = map_str_ind_.find(line);
+  if (iter_symbol_to_num == map_str_ind_.end() ||
       iter_symbol_to_num->second <= 0) {
     if (ContainArrow({line})) {
       line = line.substr(0, line.find(L'\n'));
@@ -322,115 +354,112 @@ typename GrammarBase<CharT>::IndexT GrammarBase<CharT>::ReadLeftNonterminal(
 }
 
 template <typename CharT>
-void GrammarBase<CharT>::ReadRightPart(
-    IndexT start_ind, const String<CharT>& right_part) {
+void GrammarBase<CharT>::ReadRightPart(IndexT left, const String& right_part) {
   if (right_part.empty()) {
     std::wcerr << L"Incorrect right part of the rule with left nonterminal ";
-    std::wcerr << L'`' << num_to_symbol_[start_ind] << L"`\n";
+    std::wcerr << L'`' << map_ind_str_[left] << L"`\n";
     exit(ExitStatus::IncorrectGrammarInput);
   }
-  if (right_part == num_to_symbol_[kEpsilonInd]) {
-    rules_[start_ind].push_back(std::vector<IndexT>(1, kEpsilonInd));
+  if (right_part == map_ind_str_[kEpsilonInd]) {
+    rules_[left].push_back(Vector<IndexT>(1, kEpsilonInd));
     return;
   }
-  std::vector<String<CharT>> symbols =
-      Split(right_part, String<CharT>(1, kDelim));
-  std::vector<IndexT> right_part_inds;
-  size_t offset_for_error = num_to_symbol_[start_ind].size() + kArrowStr.size();
-  size_t j = 0;
-  if (symbols[0].empty()) {
+  Vector<String> parts = utl::Split(right_part, String(1, kDelim));
+  Vector<IndexT> right;
+  size_t err_offt = map_ind_str_[left].size() + kArrowStr.size();
+  size_t r_i = 0;
+  if (parts[0].empty()) {
     // handle case when `\`` is in the start of the rule
-    if (symbols.size() < 3 || symbols[1] != kSlashStr || !symbols[2].empty()) {
-      ReadRightPartPrintError(start_ind, offset_for_error, symbols);
+    if (parts.size() < 3 || parts[1] != kSlashStr || !parts[2].empty()) {
+      ReadRightPartPrintError(left, err_offt, parts);
       exit(ExitStatus::IncorrectGrammarInput);
     }
-    j++;
+    r_i++;
   }
-  for (; j < symbols.size(); ++j) {
-    if (symbols[j] == kSlashStr) {
-      if (j != symbols.size() - 1 && symbols[j + 1] == kDelimSpecial) {
-        ReadRightPartHandleSpecialSymbol(start_ind, offset_for_error, symbols,
-                                         right_part_inds, j, kDelim);
+  for (; r_i < parts.size(); ++r_i) {
+    if (parts[r_i] == kSlashStr) {
+      if (r_i != parts.size() - 1 && parts[r_i + 1] == kDelimSpecial) {
+        ReadEscapeSymbol(left, err_offt, parts, right, r_i, kDelim);
         continue;
       }
-      ReadRightPartPrintError(start_ind, offset_for_error, symbols);
+      ReadRightPartPrintError(left, err_offt, parts);
       exit(ExitStatus::IncorrectGrammarInput);
     }
-    auto iter_symbol_to_num = symbol_to_num_.find(symbols[j]);
-    if (iter_symbol_to_num == symbol_to_num_.end()) {
-      for (size_t i = 0; i < symbols[j].size(); ++i) {
-        if (symbols[j][i] == kSlash) {
-          if (i == symbols[j].size() - 1) {
-            ReadRightPartPrintError(start_ind, offset_for_error, symbols);
-            exit(ExitStatus::IncorrectGrammarInput);
-          }
-          if (symbols[j][i + 1] == kSlash) {
-            ReadRightPartHandleSpecialSymbol(start_ind, offset_for_error,
-                                             symbols, right_part_inds, i,
-                                             kSlash);
-            continue;
-          }
-          if (symbols[j][i + 1] == kRulesDelimSymbol) {
-            ReadRightPartHandleSpecialSymbol(
-                start_ind, offset_for_error, symbols, right_part_inds, i,
-                kRulesDelimSymbol);
-            continue;
-          }
-        }
-        ReadRightPartHandleSymbol(start_ind, offset_for_error, symbols,
-                                  right_part_inds, symbols[j][i]);
-      }
+    auto iter_str_ind = map_str_ind_.find(parts[r_i]);
+    if (iter_str_ind == map_str_ind_.end()) {
+      ReadNonterminalSequence(parts, r_i, left, err_offt, right);
       continue;
     }
-    offset_for_error += symbols[j].size() + 1;
-    right_part_inds.push_back(iter_symbol_to_num->second);
+    err_offt += parts[r_i].size() + 1;
+    right.push_back(iter_str_ind->second);
   }
-  rules_[start_ind].push_back(std::move(right_part_inds));
+  rules_[left].push_back(std::move(right));
 }
 
 template <typename CharT>
-void GrammarBase<CharT>::ReadRightPartHandleSymbol(
-    IndexT start_ind, size_t& offset_for_error,
-    const std::vector<String<CharT>>& symbols,
-    std::vector<IndexT>& right_part_inds,
-    CharT symbol) {
-  auto iter_symbol_to_num = symbol_to_num_.find(String<CharT>(1, symbol));
-  if (iter_symbol_to_num == symbol_to_num_.end() ||
-      IsNonterminal(iter_symbol_to_num->second)) {
-    ReadRightPartPrintError(start_ind, offset_for_error, symbols);
+void GrammarBase<CharT>::ReadNonterminalSequence(const Vector<String>& parts,
+                                                 size_t r_i, IndexT left,
+                                                 size_t& err_offt,
+                                                 Vector<IndexT>& right) {
+  for (size_t s_i = 0; s_i < parts[r_i].size(); ++s_i) {
+    if (parts[r_i][s_i] == kSlash) {
+      if (s_i == parts[r_i].size() - 1) {
+        ReadRightPartPrintError(left, err_offt, parts);
+        exit(ExitStatus::IncorrectGrammarInput);
+      }
+      if (parts[r_i][s_i + 1] == kSlash) {
+        ReadEscapeSymbol(left, err_offt, parts, right, s_i, kSlash);
+        continue;
+      }
+      if (parts[r_i][s_i + 1] == kRulesDelimSymbol) {
+        ReadEscapeSymbol(left, err_offt, parts, right, s_i, kRulesDelimSymbol);
+        continue;
+      }
+    }
+    ReadRuleSymbol(left, err_offt, parts, right, parts[r_i][s_i]);
+  }
+}
+
+template <typename CharT>
+void GrammarBase<CharT>::ReadRuleSymbol(IndexT left, size_t& err_offt,
+                                        const Vector<String>& symbols,
+                                        Vector<IndexT>& right, CharT symbol) {
+  auto iter_str_ind = map_str_ind_.find(String(1, symbol));
+  if (iter_str_ind == map_str_ind_.end() ||
+      IsNonterminal(iter_str_ind->second)) {
+    ReadRightPartPrintError(left, err_offt, symbols);
     exit(ExitStatus::IncorrectGrammarInput);
   }
-  ++offset_for_error;
-  right_part_inds.push_back(iter_symbol_to_num->second);
+  ++err_offt;
+  right.push_back(iter_str_ind->second);
 }
 
 template <typename CharT>
-void GrammarBase<CharT>::ReadRightPartHandleSpecialSymbol(
-    IndexT start_ind, size_t& offset_for_error,
-    const std::vector<String<CharT>>& symbols,
-    std::vector<IndexT>& right_part_inds, size_t& i, CharT symbol) {
-  auto iter_symbol_to_num = symbol_to_num_.find(String<CharT>(1, symbol));
-  if (iter_symbol_to_num == symbol_to_num_.end()) {
-    ReadRightPartPrintError(start_ind, offset_for_error, symbols);
+void GrammarBase<CharT>::ReadEscapeSymbol(IndexT start_ind, size_t& err_offt,
+                                          const Vector<String>& symbols,
+                                          Vector<IndexT>& right, size_t& pos,
+                                          CharT symbol) {
+  auto iter_str_ind = map_str_ind_.find(String(1, symbol));
+  if (iter_str_ind == map_str_ind_.end()) {
+    ReadRightPartPrintError(start_ind, err_offt, symbols);
     std::wcerr << symbol << " is not a terminal\n";
     exit(ExitStatus::IncorrectGrammarInput);
   }
-  right_part_inds.push_back(iter_symbol_to_num->second);
-  ++i;
+  right.push_back(iter_str_ind->second);
+  ++pos;
 }
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadRightPartPrintError(
-    IndexT start_ind, size_t offset_for_error,
-    const std::vector<String<CharT>>& symbols) {
+    IndexT start_ind, size_t offset_for_error, const Vector<String>& symbols) {
   if (ContainArrow(symbols)) {
     std::wcerr << L"Incorrect number of spaces between "
-               << num_to_symbol_[start_ind] << L" and rules_\n";
+               << map_ind_str_[start_ind] << L" and rules_\n";
     exit(ExitStatus::IncorrectGrammarInput);
   }
   std::wcerr << L"Incorrect nonterminal, extra space or missing '`' "
              << L"in right part of the rule:\n";
-  std::wcerr << num_to_symbol_[start_ind] << L" -> ";
+  std::wcerr << map_ind_str_[start_ind] << L" -> ";
   PrintRightPartOfRule(std::wcerr, symbols);
   std::wcerr << L'\n';
   for (size_t i = 0; i < offset_for_error; ++i) {
@@ -440,14 +469,13 @@ void GrammarBase<CharT>::ReadRightPartPrintError(
 }
 
 template <typename CharT>
-bool GrammarBase<CharT>::ContainArrow(
-    const std::vector<String<CharT>>& symbols) const {
+bool GrammarBase<CharT>::ContainArrow(const Vector<String>& symbols) const {
   return !symbols.empty() && symbols[0].find(L"->") != symbols[0].npos;
 }
 
 template <typename CharT>
-void GrammarBase<CharT>::PrintRightPartOfRule(
-    std::basic_ostream<CharT>& out, std::vector<String<CharT>> symbols) {
+void GrammarBase<CharT>::PrintRightPartOfRule(std::basic_ostream<CharT>& out,
+                                              std::vector<String> symbols) {
   auto smb_iter = symbols.begin();
   while (true) {
     out << *smb_iter;
@@ -455,85 +483,6 @@ void GrammarBase<CharT>::PrintRightPartOfRule(
     if (smb_iter == symbols.end()) {
       break;
     }
-    out << L'`';
+    out << kDelim;
   }
-}
-
-template <typename CharT>
-template <typename T>
-void GrammarBase<CharT>::PrintUSet(const USet<T>& u_set) const {
-  for (const auto& elem : u_set) {
-    std::cout << elem << " ";
-  }
-  std::cout << "\n";
-}
-
-template <typename CharT>
-template <typename T, typename U>
-void GrammarBase<CharT>::PrintUMap(const UMap<T, U>& u_map) const {
-  for (const auto& elem : u_map) {
-    std::cout << '(' << elem.first << ", " << elem.second << ") ";
-  }
-  std::cout << "\n\n";
-}
-
-template <typename CharT>
-void GrammarBase<CharT>::PrintUMap(
-    const UMap<IndexT, std::vector<std::vector<IndexT>>>& u_map) const {
-  for (const auto& elem : u_map) {
-    std::cout << elem.first << '\n';
-    PrintVec2(elem.second);
-  }
-  std::cout << "\n";
-}
-
-template <typename CharT>
-void GrammarBase<CharT>::PrintUMap(
-    const UMap<IndexT, std::vector<USet<IndexT>>>& u_map) const {
-  for (const auto& elem : u_map) {
-    std::cout << elem.first << '\n';
-    PrintVecMap(elem.second);
-  }
-  std::cout << "\n";
-}
-
-template <typename CharT>
-template <typename T>
-void GrammarBase<CharT>::PrintVecMap(const std::vector<USet<T>>& u_map) const {
-  for (const auto& line : u_map) {
-    std::cout << "(";
-    if (line.empty()) {
-      std::cout << ") ";
-    } else {
-      auto iter = line.begin();
-      while (iter != line.end()) {
-        std::cout << *iter;
-        ++iter;
-        if (iter == line.end()) {
-          std::cout << ")";
-        } else {
-          std::cout << " ";
-        }
-      }
-    }
-  }
-  std::cout << "\n";
-}
-
-template <typename CharT>
-template <typename T>
-void GrammarBase<CharT>::PrintVec2(
-    const std::vector<std::vector<T>>& vec2) const {
-  for (const auto& line : vec2) {
-    std::cout << "(";
-    for (size_t i = 0; i < line.size() - 1; ++i) {
-      std::cout << line[i] << " ";
-    }
-    if (line.empty()) {
-      std::cout << ") ";
-    } else {
-      std::cout << line.back() << ") ";
-    }
-  }
-  std::cout << "\n";
 }

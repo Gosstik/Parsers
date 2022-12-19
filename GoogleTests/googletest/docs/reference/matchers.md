@@ -86,7 +86,7 @@ user wants.
 | `NanSensitiveDoubleNear(a_double, max_abs_error)` | `argument` is a `double` value close to `a_double` (absolute error <= `max_abs_error`), treating two NaNs as equal. |
 | `NanSensitiveFloatNear(a_float, max_abs_error)`   | `argument` is a `float` value close to `a_float` (absolute error <= `max_abs_error`), treating two NaNs as equal. |
 
-## String Matchers
+## BasicString Matchers
 
 The `argument` can be either a C string or a C++ string object:
 

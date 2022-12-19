@@ -172,7 +172,7 @@ The above code verifies that `val1` is less than, or approximately equal to,
 See [`EXPECT_THAT`](reference/assertions.md#EXPECT_THAT) in the Assertions
 Reference.
 
-### More String Assertions
+### More BasicString Assertions
 
 (Please read the [previous](#asserting-using-gmock-matchers) section first if
 you haven't.)

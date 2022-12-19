@@ -1,8 +1,8 @@
 #pragma once
 
+#include <boost/dynamic_bitset.hpp>
 #include <fstream>
 #include <stack>
-#include <boost/dynamic_bitset.hpp>
 
 #include "GrammarBase.h"
 
@@ -15,9 +15,7 @@ class BasicLRParser {
   }
 
  private:
-  enum LRExitStatus {
-    NotImplemented = 12
-  };
+  enum LRExitStatus { NotImplemented = 12 };
 };
 
 template <typename CharT>
@@ -30,25 +28,21 @@ class BasicLRParser<CharT, 1> {
   void SetGrammar(const std::string& filename);
   void SetGrammar(std::basic_istream<CharT>& input);
   void PrintGrammar(std::basic_ostream<CharT>& out) const;
-  bool Parse(const String<CharT>& word) const;
+  bool Parse(const std::basic_string<CharT>& word) const;
 
  private:
   using IndexT = GrammarBase<CharT>::IndexT;
+  template <typename T>
+  using Vector = std::vector<T>;
   template <class Key, class Value, class Hash = std::hash<Key>>
   using UMap = std::unordered_map<Key, Value, Hash>;
   template <class Key, class Hash = std::hash<Key>>
   using USet = std::unordered_set<Key, Hash>;
   template <typename T>
-  using Vector = std::vector<T>;
-  template <typename T>
   using RefW = std::reference_wrapper<T>;
   using Bitset = boost::dynamic_bitset<>;
 
-  enum ActionT {
-    Shift = 0,
-    Reduce,
-    Accept
-  };
+  enum ActionT { Shift = 0, Reduce, Accept };
   struct Action;
   struct Situation;
   struct Bucket;
@@ -105,9 +99,8 @@ struct BasicLRParser<CharT, 1>::Action {
     if (type != act.type) {
       return false;
     }
-    return (type == Reduce) ?
-            length == act.length && left == act.left :
-            id == act.id;
+    return (type == Reduce) ? length == act.length && left == act.left
+                            : id == act.id;
   }
 };
 
@@ -115,20 +108,23 @@ template <typename CharT>
 struct BasicLRParser<CharT, 1>::Situation {
  private:
   RefW<const Vector<IndexT>> right_;
+
  public:
   IndexT left;
   IndexT context;
   size_t pos;
-  Situation(RefW<const std::vector<IndexT>> right, IndexT left,
-            IndexT context, size_t pos)
+
+  Situation(RefW<const std::vector<IndexT>> right, IndexT left, IndexT context,
+            size_t pos)
       : right_(right), left(left), context(context), pos(pos) {}
-  [[nodiscard]] bool RoolEnded() const { return pos == RightSize(); }
-  [[nodiscard]] IndexT CurrSymbol() const { return right_.get()[pos]; }
+  bool RoolEnded() const { return pos == RightSize(); }
+  IndexT CurrSymbol() const { return right_.get()[pos]; }
   bool IsAccepted() const {
     return left == Grammar::kAuxiliaryStartSymbolInd && pos == 1;
   }
   size_t RightSize() const {
-    return right_.get().size() - size_t(right_.get().back() == Grammar::kEpsilonInd);
+    return right_.get().size() -
+           size_t(right_.get().back() == Grammar::kEpsilonInd);
   }
   IndexT RightSymbol(size_t ind) const { return right_.get()[ind]; }
   struct SituationHasher {
@@ -151,16 +147,17 @@ struct BasicLRParser<CharT, 1>::Situation {
   };
   bool operator==(const Situation& sit) const {
     return &right_.get() == &sit.right_.get() && left == sit.left &&
-            context == sit.context && pos == sit.pos;
+           context == sit.context && pos == sit.pos;
   }
 };
 // todo: add USetSits
 template <typename CharT>
 struct BasicLRParser<CharT, 1>::Bucket {
-  UMap<IndexT, USet<Situation, SitsHasher>> shift_sits; // index is curr symbol
-  UMap<IndexT, Action> reduce_sits; // index is context
-  size_t id; /// mustn't be used in hashing
-  bool contains_accept = false; // isn't used in hashing
+  UMap<IndexT, USet<Situation, SitsHasher>> shift_sits;  // index is curr symbol
+  UMap<IndexT, Action> reduce_sits;                      // index is context
+  size_t id;                     /// mustn't be used in hashing
+  bool contains_accept = false;  // isn't used in hashing
+
   struct BucketHasher {
     static constexpr size_t kOff1 = 5;
     static constexpr size_t kOff2 = 3;
@@ -187,16 +184,10 @@ struct BasicLRParser<CharT, 1>::Bucket {
   bool operator==(const Bucket& bucket) const {
     return shift_sits == bucket.shift_sits && reduce_sits == bucket.reduce_sits;
   }
-//  bool operator!=(const Bucket& bucket) const {
-//    return !(*this == bucket);
-//  }
-//  bool operator<(const Bucket& bucket) const {
-//    return *this == bucket || id < bucket.id;
-//  }
 };
 
 template <typename CharT>
-class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
+class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT> {
  public:
   using RulesRightT = GrammarBase<CharT>::RulesRightT;
   using GrammarBase<CharT>::kEpsilonInd;
@@ -226,8 +217,8 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
   static bool IsEpsilon(IndexT ind) { return ind == kEpsilonInd; }
 
  protected:
-  using GrammarBase<CharT>::num_to_symbol_;
-  using GrammarBase<CharT>::symbol_to_num_;
+  using GrammarBase<CharT>::map_ind_str_;
+  using GrammarBase<CharT>::map_str_ind_;
   using GrammarBase<CharT>::terminals_count_;
   using GrammarBase<CharT>::nonterminals_count_;
   using GrammarBase<CharT>::rules_;
@@ -252,7 +243,7 @@ class BasicLRParser<CharT, 1>::Grammar : public GrammarBase<CharT>{
         Bitset prev_bitset = first_[i];
         for (const auto& right : rules_[i]) {
           size_t curr = 0;
-          do  {
+          do {
             first_[i] |= First(right[curr]);
           } while (curr < right.size() - 1 && ProduceEpsilon(right[curr++]));
         }
@@ -278,6 +269,7 @@ class BasicLRParser<CharT, 1>::ParseStack {
   size_t size_ = 0;
   size_t capacity_;
   Vector<IndexT> vec_;
+
  public:
   ParseStack(size_t capacity) : capacity_(capacity + 1), vec_(capacity_, 0) {}
   void Push(IndexT ind) {
@@ -287,9 +279,7 @@ class BasicLRParser<CharT, 1>::ParseStack {
     }
     vec_[size_++] = ind;
   }
-  void Pop(size_t count) {
-    size_ -= count;
-  }
+  void Pop(size_t count) { size_ -= count; }
   IndexT Top() const { return vec_[size_ - 1]; }
 };
 
@@ -317,16 +307,18 @@ void BasicLRParser<CharT, 1>::SetGrammar(std::basic_istream<CharT>& input) {
 }
 
 template <typename CharT>
-void BasicLRParser<CharT, 1>::PrintGrammar(std::basic_ostream<CharT>& out) const {
+void BasicLRParser<CharT, 1>::PrintGrammar(
+    std::basic_ostream<CharT>& out) const {
   grammar_.Print(out);
 }
 
 template <typename CharT>
-bool BasicLRParser<CharT, 1>::Parse(const String<CharT>& word) const {
+bool BasicLRParser<CharT, 1>::Parse(
+    const std::basic_string<CharT>& word) const {
   ParseStack stack(word.size());
   stack.Push(0);
   size_t curr_pos = 0;
-  IndexT left; // index of left nonterminal in rule for reduce
+  IndexT left;  // index of left nonterminal in rule for reduce
   IndexT curr_ind;
   while (true) {
     if (curr_pos < word.size()) {
@@ -342,7 +334,7 @@ bool BasicLRParser<CharT, 1>::Parse(const String<CharT>& word) const {
       return false;
     }
     const Action& act = iter->second;
-    switch(act.type) {
+    switch (act.type) {
       case Shift:
         stack.Push(act.id);
         ++curr_pos;
@@ -363,9 +355,10 @@ bool BasicLRParser<CharT, 1>::Parse(const String<CharT>& word) const {
 }
 
 template <typename CharT>
-size_t BasicLRParser<CharT, 1>::Goto(
-    USetBuckets& buckets, Vector<RefW<const Bucket>>& buckets_vec,
-    size_t bucket_id, std::stack<Situation>& unhandled_sits) {
+size_t BasicLRParser<CharT, 1>::Goto(USetBuckets& buckets,
+                                     Vector<RefW<const Bucket>>& buckets_vec,
+                                     size_t bucket_id,
+                                     std::stack<Situation>& unhandled_sits) {
   Bucket bucket;
   bucket.id = bucket_id;
   Closure(bucket, unhandled_sits);
@@ -380,7 +373,7 @@ template <typename CharT>
 void BasicLRParser<CharT, 1>::CreateTable() {
   USetBuckets buckets;
   Vector<RefW<const Bucket>> buckets_vec;
-  std::stack<Situation> unhandled_sits; // for closure
+  std::stack<Situation> unhandled_sits;  // for closure
   unhandled_sits.push(grammar_.StartSituation());
   Goto(buckets, buckets_vec, 0, unhandled_sits);
   size_t curr = 0;
@@ -395,7 +388,7 @@ void BasicLRParser<CharT, 1>::CreateTable() {
     for (const auto& map : bucket.shift_sits) {
       if (table_cell.contains(map.first)) {
         std::wcerr << "shift-reduce conflict, grammar is not LR(1)\n";
-        Clear(); // to reuse parser
+        Clear();  // to reuse parser
         exit(2);
         // todo: make exception
       }
@@ -404,12 +397,14 @@ void BasicLRParser<CharT, 1>::CreateTable() {
         ++new_sit.pos;
         unhandled_sits.push(new_sit);
       }
-      size_t bucket_id = Goto(buckets, buckets_vec, buckets.size(), unhandled_sits);
+      size_t bucket_id =
+          Goto(buckets, buckets_vec, buckets.size(), unhandled_sits);
       table_cell[map.first] = Action(bucket_id);
     }
     // handle accept situations
     if (bucket.contains_accept) {
-      bool was_inserted = table_cell.insert({Grammar::kEpsilonInd, Action()}).second;
+      bool was_inserted =
+          table_cell.insert({Grammar::kEpsilonInd, Action()}).second;
       if (!was_inserted) {
         std::wcerr << "reduce-reduce conflict, grammar is not LR(1)\n";
         Clear();
@@ -423,7 +418,8 @@ void BasicLRParser<CharT, 1>::CreateTable() {
 }
 
 template <typename CharT>
-BasicLRParser<CharT, 1>::Bitset BasicLRParser<CharT, 1>::First(const Situation& sit) const {
+BasicLRParser<CharT, 1>::Bitset BasicLRParser<CharT, 1>::First(
+    const Situation& sit) const {
   /// this function may be called ONLY for sits that have not ended
   Bitset res(grammar_.BitsetSize());
   size_t curr_pos = sit.pos + 1;

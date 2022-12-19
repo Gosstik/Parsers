@@ -5,36 +5,35 @@
 
 /// Knuth–Morris–Pratt algorithm
 
+namespace utl {
 template <typename CharT>
-using String = std::basic_string<CharT>;
+using BasicString = std::basic_string<CharT>;
 
 template <typename CharT>
-std::vector<String<CharT>> Split(const String<CharT>& src,
-                                 const String<CharT>& delim);
-
-namespace dev {
+std::vector<BasicString<CharT>> Split(const BasicString<CharT>& src,
+                                      const BasicString<CharT>& delim);
 // LPS - longest proper prefix
 template <typename CharT>
-void CreateLPSArray(const String<CharT>& pattern, size_t pat_len,
+void CreateLPSArray(const BasicString<CharT>& pattern, size_t pat_len,
                     std::vector<size_t>& lps) {
   size_t len = 0;  // length of the previous longest prefix suffix
   lps[0] = 0;      // lps[0] is always 0
-  size_t i = 1;
-  while (i < pat_len) {
-    if (pattern[i] == pattern[len]) {
-      lps[i++] = ++len;
+  size_t pos = 1;
+  while (pos < pat_len) {
+    if (pattern[pos] == pattern[len]) {
+      lps[pos++] = ++len;
     } else {
       if (len != 0) {
         len = lps[len - 1];
       } else {
-        lps[i++] = 0;
+        lps[pos++] = 0;
       }
     }
   }
 }
 
 template <typename CharT>
-void KMPSearch(const String<CharT>& pattern, const String<CharT>& string,
+void KMPSearch(const BasicString<CharT>& pattern, const BasicString<CharT>& string,
                std::vector<size_t>& match_indexes) {
   size_t pat_len = pattern.size();
   size_t str_len = string.size();
@@ -42,38 +41,37 @@ void KMPSearch(const String<CharT>& pattern, const String<CharT>& string,
   std::vector<size_t> lps(pat_len);
   CreateLPSArray(pattern, pat_len, lps);
 
-  size_t i = 0;  // index for string
-  size_t j = 0;  // index for pattern
-  while ((str_len - i) >= (pat_len - j)) {
-    if (pattern[j] == string[i]) {
-      j++;
-      i++;
+  size_t pos_s = 0;  // index for string
+  size_t pos_p = 0;  // index for pattern
+  while ((str_len - pos_s) >= (pat_len - pos_p)) {
+    if (pattern[pos_p] == string[pos_s]) {
+      pos_p++;
+      pos_s++;
     }
-    if (j == pat_len) {
-      match_indexes.push_back(i - j);
-      j = lps[j - 1];
+    if (pos_p == pat_len) {
+      match_indexes.push_back(pos_s - pos_p);
+      pos_p = lps[pos_p - 1];
     }
     // mismatch after j matches
-    else if (i < str_len && pattern[j] != string[i]) {
-      if (j != 0) {
-        j = lps[j - 1];
+    else if (pos_s < str_len && pattern[pos_p] != string[pos_s]) {
+      if (pos_p != 0) {
+        pos_p = lps[pos_p - 1];
       } else {
-        ++i;
+        ++pos_s;
       }
     }
   }
 }
-}  // namespace dev
 
 template <typename CharT>
-std::vector<String<CharT>> Split(const String<CharT>& src,
-                                 const String<CharT>& delim) {
+std::vector<BasicString<CharT>> Split(const BasicString<CharT>& src,
+                                      const BasicString<CharT>& delim) {
   if (src.empty() || src.size() < delim.size()) {
     return {src};
   }
   std::vector<size_t> match_indexes;
-  dev::KMPSearch(delim, src, match_indexes);
-  std::vector<String<CharT>> result;
+  utl::KMPSearch(delim, src, match_indexes);
+  std::vector<BasicString<CharT>> result;
   size_t prev_match_ind = 0;
   for (auto index : match_indexes) {
     size_t substr_size = index - prev_match_ind;
@@ -83,3 +81,4 @@ std::vector<String<CharT>> Split(const String<CharT>& src,
   result.emplace_back(src.substr(prev_match_ind));
   return result;
 }
+}  // namespace dev

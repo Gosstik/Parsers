@@ -217,7 +217,7 @@ Verifies that *`val1`*`>`*`val2`*.
 
 Verifies that *`val1`*`>=`*`val2`*.
 
-## String Comparison {#c-strings}
+## BasicString Comparison {#c-strings}
 
 The following assertions compare two **C strings**. To compare two `string`
 objects, use [`EXPECT_EQ`](#EXPECT_EQ) or [`EXPECT_NE`](#EXPECT_NE) instead.
