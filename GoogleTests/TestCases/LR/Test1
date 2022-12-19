@@ -1,0 +1,6 @@
+S`e
+A`B
+a`b
+S -> A`b
+A -> a`A`a | B
+B -> b

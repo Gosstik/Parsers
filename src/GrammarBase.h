@@ -23,40 +23,39 @@ class GrammarBase {
   using UMap = std::unordered_map<Key, Value>;
   template <typename Key>
   using USet = std::unordered_set<Key>;
-  using RulesT = UMap<IndexT, std::vector<std::vector<IndexT>>>;
+  using RulesRightT = std::vector<std::vector<IndexT>>;
+  using RulesT = UMap<IndexT, RulesRightT>;
+  static constexpr IndexT kIncorrectSymbolInd = std::numeric_limits<IndexT>::max();
+
+  static constexpr int64_t kEpsilonInd = 0;
+  static constexpr int64_t kAuxiliaryStartSymbolInd = 1;
+  static constexpr int64_t kStartSymbolInd = 2;
 
   GrammarBase() = default;
 
   void Read(std::basic_istream<CharT>& input);
-  void Print(std::basic_ostream<CharT>& out) const;
-
-  const std::vector<std::vector<IndexT>>& GetRightPartRules(
-      IndexT left_part) const {
-    auto res = rules_.find(left_part);
-    return res->second;
-  }
+  virtual void Print(std::basic_ostream<CharT>& out) const;
 
   IndexT ToInd(CharT symbol) const {
     auto itr = symbol_to_num_.find(String<CharT>(1, symbol));
-    return (itr == symbol_to_num_.end()) ? std::numeric_limits<IndexT>::max()
-                                         : itr->second;
+    return (itr == symbol_to_num_.end()) ? kIncorrectSymbolInd : itr->second;
   }
-  // returns 'true' if grammar generate epsilon
-  [[nodiscard]] bool GenerateEpsilon() const {
-    return GenerateEpsilon(kStartSymbolInd);
-  }
-  // returns 'true' if symbol generate epsilon
-  [[nodiscard]] bool GenerateEpsilon(IndexT symbol) const {
-    return proc_eps_generating_symbols_.contains(symbol);
+  [[nodiscard]] IndexT NonterminalsCount() const { return nonterminals_count_; }
+  [[nodiscard]] IndexT TerminalsCount() const { return terminals_count_; }
+  [[nodiscard]] IndexT AuxiliaryStartSymbolInd() const {
+    return kAuxiliaryStartSymbolInd;
   }
   [[nodiscard]] bool IsTerminal(IndexT symbol) const { return symbol < 0; }
   [[nodiscard]] bool IsNonterminal(IndexT symbol) const { return symbol > 0; }
   [[nodiscard]] bool Empty() const { return num_to_symbol_.empty(); }
+  void Clear() {
+    num_to_symbol_.clear();
+    symbol_to_num_.clear();
+    nonterminals_count_ = terminals_count_ = 0;
+    rules_.clear();
+  }
 
  protected:
-  static constexpr int64_t kEpsilonInd = 0;
-  static constexpr int64_t kAuxiliaryStartSymbolInd = 1;
-  static constexpr int64_t kStartSymbolInd = 2;
   static constexpr CharT kSlash = L'\\';
   static constexpr std::basic_string_view<CharT> kSlashStr = L"\\";
   static constexpr std::basic_string_view<CharT> kSlashEscape = L"\\\\";
@@ -71,11 +70,12 @@ class GrammarBase {
   // epsilon is 0, auxiliary start symbol is 1, start symbol is 2
   UMap<IndexT, String<CharT>> num_to_symbol_;
   UMap<String<CharT>, IndexT> symbol_to_num_;
-  IndexT terminals_count_;
+  IndexT terminals_count_; // except for epsilon
   IndexT nonterminals_count_;  // except for auxiliary start symbol
-  RulesT rules_;               // does not contain epsilon rules
-  USet<IndexT> start_eps_generating_symbols_;  // for printing source grammar
-  USet<IndexT> proc_eps_generating_symbols_;
+  RulesT rules_;
+
+  virtual void AfterRead() = 0;
+  virtual void AfterClear() = 0;
 
  private:
   // printing
@@ -83,33 +83,25 @@ class GrammarBase {
   // reading
   void ReadFirstLine(std::basic_istream<CharT>& input);
   void ReadSymbols(std::basic_istream<CharT>& input);
-  void ReadRules(
-      std::basic_istream<CharT>& input,
-      UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating);
+  void ReadRules(std::basic_istream<CharT>& input);
   IndexT ReadLeftNonterminal(std::basic_istream<CharT>& input);
-  void ReadRightPart(
-      IndexT start_ind, const String<CharT>& right_part,
-      UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating);
+  void ReadRightPart(IndexT start_ind, const String<CharT>& right_part);
   void ReadRightPartHandleSymbol(IndexT start_ind, size_t& offset_for_error,
                                  const std::vector<String<CharT>>& symbols,
                                  std::vector<IndexT>& right_part_inds,
-                                 USet<IndexT>& right_part_eps_inds,
                                  CharT symbol);
   void ReadRightPartHandleSpecialSymbol(
       IndexT start_ind, size_t& offset_for_error,
       const std::vector<String<CharT>>& symbols,
-      std::vector<IndexT>& right_part_inds, USet<IndexT>& right_part_eps_inds,
-      size_t& i, CharT symbol);
+      std::vector<IndexT>& right_part_inds, size_t& i, CharT symbol);
   void ReadRightPartPrintError(IndexT start_ind, size_t offset_for_error,
                                const std::vector<String<CharT>>& symbols);
   bool ContainArrow(const std::vector<String<CharT>>& symbols) const;
   void PrintRightPartOfRule(std::basic_ostream<CharT>& out,
                             std::vector<String<CharT>> symbols);
-  void ProcEpsGeneratingSymbols(
-      UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating);
 
- public:
   // for debugging // todo: make static
+ public:
   template <typename T>
   void PrintUSet(const USet<T>& u_set) const;
   template <typename T, typename U>
@@ -218,10 +210,6 @@ void GrammarBase<CharT>::PrintRules(std::basic_ostream<CharT>& out) const {
         out << kRulesDelim;
       }
     }
-    if (start_eps_generating_symbols_.contains(i)) {
-      n_to_s_itr = num_to_symbol_.find(kEpsilonInd);
-      out << kRulesDelim << n_to_s_itr->second;
-    }
     out << '\n';
   }
 }
@@ -231,9 +219,8 @@ void GrammarBase<CharT>::Read(std::basic_istream<CharT>& input) {
   ReadFirstLine(input);
   ReadSymbols(input);
   rules_.insert({kAuxiliaryStartSymbolInd, {{kStartSymbolInd}}});
-  UMap<IndexT, std::vector<USet<IndexT>>> rules_for_eps_generating;
-  ReadRules(input, rules_for_eps_generating);
-  ProcEpsGeneratingSymbols(rules_for_eps_generating);
+  ReadRules(input);
+  AfterRead();
 }
 
 template <typename CharT>
@@ -297,9 +284,7 @@ void GrammarBase<CharT>::ReadSymbols(std::basic_istream<CharT>& input) {
 }
 
 template <typename CharT>
-void GrammarBase<CharT>::ReadRules(
-    std::basic_istream<CharT>& input,
-    UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating) {
+void GrammarBase<CharT>::ReadRules(std::basic_istream<CharT>& input) {
   String<CharT> line;
   std::vector<String<CharT>> split_res;
   for (size_t i = 0; i < nonterminals_count_;
@@ -309,7 +294,7 @@ void GrammarBase<CharT>::ReadRules(
     std::getline(input, line, L'\n');  // reading all right parts
     split_res = Split(line, kRulesDelim);
     for (const auto& right_part : split_res) {
-      ReadRightPart(start_ind, right_part, rules_for_eps_generating);
+      ReadRightPart(start_ind, right_part);
     }
   }
 }
@@ -340,22 +325,19 @@ typename GrammarBase<CharT>::IndexT GrammarBase<CharT>::ReadLeftNonterminal(
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadRightPart(
-    IndexT start_ind, const String<CharT>& right_part,
-    UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating) {
+    IndexT start_ind, const String<CharT>& right_part) {
   if (right_part.empty()) {
     std::wcerr << L"Incorrect right part of the rule with left nonterminal ";
     std::wcerr << L'`' << num_to_symbol_[start_ind] << L"`\n";
     exit(ExitStatus::IncorrectGrammarInput);
   }
   if (right_part == num_to_symbol_[kEpsilonInd]) {
-    start_eps_generating_symbols_.insert(start_ind);
-    proc_eps_generating_symbols_.insert(start_ind);
+    rules_[start_ind].push_back(std::vector<IndexT>(1, kEpsilonInd));
     return;
   }
   std::vector<String<CharT>> symbols =
       Split(right_part, String<CharT>(1, kDelim));
   std::vector<IndexT> right_part_inds;
-  USet<IndexT> right_part_eps_inds;
   size_t offset_for_error = num_to_symbol_[start_ind].size() + kArrowStr.size();
   size_t j = 0;
   if (symbols[0].empty()) {
@@ -370,8 +352,7 @@ void GrammarBase<CharT>::ReadRightPart(
     if (symbols[j] == kSlashStr) {
       if (j != symbols.size() - 1 && symbols[j + 1] == kDelimSpecial) {
         ReadRightPartHandleSpecialSymbol(start_ind, offset_for_error, symbols,
-                                         right_part_inds, right_part_eps_inds,
-                                         j, kDelim);
+                                         right_part_inds, j, kDelim);
         continue;
       }
       ReadRightPartPrintError(start_ind, offset_for_error, symbols);
@@ -387,36 +368,33 @@ void GrammarBase<CharT>::ReadRightPart(
           }
           if (symbols[j][i + 1] == kSlash) {
             ReadRightPartHandleSpecialSymbol(start_ind, offset_for_error,
-                                             symbols, right_part_inds,
-                                             right_part_eps_inds, i, kSlash);
+                                             symbols, right_part_inds, i,
+                                             kSlash);
             continue;
           }
           if (symbols[j][i + 1] == kRulesDelimSymbol) {
             ReadRightPartHandleSpecialSymbol(
-                start_ind, offset_for_error, symbols, right_part_inds,
-                right_part_eps_inds, i, kRulesDelimSymbol);
+                start_ind, offset_for_error, symbols, right_part_inds, i,
+                kRulesDelimSymbol);
             continue;
           }
         }
         ReadRightPartHandleSymbol(start_ind, offset_for_error, symbols,
-                                  right_part_inds, right_part_eps_inds,
-                                  symbols[j][i]);
+                                  right_part_inds, symbols[j][i]);
       }
       continue;
     }
     offset_for_error += symbols[j].size() + 1;
     right_part_inds.push_back(iter_symbol_to_num->second);
-    right_part_eps_inds.insert(iter_symbol_to_num->second);
   }
   rules_[start_ind].push_back(std::move(right_part_inds));
-  rules_for_eps_generating[start_ind].push_back(std::move(right_part_eps_inds));
 }
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadRightPartHandleSymbol(
     IndexT start_ind, size_t& offset_for_error,
     const std::vector<String<CharT>>& symbols,
-    std::vector<IndexT>& right_part_inds, USet<IndexT>& right_part_eps_inds,
+    std::vector<IndexT>& right_part_inds,
     CharT symbol) {
   auto iter_symbol_to_num = symbol_to_num_.find(String<CharT>(1, symbol));
   if (iter_symbol_to_num == symbol_to_num_.end() ||
@@ -426,15 +404,13 @@ void GrammarBase<CharT>::ReadRightPartHandleSymbol(
   }
   ++offset_for_error;
   right_part_inds.push_back(iter_symbol_to_num->second);
-  right_part_eps_inds.insert(iter_symbol_to_num->second);
 }
 
 template <typename CharT>
 void GrammarBase<CharT>::ReadRightPartHandleSpecialSymbol(
     IndexT start_ind, size_t& offset_for_error,
     const std::vector<String<CharT>>& symbols,
-    std::vector<IndexT>& right_part_inds, USet<IndexT>& right_part_eps_inds,
-    size_t& i, CharT symbol) {
+    std::vector<IndexT>& right_part_inds, size_t& i, CharT symbol) {
   auto iter_symbol_to_num = symbol_to_num_.find(String<CharT>(1, symbol));
   if (iter_symbol_to_num == symbol_to_num_.end()) {
     ReadRightPartPrintError(start_ind, offset_for_error, symbols);
@@ -442,7 +418,6 @@ void GrammarBase<CharT>::ReadRightPartHandleSpecialSymbol(
     exit(ExitStatus::IncorrectGrammarInput);
   }
   right_part_inds.push_back(iter_symbol_to_num->second);
-  right_part_eps_inds.insert(iter_symbol_to_num->second);
   ++i;
 }
 
@@ -483,51 +458,6 @@ void GrammarBase<CharT>::PrintRightPartOfRule(
       break;
     }
     out << L'`';
-  }
-}
-
-template <typename CharT>
-void GrammarBase<CharT>::ProcEpsGeneratingSymbols(
-    UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating) {
-  if (proc_eps_generating_symbols_.empty()) {
-    return;
-  }
-  USet<IndexT> unhandled_smb;
-  for (IndexT i = 2; i <= nonterminals_count_ + 1; ++i) {
-    unhandled_smb.insert(i);
-  }
-  std::stack<IndexT> stk;
-  for (IndexT ind : proc_eps_generating_symbols_) {
-    stk.push(ind);
-    unhandled_smb.erase(ind);
-  }
-  while (!stk.empty()) {
-    IndexT curr_ind = stk.top();
-    stk.pop();
-    auto it_curr = unhandled_smb.begin();
-    while (it_curr != unhandled_smb.end()) {
-      auto it_copy = it_curr;
-      auto iter = rules_for_eps_generating.find(*it_curr);
-      for (auto& right : iter->second) {
-        auto it_ind = right.begin();
-        while (it_ind != right.end()) {
-          if (*it_ind == curr_ind) {
-            it_ind = right.erase(it_ind);
-          } else {
-            ++it_ind;
-          }
-          if (right.empty()) {
-            proc_eps_generating_symbols_.insert(*it_curr);
-            stk.push(*it_curr);
-            it_curr = unhandled_smb.erase(it_curr);
-            break;
-          }
-        }
-      }
-      if (it_curr == it_copy) {  // if there were no deletion
-        ++it_curr;
-      }
-    }
   }
 }
 

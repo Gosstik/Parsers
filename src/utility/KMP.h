@@ -69,7 +69,7 @@ template <typename CharT>
 std::vector<String<CharT>> Split(const String<CharT>& src,
                                  const String<CharT>& delim) {
   if (src.empty() || src.size() < delim.size()) {
-    return {};
+    return {src};
   }
   std::vector<size_t> match_indexes;
   dev::KMPSearch(delim, src, match_indexes);
