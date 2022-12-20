@@ -1,9 +1,0 @@
-# ninja log v5
-0	3126	1671528620189031684	GoogleTests/CMakeFiles/Google_Tests_run.dir/src/main_test.cpp.o	2616630eeed456c3
-3128	6459	1671528623528946996	GoogleTests/googletest/googletest/CMakeFiles/gtest_main.dir/src/gtest_main.cc.o	aace441301a7f184
-1	8022	1671528625084908709	GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.o	62e08fd750b22c61
-1	8077	1671528625136907449	GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsLR.cpp.o	670fa3ef86c62764
-2	10637	1671528627692846297	GoogleTests/googletest/googletest/CMakeFiles/gtest.dir/src/gtest-all.cc.o	e91addd81938b3de
-10637	12251	1671528629308808669	lib/libgtest.a	d36824f99924743b
-12251	12298	1671528629364807382	lib/libgtest_main.a	e601de3e81b1ea91
-12298	12720	1671528629784797733	/home/ownstreamer/proga/C++/Parsers/GoogleTests/bin/Google_Tests_run	d97394b646943758
