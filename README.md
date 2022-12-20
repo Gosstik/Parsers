@@ -83,7 +83,7 @@ ADJ_CONSONANT -> carefree | brilliant
 ADJ_VOWEL -> impartial | immaculate
 OCCUPATION -> teacher | student | programmer | designer
 ```
-Last example is not LR(1)-grammar and only Earley parser will be able to process queries; 
+Last example is not LR(1)-grammar and only Earley parser will be able to process queries.
 
 ### Launch:
 Open `Parsers` folder in terminal and write:

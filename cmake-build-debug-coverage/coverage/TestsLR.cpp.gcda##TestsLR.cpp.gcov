@@ -1,0 +1,5855 @@
+        -:    0:Source:/home/ownstreamer/proga/C++/Parsers/GoogleTests/src/TestsLR.cpp
+        -:    0:Graph:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsLR.cpp.gcno
+        -:    0:Data:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsLR.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#include <gtest/gtest.h>
+        -:    2:
+        -:    3:#include <random>
+        -:    4:
+        -:    5:#include "BasicLR1Parser.h"
+        -:    6:
+        -:    7:// todo: add tests for non-LR grammar
+        -:    8:// 1. shift-reduce conflict: palindromes
+        -:    9:// 2. reduce-reduce conflict:
+        -:   10:
+        -:   11:class LR1BBSConsts {
+        -:   12: protected:
+        -:   13:  static constexpr size_t kRandomLowerBound = 5;
+        -:   14:  static constexpr size_t kRandomUpperBound = 10;
+        -:   15:  static constexpr size_t kRandomNumOfIters = 30;
+        -:   16:  static constexpr size_t kStressLowerBound = 999000;
+        -:   17:  static constexpr size_t kStressUpperBound = 1000000;
+        -:   18:  static constexpr size_t kStressNumOfIters = 1;
+        -:   19:};
+        -:   20:
+        -:   21:class LR1BBS1 : public ::testing::Test, public LR1BBSConsts {
+        -:   22: protected:
+        -:   23:  WLRParser<1> parser_;
+function _ZN7LR1BBS1C2Ev called 3 returned 100% blocks executed 53%
+        3:   24:  LR1BBS1() : parser_("../TestCases/BBS1") {}
+        3:   24-block  0
+call    0 returned 3
+call    1 returned 3
+call    2 returned 3
+branch  3 taken 3 (fallthrough)
+branch  4 taken 0 (throw)
+        3:   24-block  1
+call    5 returned 3
+branch  6 taken 3 (fallthrough)
+branch  7 taken 0 (throw)
+        3:   24-block  2
+call    8 returned 3
+call    9 returned 3
+    $$$$$:   24-block  3
+call   10 never executed
+    $$$$$:   24-block  4
+    $$$$$:   24-block  5
+call   11 never executed
+    $$$$$:   24-block  6
+    $$$$$:   24-block  7
+call   12 never executed
+        -:   25:};
+        -:   26:
+        -:   27:class LR1BBS2 : public ::testing::Test, public LR1BBSConsts {
+        -:   28: protected:
+        -:   29:  WLRParser<1> parser_;
+function _ZN7LR1BBS2C2Ev called 1 returned 100% blocks executed 53%
+        1:   30:  LR1BBS2() : parser_("../TestCases/BBS2") {}
+        1:   30-block  0
+call    0 returned 1
+call    1 returned 1
+call    2 returned 1
+branch  3 taken 1 (fallthrough)
+branch  4 taken 0 (throw)
+        1:   30-block  1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:   30-block  2
+call    8 returned 1
+call    9 returned 1
+    $$$$$:   30-block  3
+call   10 never executed
+    $$$$$:   30-block  4
+    $$$$$:   30-block  5
+call   11 never executed
+    $$$$$:   30-block  6
+    $$$$$:   30-block  7
+call   12 never executed
+        -:   31:};
+        -:   32:
+        4:   33:TEST(LR1Test1, Test1) {
+        2:   34:  WLRParser<1> parser("../TestCases/LR1/Test1");
+       1*:   35:  EXPECT_EQ(parser.Parse(L"bb"), true);
+       1*:   36:  EXPECT_EQ(parser.Parse(L"abab"), true);
+       1*:   37:  EXPECT_EQ(parser.Parse(L"aabaab"), true);
+       1*:   38:  EXPECT_EQ(parser.Parse(L"aaabaaab"), true);
+       1*:   39:  EXPECT_EQ(parser.Parse(L""), false);
+       1*:   40:  EXPECT_EQ(parser.Parse(L"a"), false);
+       1*:   41:  EXPECT_EQ(parser.Parse(L"aa"), false);
+       1*:   42:  EXPECT_EQ(parser.Parse(L"ba"), false);
+       1*:   43:  EXPECT_EQ(parser.Parse(L"aabaa"), false);
+       1*:   44:  EXPECT_EQ(parser.Parse(L"ac"), false) << "`c` does not belong to language\n";
+       1*:   45:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+       1*:   46:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+       1*:   47:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+       1*:   48:  EXPECT_EQ(parser.Parse(L"abe"), false) << "`e` is alias for empty symbol\n";
+        1:   49:}
+------------------
+_ZN19LR1Test1_Test1_TestC2Ev:
+function _ZN19LR1Test1_Test1_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:   33:TEST(LR1Test1, Test1) {
+        1:   33-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test1_Test1_TestD0Ev:
+function _ZN19LR1Test1_Test1_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:   33:TEST(LR1Test1, Test1) {
+        1:   33-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN19LR1Test1_Test1_TestD2Ev:
+function _ZN19LR1Test1_Test1_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:   33:TEST(LR1Test1, Test1) {
+        1:   33-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test1_Test1_Test8TestBodyEv:
+function _ZN19LR1Test1_Test1_Test8TestBodyEv called 1 returned 100% blocks executed 26%
+        1:   33:TEST(LR1Test1, Test1) {
+        2:   34:  WLRParser<1> parser("../TestCases/LR1/Test1");
+        1:   34-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   34-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 1
+    $$$$$:   34-block  2
+    $$$$$:   34-block  3
+       1*:   35:  EXPECT_EQ(parser.Parse(L"bb"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   35-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   35-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   35-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   35-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   35-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   35-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   35-block  6
+call   25 never executed
+call   26 never executed
+        1:   35-block  7
+call   27 returned 1
+    $$$$$:   35-block  8
+    $$$$$:   35-block  9
+    $$$$$:   35-block 10
+    $$$$$:   35-block 11
+    $$$$$:   35-block 12
+call   28 never executed
+    $$$$$:   35-block 13
+    $$$$$:   35-block 14
+call   29 never executed
+    $$$$$:   35-block 15
+    $$$$$:   35-block 16
+call   30 never executed
+       1*:   36:  EXPECT_EQ(parser.Parse(L"abab"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   36-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   36-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   36-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   36-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   36-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   36-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   36-block  6
+call   25 never executed
+call   26 never executed
+        1:   36-block  7
+call   27 returned 1
+    $$$$$:   36-block  8
+    $$$$$:   36-block  9
+    $$$$$:   36-block 10
+    $$$$$:   36-block 11
+    $$$$$:   36-block 12
+call   28 never executed
+    $$$$$:   36-block 13
+    $$$$$:   36-block 14
+call   29 never executed
+    $$$$$:   36-block 15
+    $$$$$:   36-block 16
+call   30 never executed
+       1*:   37:  EXPECT_EQ(parser.Parse(L"aabaab"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   37-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   37-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   37-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   37-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   37-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   37-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   37-block  6
+call   25 never executed
+call   26 never executed
+        1:   37-block  7
+call   27 returned 1
+    $$$$$:   37-block  8
+    $$$$$:   37-block  9
+    $$$$$:   37-block 10
+    $$$$$:   37-block 11
+    $$$$$:   37-block 12
+call   28 never executed
+    $$$$$:   37-block 13
+    $$$$$:   37-block 14
+call   29 never executed
+    $$$$$:   37-block 15
+    $$$$$:   37-block 16
+call   30 never executed
+       1*:   38:  EXPECT_EQ(parser.Parse(L"aaabaaab"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   38-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   38-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   38-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   38-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   38-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   38-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   38-block  6
+call   25 never executed
+call   26 never executed
+        1:   38-block  7
+call   27 returned 1
+    $$$$$:   38-block  8
+    $$$$$:   38-block  9
+    $$$$$:   38-block 10
+    $$$$$:   38-block 11
+    $$$$$:   38-block 12
+call   28 never executed
+    $$$$$:   38-block 13
+    $$$$$:   38-block 14
+call   29 never executed
+    $$$$$:   38-block 15
+    $$$$$:   38-block 16
+call   30 never executed
+       1*:   39:  EXPECT_EQ(parser.Parse(L""), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   39-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   39-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   39-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   39-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   39-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   39-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   39-block  6
+call   25 never executed
+call   26 never executed
+        1:   39-block  7
+call   27 returned 1
+    $$$$$:   39-block  8
+    $$$$$:   39-block  9
+    $$$$$:   39-block 10
+    $$$$$:   39-block 11
+    $$$$$:   39-block 12
+call   28 never executed
+    $$$$$:   39-block 13
+    $$$$$:   39-block 14
+call   29 never executed
+    $$$$$:   39-block 15
+    $$$$$:   39-block 16
+call   30 never executed
+       1*:   40:  EXPECT_EQ(parser.Parse(L"a"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   40-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   40-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   40-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   40-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   40-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   40-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   40-block  6
+call   25 never executed
+call   26 never executed
+        1:   40-block  7
+call   27 returned 1
+    $$$$$:   40-block  8
+    $$$$$:   40-block  9
+    $$$$$:   40-block 10
+    $$$$$:   40-block 11
+    $$$$$:   40-block 12
+call   28 never executed
+    $$$$$:   40-block 13
+    $$$$$:   40-block 14
+call   29 never executed
+    $$$$$:   40-block 15
+    $$$$$:   40-block 16
+call   30 never executed
+       1*:   41:  EXPECT_EQ(parser.Parse(L"aa"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   41-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   41-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   41-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   41-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   41-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   41-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   41-block  6
+call   25 never executed
+call   26 never executed
+        1:   41-block  7
+call   27 returned 1
+    $$$$$:   41-block  8
+    $$$$$:   41-block  9
+    $$$$$:   41-block 10
+    $$$$$:   41-block 11
+    $$$$$:   41-block 12
+call   28 never executed
+    $$$$$:   41-block 13
+    $$$$$:   41-block 14
+call   29 never executed
+    $$$$$:   41-block 15
+    $$$$$:   41-block 16
+call   30 never executed
+       1*:   42:  EXPECT_EQ(parser.Parse(L"ba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   42-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   42-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   42-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   42-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   42-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   42-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   42-block  6
+call   25 never executed
+call   26 never executed
+        1:   42-block  7
+call   27 returned 1
+    $$$$$:   42-block  8
+    $$$$$:   42-block  9
+    $$$$$:   42-block 10
+    $$$$$:   42-block 11
+    $$$$$:   42-block 12
+call   28 never executed
+    $$$$$:   42-block 13
+    $$$$$:   42-block 14
+call   29 never executed
+    $$$$$:   42-block 15
+    $$$$$:   42-block 16
+call   30 never executed
+       1*:   43:  EXPECT_EQ(parser.Parse(L"aabaa"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   43-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   43-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   43-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   43-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   43-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   43-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   43-block  6
+call   25 never executed
+call   26 never executed
+        1:   43-block  7
+call   27 returned 1
+    $$$$$:   43-block  8
+    $$$$$:   43-block  9
+    $$$$$:   43-block 10
+    $$$$$:   43-block 11
+    $$$$$:   43-block 12
+call   28 never executed
+    $$$$$:   43-block 13
+    $$$$$:   43-block 14
+call   29 never executed
+    $$$$$:   43-block 15
+    $$$$$:   43-block 16
+call   30 never executed
+       1*:   44:  EXPECT_EQ(parser.Parse(L"ac"), false) << "`c` does not belong to language\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   44-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   44-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   44-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   44-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   44-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   44-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   44-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   44-block  7
+call   28 never executed
+call   29 never executed
+        1:   44-block  8
+call   30 returned 1
+    $$$$$:   44-block  9
+    $$$$$:   44-block 10
+    $$$$$:   44-block 11
+    $$$$$:   44-block 12
+    $$$$$:   44-block 13
+call   31 never executed
+    $$$$$:   44-block 14
+    $$$$$:   44-block 15
+call   32 never executed
+    $$$$$:   44-block 16
+    $$$$$:   44-block 17
+call   33 never executed
+       1*:   45:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   45-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   45-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   45-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   45-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   45-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   45-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   45-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   45-block  7
+call   28 never executed
+call   29 never executed
+        1:   45-block  8
+call   30 returned 1
+    $$$$$:   45-block  9
+    $$$$$:   45-block 10
+    $$$$$:   45-block 11
+    $$$$$:   45-block 12
+    $$$$$:   45-block 13
+call   31 never executed
+    $$$$$:   45-block 14
+    $$$$$:   45-block 15
+call   32 never executed
+    $$$$$:   45-block 16
+    $$$$$:   45-block 17
+call   33 never executed
+       1*:   46:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   46-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   46-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   46-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   46-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   46-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   46-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   46-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   46-block  7
+call   28 never executed
+call   29 never executed
+        1:   46-block  8
+call   30 returned 1
+    $$$$$:   46-block  9
+    $$$$$:   46-block 10
+    $$$$$:   46-block 11
+    $$$$$:   46-block 12
+    $$$$$:   46-block 13
+call   31 never executed
+    $$$$$:   46-block 14
+    $$$$$:   46-block 15
+call   32 never executed
+    $$$$$:   46-block 16
+    $$$$$:   46-block 17
+call   33 never executed
+       1*:   47:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   47-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   47-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   47-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   47-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   47-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   47-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   47-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   47-block  7
+call   28 never executed
+call   29 never executed
+        1:   47-block  8
+call   30 returned 1
+    $$$$$:   47-block  9
+    $$$$$:   47-block 10
+    $$$$$:   47-block 11
+    $$$$$:   47-block 12
+    $$$$$:   47-block 13
+call   31 never executed
+    $$$$$:   47-block 14
+    $$$$$:   47-block 15
+call   32 never executed
+    $$$$$:   47-block 16
+    $$$$$:   47-block 17
+call   33 never executed
+       1*:   48:  EXPECT_EQ(parser.Parse(L"abe"), false) << "`e` is alias for empty symbol\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   48-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   48-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   48-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   48-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   48-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   48-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   48-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   48-block  7
+call   28 never executed
+call   29 never executed
+        1:   48-block  8
+call   30 returned 1
+    $$$$$:   48-block  9
+    $$$$$:   48-block 10
+    $$$$$:   48-block 11
+    $$$$$:   48-block 12
+    $$$$$:   48-block 13
+call   31 never executed
+    $$$$$:   48-block 14
+    $$$$$:   48-block 15
+call   32 never executed
+    $$$$$:   48-block 16
+    $$$$$:   48-block 17
+call   33 never executed
+        1:   49:}
+call    0 returned 1
+    $$$$$:   49-block  0
+call    1 never executed
+------------------
+        -:   50:
+        4:   51:TEST(LR1Test2, Test2) {
+        2:   52:  WLRParser<1> parser("../TestCases/LR1/Test2");
+       1*:   53:  EXPECT_EQ(parser.Parse(L""), true);
+       1*:   54:  EXPECT_EQ(parser.Parse(L"b"), true);
+       1*:   55:  EXPECT_EQ(parser.Parse(L"ca"), true);
+       1*:   56:  EXPECT_EQ(parser.Parse(L"cba"), true);
+       1*:   57:  EXPECT_EQ(parser.Parse(L"cbbba"), true);
+       1*:   58:  EXPECT_EQ(parser.Parse(L"a"), false);
+       1*:   59:  EXPECT_EQ(parser.Parse(L"ba"), false);
+       1*:   60:  EXPECT_EQ(parser.Parse(L"ac"), false);
+       1*:   61:  EXPECT_EQ(parser.Parse(L"bc"), false);
+       1*:   62:  EXPECT_EQ(parser.Parse(L"bbbc"), false);
+       1*:   63:  EXPECT_EQ(parser.Parse(L"cbbac"), false);
+       1*:   64:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+        1:   65:}
+------------------
+_ZN19LR1Test2_Test2_TestC2Ev:
+function _ZN19LR1Test2_Test2_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:   51:TEST(LR1Test2, Test2) {
+        1:   51-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test2_Test2_TestD0Ev:
+function _ZN19LR1Test2_Test2_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:   51:TEST(LR1Test2, Test2) {
+        1:   51-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN19LR1Test2_Test2_TestD2Ev:
+function _ZN19LR1Test2_Test2_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:   51:TEST(LR1Test2, Test2) {
+        1:   51-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test2_Test2_Test8TestBodyEv:
+function _ZN19LR1Test2_Test2_Test8TestBodyEv called 1 returned 100% blocks executed 27%
+        1:   51:TEST(LR1Test2, Test2) {
+        2:   52:  WLRParser<1> parser("../TestCases/LR1/Test2");
+        1:   52-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   52-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 1
+    $$$$$:   52-block  2
+    $$$$$:   52-block  3
+       1*:   53:  EXPECT_EQ(parser.Parse(L""), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   53-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   53-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   53-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   53-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   53-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   53-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   53-block  6
+call   25 never executed
+call   26 never executed
+        1:   53-block  7
+call   27 returned 1
+    $$$$$:   53-block  8
+    $$$$$:   53-block  9
+    $$$$$:   53-block 10
+    $$$$$:   53-block 11
+    $$$$$:   53-block 12
+call   28 never executed
+    $$$$$:   53-block 13
+    $$$$$:   53-block 14
+call   29 never executed
+    $$$$$:   53-block 15
+    $$$$$:   53-block 16
+call   30 never executed
+       1*:   54:  EXPECT_EQ(parser.Parse(L"b"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   54-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   54-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   54-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   54-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   54-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   54-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   54-block  6
+call   25 never executed
+call   26 never executed
+        1:   54-block  7
+call   27 returned 1
+    $$$$$:   54-block  8
+    $$$$$:   54-block  9
+    $$$$$:   54-block 10
+    $$$$$:   54-block 11
+    $$$$$:   54-block 12
+call   28 never executed
+    $$$$$:   54-block 13
+    $$$$$:   54-block 14
+call   29 never executed
+    $$$$$:   54-block 15
+    $$$$$:   54-block 16
+call   30 never executed
+       1*:   55:  EXPECT_EQ(parser.Parse(L"ca"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   55-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   55-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   55-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   55-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   55-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   55-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   55-block  6
+call   25 never executed
+call   26 never executed
+        1:   55-block  7
+call   27 returned 1
+    $$$$$:   55-block  8
+    $$$$$:   55-block  9
+    $$$$$:   55-block 10
+    $$$$$:   55-block 11
+    $$$$$:   55-block 12
+call   28 never executed
+    $$$$$:   55-block 13
+    $$$$$:   55-block 14
+call   29 never executed
+    $$$$$:   55-block 15
+    $$$$$:   55-block 16
+call   30 never executed
+       1*:   56:  EXPECT_EQ(parser.Parse(L"cba"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   56-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   56-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   56-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   56-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   56-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   56-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   56-block  6
+call   25 never executed
+call   26 never executed
+        1:   56-block  7
+call   27 returned 1
+    $$$$$:   56-block  8
+    $$$$$:   56-block  9
+    $$$$$:   56-block 10
+    $$$$$:   56-block 11
+    $$$$$:   56-block 12
+call   28 never executed
+    $$$$$:   56-block 13
+    $$$$$:   56-block 14
+call   29 never executed
+    $$$$$:   56-block 15
+    $$$$$:   56-block 16
+call   30 never executed
+       1*:   57:  EXPECT_EQ(parser.Parse(L"cbbba"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   57-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   57-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   57-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   57-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   57-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   57-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   57-block  6
+call   25 never executed
+call   26 never executed
+        1:   57-block  7
+call   27 returned 1
+    $$$$$:   57-block  8
+    $$$$$:   57-block  9
+    $$$$$:   57-block 10
+    $$$$$:   57-block 11
+    $$$$$:   57-block 12
+call   28 never executed
+    $$$$$:   57-block 13
+    $$$$$:   57-block 14
+call   29 never executed
+    $$$$$:   57-block 15
+    $$$$$:   57-block 16
+call   30 never executed
+       1*:   58:  EXPECT_EQ(parser.Parse(L"a"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   58-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   58-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   58-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   58-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   58-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   58-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   58-block  6
+call   25 never executed
+call   26 never executed
+        1:   58-block  7
+call   27 returned 1
+    $$$$$:   58-block  8
+    $$$$$:   58-block  9
+    $$$$$:   58-block 10
+    $$$$$:   58-block 11
+    $$$$$:   58-block 12
+call   28 never executed
+    $$$$$:   58-block 13
+    $$$$$:   58-block 14
+call   29 never executed
+    $$$$$:   58-block 15
+    $$$$$:   58-block 16
+call   30 never executed
+       1*:   59:  EXPECT_EQ(parser.Parse(L"ba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   59-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   59-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   59-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   59-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   59-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   59-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   59-block  6
+call   25 never executed
+call   26 never executed
+        1:   59-block  7
+call   27 returned 1
+    $$$$$:   59-block  8
+    $$$$$:   59-block  9
+    $$$$$:   59-block 10
+    $$$$$:   59-block 11
+    $$$$$:   59-block 12
+call   28 never executed
+    $$$$$:   59-block 13
+    $$$$$:   59-block 14
+call   29 never executed
+    $$$$$:   59-block 15
+    $$$$$:   59-block 16
+call   30 never executed
+       1*:   60:  EXPECT_EQ(parser.Parse(L"ac"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   60-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   60-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   60-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   60-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   60-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   60-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   60-block  6
+call   25 never executed
+call   26 never executed
+        1:   60-block  7
+call   27 returned 1
+    $$$$$:   60-block  8
+    $$$$$:   60-block  9
+    $$$$$:   60-block 10
+    $$$$$:   60-block 11
+    $$$$$:   60-block 12
+call   28 never executed
+    $$$$$:   60-block 13
+    $$$$$:   60-block 14
+call   29 never executed
+    $$$$$:   60-block 15
+    $$$$$:   60-block 16
+call   30 never executed
+       1*:   61:  EXPECT_EQ(parser.Parse(L"bc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   61-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   61-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   61-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   61-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   61-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   61-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   61-block  6
+call   25 never executed
+call   26 never executed
+        1:   61-block  7
+call   27 returned 1
+    $$$$$:   61-block  8
+    $$$$$:   61-block  9
+    $$$$$:   61-block 10
+    $$$$$:   61-block 11
+    $$$$$:   61-block 12
+call   28 never executed
+    $$$$$:   61-block 13
+    $$$$$:   61-block 14
+call   29 never executed
+    $$$$$:   61-block 15
+    $$$$$:   61-block 16
+call   30 never executed
+       1*:   62:  EXPECT_EQ(parser.Parse(L"bbbc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   62-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   62-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   62-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   62-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   62-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   62-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   62-block  6
+call   25 never executed
+call   26 never executed
+        1:   62-block  7
+call   27 returned 1
+    $$$$$:   62-block  8
+    $$$$$:   62-block  9
+    $$$$$:   62-block 10
+    $$$$$:   62-block 11
+    $$$$$:   62-block 12
+call   28 never executed
+    $$$$$:   62-block 13
+    $$$$$:   62-block 14
+call   29 never executed
+    $$$$$:   62-block 15
+    $$$$$:   62-block 16
+call   30 never executed
+       1*:   63:  EXPECT_EQ(parser.Parse(L"cbbac"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   63-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   63-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   63-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   63-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   63-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   63-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   63-block  6
+call   25 never executed
+call   26 never executed
+        1:   63-block  7
+call   27 returned 1
+    $$$$$:   63-block  8
+    $$$$$:   63-block  9
+    $$$$$:   63-block 10
+    $$$$$:   63-block 11
+    $$$$$:   63-block 12
+call   28 never executed
+    $$$$$:   63-block 13
+    $$$$$:   63-block 14
+call   29 never executed
+    $$$$$:   63-block 15
+    $$$$$:   63-block 16
+call   30 never executed
+       1*:   64:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   64-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   64-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   64-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   64-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   64-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:   64-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   64-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:   64-block  7
+call   28 never executed
+call   29 never executed
+        1:   64-block  8
+call   30 returned 1
+    $$$$$:   64-block  9
+    $$$$$:   64-block 10
+    $$$$$:   64-block 11
+    $$$$$:   64-block 12
+    $$$$$:   64-block 13
+call   31 never executed
+    $$$$$:   64-block 14
+    $$$$$:   64-block 15
+call   32 never executed
+    $$$$$:   64-block 16
+    $$$$$:   64-block 17
+call   33 never executed
+        1:   65:}
+call    0 returned 1
+    $$$$$:   65-block  0
+call    1 never executed
+------------------
+        -:   66:
+        4:   67:TEST(LR1Test3, Test3) {
+        2:   68:  WLRParser<1> parser("../TestCases/LR1/Test3");
+       1*:   69:  EXPECT_EQ(parser.Parse(L"b"), true);
+       1*:   70:  EXPECT_EQ(parser.Parse(L"ca"), true);
+       1*:   71:  EXPECT_EQ(parser.Parse(L"cba"), true);
+       1*:   72:  EXPECT_EQ(parser.Parse(L"cbbba"), true);
+       1*:   73:  EXPECT_EQ(parser.Parse(L""), false);
+       1*:   74:  EXPECT_EQ(parser.Parse(L"ba"), false);
+       1*:   75:  EXPECT_EQ(parser.Parse(L"ac"), false);
+       1*:   76:  EXPECT_EQ(parser.Parse(L"bc"), false);
+       1*:   77:  EXPECT_EQ(parser.Parse(L"bbbc"), false);
+       1*:   78:  EXPECT_EQ(parser.Parse(L"cbbac"), false);
+        1:   79:}
+------------------
+_ZN19LR1Test3_Test3_TestC2Ev:
+function _ZN19LR1Test3_Test3_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:   67:TEST(LR1Test3, Test3) {
+        1:   67-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test3_Test3_TestD0Ev:
+function _ZN19LR1Test3_Test3_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:   67:TEST(LR1Test3, Test3) {
+        1:   67-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN19LR1Test3_Test3_TestD2Ev:
+function _ZN19LR1Test3_Test3_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:   67:TEST(LR1Test3, Test3) {
+        1:   67-block  0
+call    0 returned 1
+------------------
+_ZN19LR1Test3_Test3_Test8TestBodyEv:
+function _ZN19LR1Test3_Test3_Test8TestBodyEv called 1 returned 100% blocks executed 27%
+        1:   67:TEST(LR1Test3, Test3) {
+        2:   68:  WLRParser<1> parser("../TestCases/LR1/Test3");
+        1:   68-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   68-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 1
+    $$$$$:   68-block  2
+    $$$$$:   68-block  3
+       1*:   69:  EXPECT_EQ(parser.Parse(L"b"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   69-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   69-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   69-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   69-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   69-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   69-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   69-block  6
+call   25 never executed
+call   26 never executed
+        1:   69-block  7
+call   27 returned 1
+    $$$$$:   69-block  8
+    $$$$$:   69-block  9
+    $$$$$:   69-block 10
+    $$$$$:   69-block 11
+    $$$$$:   69-block 12
+call   28 never executed
+    $$$$$:   69-block 13
+    $$$$$:   69-block 14
+call   29 never executed
+    $$$$$:   69-block 15
+    $$$$$:   69-block 16
+call   30 never executed
+       1*:   70:  EXPECT_EQ(parser.Parse(L"ca"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   70-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   70-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   70-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   70-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   70-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   70-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   70-block  6
+call   25 never executed
+call   26 never executed
+        1:   70-block  7
+call   27 returned 1
+    $$$$$:   70-block  8
+    $$$$$:   70-block  9
+    $$$$$:   70-block 10
+    $$$$$:   70-block 11
+    $$$$$:   70-block 12
+call   28 never executed
+    $$$$$:   70-block 13
+    $$$$$:   70-block 14
+call   29 never executed
+    $$$$$:   70-block 15
+    $$$$$:   70-block 16
+call   30 never executed
+       1*:   71:  EXPECT_EQ(parser.Parse(L"cba"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   71-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   71-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   71-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   71-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   71-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   71-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   71-block  6
+call   25 never executed
+call   26 never executed
+        1:   71-block  7
+call   27 returned 1
+    $$$$$:   71-block  8
+    $$$$$:   71-block  9
+    $$$$$:   71-block 10
+    $$$$$:   71-block 11
+    $$$$$:   71-block 12
+call   28 never executed
+    $$$$$:   71-block 13
+    $$$$$:   71-block 14
+call   29 never executed
+    $$$$$:   71-block 15
+    $$$$$:   71-block 16
+call   30 never executed
+       1*:   72:  EXPECT_EQ(parser.Parse(L"cbbba"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   72-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   72-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   72-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   72-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   72-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   72-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   72-block  6
+call   25 never executed
+call   26 never executed
+        1:   72-block  7
+call   27 returned 1
+    $$$$$:   72-block  8
+    $$$$$:   72-block  9
+    $$$$$:   72-block 10
+    $$$$$:   72-block 11
+    $$$$$:   72-block 12
+call   28 never executed
+    $$$$$:   72-block 13
+    $$$$$:   72-block 14
+call   29 never executed
+    $$$$$:   72-block 15
+    $$$$$:   72-block 16
+call   30 never executed
+       1*:   73:  EXPECT_EQ(parser.Parse(L""), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   73-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   73-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   73-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   73-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   73-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   73-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   73-block  6
+call   25 never executed
+call   26 never executed
+        1:   73-block  7
+call   27 returned 1
+    $$$$$:   73-block  8
+    $$$$$:   73-block  9
+    $$$$$:   73-block 10
+    $$$$$:   73-block 11
+    $$$$$:   73-block 12
+call   28 never executed
+    $$$$$:   73-block 13
+    $$$$$:   73-block 14
+call   29 never executed
+    $$$$$:   73-block 15
+    $$$$$:   73-block 16
+call   30 never executed
+       1*:   74:  EXPECT_EQ(parser.Parse(L"ba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   74-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   74-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   74-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   74-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   74-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   74-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   74-block  6
+call   25 never executed
+call   26 never executed
+        1:   74-block  7
+call   27 returned 1
+    $$$$$:   74-block  8
+    $$$$$:   74-block  9
+    $$$$$:   74-block 10
+    $$$$$:   74-block 11
+    $$$$$:   74-block 12
+call   28 never executed
+    $$$$$:   74-block 13
+    $$$$$:   74-block 14
+call   29 never executed
+    $$$$$:   74-block 15
+    $$$$$:   74-block 16
+call   30 never executed
+       1*:   75:  EXPECT_EQ(parser.Parse(L"ac"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   75-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   75-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   75-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   75-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   75-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   75-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   75-block  6
+call   25 never executed
+call   26 never executed
+        1:   75-block  7
+call   27 returned 1
+    $$$$$:   75-block  8
+    $$$$$:   75-block  9
+    $$$$$:   75-block 10
+    $$$$$:   75-block 11
+    $$$$$:   75-block 12
+call   28 never executed
+    $$$$$:   75-block 13
+    $$$$$:   75-block 14
+call   29 never executed
+    $$$$$:   75-block 15
+    $$$$$:   75-block 16
+call   30 never executed
+       1*:   76:  EXPECT_EQ(parser.Parse(L"bc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   76-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   76-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   76-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   76-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   76-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   76-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   76-block  6
+call   25 never executed
+call   26 never executed
+        1:   76-block  7
+call   27 returned 1
+    $$$$$:   76-block  8
+    $$$$$:   76-block  9
+    $$$$$:   76-block 10
+    $$$$$:   76-block 11
+    $$$$$:   76-block 12
+call   28 never executed
+    $$$$$:   76-block 13
+    $$$$$:   76-block 14
+call   29 never executed
+    $$$$$:   76-block 15
+    $$$$$:   76-block 16
+call   30 never executed
+       1*:   77:  EXPECT_EQ(parser.Parse(L"bbbc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   77-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   77-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   77-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   77-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   77-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   77-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   77-block  6
+call   25 never executed
+call   26 never executed
+        1:   77-block  7
+call   27 returned 1
+    $$$$$:   77-block  8
+    $$$$$:   77-block  9
+    $$$$$:   77-block 10
+    $$$$$:   77-block 11
+    $$$$$:   77-block 12
+call   28 never executed
+    $$$$$:   77-block 13
+    $$$$$:   77-block 14
+call   29 never executed
+    $$$$$:   77-block 15
+    $$$$$:   77-block 16
+call   30 never executed
+       1*:   78:  EXPECT_EQ(parser.Parse(L"cbbac"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   78-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   78-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   78-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   78-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   78-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   78-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   78-block  6
+call   25 never executed
+call   26 never executed
+        1:   78-block  7
+call   27 returned 1
+    $$$$$:   78-block  8
+    $$$$$:   78-block  9
+    $$$$$:   78-block 10
+    $$$$$:   78-block 11
+    $$$$$:   78-block 12
+call   28 never executed
+    $$$$$:   78-block 13
+    $$$$$:   78-block 14
+call   29 never executed
+    $$$$$:   78-block 15
+    $$$$$:   78-block 16
+call   30 never executed
+        1:   79:}
+call    0 returned 1
+    $$$$$:   79-block  0
+call    1 never executed
+------------------
+        -:   80:
+        4:   81:TEST(LRFinitGrammar, FinitGrammar1) {
+        2:   82:  WLRParser<1> parser("../TestCases/FinitGrammar1");
+       1*:   83:  EXPECT_EQ(parser.Parse(L""), true);
+       1*:   84:  EXPECT_EQ(parser.Parse(L"a"), true);
+       1*:   85:  EXPECT_EQ(parser.Parse(L"b"), true);
+       1*:   86:  EXPECT_EQ(parser.Parse(L"c"), true);
+       1*:   87:  EXPECT_EQ(parser.Parse(L"ab"), true);
+       1*:   88:  EXPECT_EQ(parser.Parse(L"ac"), true);
+       1*:   89:  EXPECT_EQ(parser.Parse(L"bc"), true);
+       1*:   90:  EXPECT_EQ(parser.Parse(L"abc"), true);
+       1*:   91:  EXPECT_EQ(parser.Parse(L"aabcc"), false);
+       1*:   92:  EXPECT_EQ(parser.Parse(L"aaa"), false);
+       1*:   93:  EXPECT_EQ(parser.Parse(L"ccc"), false);
+       1*:   94:  EXPECT_EQ(parser.Parse(L"accc"), false);
+       1*:   95:  EXPECT_EQ(parser.Parse(L"aaabbbccc"), false);
+       1*:   96:  EXPECT_EQ(parser.Parse(L"cba"), false);
+       1*:   97:  EXPECT_EQ(parser.Parse(L"aba"), false);
+       1*:   98:  EXPECT_EQ(parser.Parse(L"abba"), false);
+       1*:   99:  EXPECT_EQ(parser.Parse(L"ca"), false);
+       1*:  100:  EXPECT_EQ(parser.Parse(L"aabbcca"), false);
+       1*:  101:  EXPECT_EQ(parser.Parse(L"abcd"), false)
+       1*:  102:      << "`d` does not belong to language\n";
+       1*:  103:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+       1*:  104:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+       1*:  105:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+        1:  106:}
+------------------
+_ZN33LRFinitGrammar_FinitGrammar1_TestC2Ev:
+function _ZN33LRFinitGrammar_FinitGrammar1_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:   81:TEST(LRFinitGrammar, FinitGrammar1) {
+        1:   81-block  0
+call    0 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar1_TestD0Ev:
+function _ZN33LRFinitGrammar_FinitGrammar1_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:   81:TEST(LRFinitGrammar, FinitGrammar1) {
+        1:   81-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar1_TestD2Ev:
+function _ZN33LRFinitGrammar_FinitGrammar1_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:   81:TEST(LRFinitGrammar, FinitGrammar1) {
+        1:   81-block  0
+call    0 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar1_Test8TestBodyEv:
+function _ZN33LRFinitGrammar_FinitGrammar1_Test8TestBodyEv called 1 returned 100% blocks executed 26%
+        1:   81:TEST(LRFinitGrammar, FinitGrammar1) {
+        2:   82:  WLRParser<1> parser("../TestCases/FinitGrammar1");
+        1:   82-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   82-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 1
+    $$$$$:   82-block  2
+    $$$$$:   82-block  3
+       1*:   83:  EXPECT_EQ(parser.Parse(L""), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   83-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   83-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   83-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   83-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   83-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   83-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   83-block  6
+call   25 never executed
+call   26 never executed
+        1:   83-block  7
+call   27 returned 1
+    $$$$$:   83-block  8
+    $$$$$:   83-block  9
+    $$$$$:   83-block 10
+    $$$$$:   83-block 11
+    $$$$$:   83-block 12
+call   28 never executed
+    $$$$$:   83-block 13
+    $$$$$:   83-block 14
+call   29 never executed
+    $$$$$:   83-block 15
+    $$$$$:   83-block 16
+call   30 never executed
+       1*:   84:  EXPECT_EQ(parser.Parse(L"a"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   84-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   84-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   84-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   84-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   84-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   84-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   84-block  6
+call   25 never executed
+call   26 never executed
+        1:   84-block  7
+call   27 returned 1
+    $$$$$:   84-block  8
+    $$$$$:   84-block  9
+    $$$$$:   84-block 10
+    $$$$$:   84-block 11
+    $$$$$:   84-block 12
+call   28 never executed
+    $$$$$:   84-block 13
+    $$$$$:   84-block 14
+call   29 never executed
+    $$$$$:   84-block 15
+    $$$$$:   84-block 16
+call   30 never executed
+       1*:   85:  EXPECT_EQ(parser.Parse(L"b"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   85-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   85-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   85-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   85-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   85-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   85-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   85-block  6
+call   25 never executed
+call   26 never executed
+        1:   85-block  7
+call   27 returned 1
+    $$$$$:   85-block  8
+    $$$$$:   85-block  9
+    $$$$$:   85-block 10
+    $$$$$:   85-block 11
+    $$$$$:   85-block 12
+call   28 never executed
+    $$$$$:   85-block 13
+    $$$$$:   85-block 14
+call   29 never executed
+    $$$$$:   85-block 15
+    $$$$$:   85-block 16
+call   30 never executed
+       1*:   86:  EXPECT_EQ(parser.Parse(L"c"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   86-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   86-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   86-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   86-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   86-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   86-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   86-block  6
+call   25 never executed
+call   26 never executed
+        1:   86-block  7
+call   27 returned 1
+    $$$$$:   86-block  8
+    $$$$$:   86-block  9
+    $$$$$:   86-block 10
+    $$$$$:   86-block 11
+    $$$$$:   86-block 12
+call   28 never executed
+    $$$$$:   86-block 13
+    $$$$$:   86-block 14
+call   29 never executed
+    $$$$$:   86-block 15
+    $$$$$:   86-block 16
+call   30 never executed
+       1*:   87:  EXPECT_EQ(parser.Parse(L"ab"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   87-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   87-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   87-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   87-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   87-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   87-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   87-block  6
+call   25 never executed
+call   26 never executed
+        1:   87-block  7
+call   27 returned 1
+    $$$$$:   87-block  8
+    $$$$$:   87-block  9
+    $$$$$:   87-block 10
+    $$$$$:   87-block 11
+    $$$$$:   87-block 12
+call   28 never executed
+    $$$$$:   87-block 13
+    $$$$$:   87-block 14
+call   29 never executed
+    $$$$$:   87-block 15
+    $$$$$:   87-block 16
+call   30 never executed
+       1*:   88:  EXPECT_EQ(parser.Parse(L"ac"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   88-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   88-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   88-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   88-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   88-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   88-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   88-block  6
+call   25 never executed
+call   26 never executed
+        1:   88-block  7
+call   27 returned 1
+    $$$$$:   88-block  8
+    $$$$$:   88-block  9
+    $$$$$:   88-block 10
+    $$$$$:   88-block 11
+    $$$$$:   88-block 12
+call   28 never executed
+    $$$$$:   88-block 13
+    $$$$$:   88-block 14
+call   29 never executed
+    $$$$$:   88-block 15
+    $$$$$:   88-block 16
+call   30 never executed
+       1*:   89:  EXPECT_EQ(parser.Parse(L"bc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   89-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   89-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   89-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   89-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   89-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   89-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   89-block  6
+call   25 never executed
+call   26 never executed
+        1:   89-block  7
+call   27 returned 1
+    $$$$$:   89-block  8
+    $$$$$:   89-block  9
+    $$$$$:   89-block 10
+    $$$$$:   89-block 11
+    $$$$$:   89-block 12
+call   28 never executed
+    $$$$$:   89-block 13
+    $$$$$:   89-block 14
+call   29 never executed
+    $$$$$:   89-block 15
+    $$$$$:   89-block 16
+call   30 never executed
+       1*:   90:  EXPECT_EQ(parser.Parse(L"abc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   90-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   90-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   90-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   90-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   90-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   90-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   90-block  6
+call   25 never executed
+call   26 never executed
+        1:   90-block  7
+call   27 returned 1
+    $$$$$:   90-block  8
+    $$$$$:   90-block  9
+    $$$$$:   90-block 10
+    $$$$$:   90-block 11
+    $$$$$:   90-block 12
+call   28 never executed
+    $$$$$:   90-block 13
+    $$$$$:   90-block 14
+call   29 never executed
+    $$$$$:   90-block 15
+    $$$$$:   90-block 16
+call   30 never executed
+       1*:   91:  EXPECT_EQ(parser.Parse(L"aabcc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   91-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   91-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   91-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   91-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   91-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   91-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   91-block  6
+call   25 never executed
+call   26 never executed
+        1:   91-block  7
+call   27 returned 1
+    $$$$$:   91-block  8
+    $$$$$:   91-block  9
+    $$$$$:   91-block 10
+    $$$$$:   91-block 11
+    $$$$$:   91-block 12
+call   28 never executed
+    $$$$$:   91-block 13
+    $$$$$:   91-block 14
+call   29 never executed
+    $$$$$:   91-block 15
+    $$$$$:   91-block 16
+call   30 never executed
+       1*:   92:  EXPECT_EQ(parser.Parse(L"aaa"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   92-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   92-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   92-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   92-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   92-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   92-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   92-block  6
+call   25 never executed
+call   26 never executed
+        1:   92-block  7
+call   27 returned 1
+    $$$$$:   92-block  8
+    $$$$$:   92-block  9
+    $$$$$:   92-block 10
+    $$$$$:   92-block 11
+    $$$$$:   92-block 12
+call   28 never executed
+    $$$$$:   92-block 13
+    $$$$$:   92-block 14
+call   29 never executed
+    $$$$$:   92-block 15
+    $$$$$:   92-block 16
+call   30 never executed
+       1*:   93:  EXPECT_EQ(parser.Parse(L"ccc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   93-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   93-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   93-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   93-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   93-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   93-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   93-block  6
+call   25 never executed
+call   26 never executed
+        1:   93-block  7
+call   27 returned 1
+    $$$$$:   93-block  8
+    $$$$$:   93-block  9
+    $$$$$:   93-block 10
+    $$$$$:   93-block 11
+    $$$$$:   93-block 12
+call   28 never executed
+    $$$$$:   93-block 13
+    $$$$$:   93-block 14
+call   29 never executed
+    $$$$$:   93-block 15
+    $$$$$:   93-block 16
+call   30 never executed
+       1*:   94:  EXPECT_EQ(parser.Parse(L"accc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   94-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   94-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   94-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   94-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   94-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   94-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   94-block  6
+call   25 never executed
+call   26 never executed
+        1:   94-block  7
+call   27 returned 1
+    $$$$$:   94-block  8
+    $$$$$:   94-block  9
+    $$$$$:   94-block 10
+    $$$$$:   94-block 11
+    $$$$$:   94-block 12
+call   28 never executed
+    $$$$$:   94-block 13
+    $$$$$:   94-block 14
+call   29 never executed
+    $$$$$:   94-block 15
+    $$$$$:   94-block 16
+call   30 never executed
+       1*:   95:  EXPECT_EQ(parser.Parse(L"aaabbbccc"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   95-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   95-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   95-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   95-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   95-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   95-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   95-block  6
+call   25 never executed
+call   26 never executed
+        1:   95-block  7
+call   27 returned 1
+    $$$$$:   95-block  8
+    $$$$$:   95-block  9
+    $$$$$:   95-block 10
+    $$$$$:   95-block 11
+    $$$$$:   95-block 12
+call   28 never executed
+    $$$$$:   95-block 13
+    $$$$$:   95-block 14
+call   29 never executed
+    $$$$$:   95-block 15
+    $$$$$:   95-block 16
+call   30 never executed
+       1*:   96:  EXPECT_EQ(parser.Parse(L"cba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   96-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   96-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   96-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   96-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   96-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   96-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   96-block  6
+call   25 never executed
+call   26 never executed
+        1:   96-block  7
+call   27 returned 1
+    $$$$$:   96-block  8
+    $$$$$:   96-block  9
+    $$$$$:   96-block 10
+    $$$$$:   96-block 11
+    $$$$$:   96-block 12
+call   28 never executed
+    $$$$$:   96-block 13
+    $$$$$:   96-block 14
+call   29 never executed
+    $$$$$:   96-block 15
+    $$$$$:   96-block 16
+call   30 never executed
+       1*:   97:  EXPECT_EQ(parser.Parse(L"aba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   97-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   97-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   97-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   97-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   97-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   97-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   97-block  6
+call   25 never executed
+call   26 never executed
+        1:   97-block  7
+call   27 returned 1
+    $$$$$:   97-block  8
+    $$$$$:   97-block  9
+    $$$$$:   97-block 10
+    $$$$$:   97-block 11
+    $$$$$:   97-block 12
+call   28 never executed
+    $$$$$:   97-block 13
+    $$$$$:   97-block 14
+call   29 never executed
+    $$$$$:   97-block 15
+    $$$$$:   97-block 16
+call   30 never executed
+       1*:   98:  EXPECT_EQ(parser.Parse(L"abba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   98-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   98-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   98-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   98-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   98-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   98-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   98-block  6
+call   25 never executed
+call   26 never executed
+        1:   98-block  7
+call   27 returned 1
+    $$$$$:   98-block  8
+    $$$$$:   98-block  9
+    $$$$$:   98-block 10
+    $$$$$:   98-block 11
+    $$$$$:   98-block 12
+call   28 never executed
+    $$$$$:   98-block 13
+    $$$$$:   98-block 14
+call   29 never executed
+    $$$$$:   98-block 15
+    $$$$$:   98-block 16
+call   30 never executed
+       1*:   99:  EXPECT_EQ(parser.Parse(L"ca"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:   99-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:   99-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:   99-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:   99-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:   99-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:   99-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:   99-block  6
+call   25 never executed
+call   26 never executed
+        1:   99-block  7
+call   27 returned 1
+    $$$$$:   99-block  8
+    $$$$$:   99-block  9
+    $$$$$:   99-block 10
+    $$$$$:   99-block 11
+    $$$$$:   99-block 12
+call   28 never executed
+    $$$$$:   99-block 13
+    $$$$$:   99-block 14
+call   29 never executed
+    $$$$$:   99-block 15
+    $$$$$:   99-block 16
+call   30 never executed
+       1*:  100:  EXPECT_EQ(parser.Parse(L"aabbcca"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  100-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  100-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  100-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  100-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  100-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  100-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  100-block  6
+call   25 never executed
+call   26 never executed
+        1:  100-block  7
+call   27 returned 1
+    $$$$$:  100-block  8
+    $$$$$:  100-block  9
+    $$$$$:  100-block 10
+    $$$$$:  100-block 11
+    $$$$$:  100-block 12
+call   28 never executed
+    $$$$$:  100-block 13
+    $$$$$:  100-block 14
+call   29 never executed
+    $$$$$:  100-block 15
+    $$$$$:  100-block 16
+call   30 never executed
+       1*:  101:  EXPECT_EQ(parser.Parse(L"abcd"), false)
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  101-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  101-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  101-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  101-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  101-block  4
+call   21 never executed
+branch 22 never executed
+branch 23 never executed
+    %%%%%:  101-block  5
+call   24 never executed
+call   25 never executed
+    $$$$$:  101-block  6
+    $$$$$:  101-block  7
+    $$$$$:  101-block  8
+    $$$$$:  101-block  9
+    $$$$$:  101-block 10
+call   26 never executed
+    $$$$$:  101-block 11
+    $$$$$:  101-block 12
+call   27 never executed
+    $$$$$:  101-block 13
+       1*:  102:      << "`d` does not belong to language\n";
+    %%%%%:  102-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  102-block  1
+call    3 never executed
+        1:  102-block  2
+call    4 returned 1
+    $$$$$:  102-block  3
+call    5 never executed
+       1*:  103:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  103-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  103-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  103-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  103-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  103-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  103-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  103-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  103-block  7
+call   28 never executed
+call   29 never executed
+        1:  103-block  8
+call   30 returned 1
+    $$$$$:  103-block  9
+    $$$$$:  103-block 10
+    $$$$$:  103-block 11
+    $$$$$:  103-block 12
+    $$$$$:  103-block 13
+call   31 never executed
+    $$$$$:  103-block 14
+    $$$$$:  103-block 15
+call   32 never executed
+    $$$$$:  103-block 16
+    $$$$$:  103-block 17
+call   33 never executed
+       1*:  104:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  104-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  104-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  104-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  104-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  104-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  104-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  104-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  104-block  7
+call   28 never executed
+call   29 never executed
+        1:  104-block  8
+call   30 returned 1
+    $$$$$:  104-block  9
+    $$$$$:  104-block 10
+    $$$$$:  104-block 11
+    $$$$$:  104-block 12
+    $$$$$:  104-block 13
+call   31 never executed
+    $$$$$:  104-block 14
+    $$$$$:  104-block 15
+call   32 never executed
+    $$$$$:  104-block 16
+    $$$$$:  104-block 17
+call   33 never executed
+       1*:  105:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  105-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  105-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  105-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  105-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  105-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  105-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  105-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  105-block  7
+call   28 never executed
+call   29 never executed
+        1:  105-block  8
+call   30 returned 1
+    $$$$$:  105-block  9
+    $$$$$:  105-block 10
+    $$$$$:  105-block 11
+    $$$$$:  105-block 12
+    $$$$$:  105-block 13
+call   31 never executed
+    $$$$$:  105-block 14
+    $$$$$:  105-block 15
+call   32 never executed
+    $$$$$:  105-block 16
+    $$$$$:  105-block 17
+call   33 never executed
+        1:  106:}
+call    0 returned 1
+    $$$$$:  106-block  0
+call    1 never executed
+------------------
+        -:  107:
+        4:  108:TEST(LRFinitGrammar, FinitGrammar2) {
+        2:  109:  WLRParser<1> parser("../TestCases/FinitGrammar2");
+       1*:  110:  EXPECT_EQ(parser.Parse(L""), true);
+       1*:  111:  EXPECT_EQ(parser.Parse(L"a"), true);
+       1*:  112:  EXPECT_EQ(parser.Parse(L"b"), true);
+       1*:  113:  EXPECT_EQ(parser.Parse(L"c"), true);
+       1*:  114:  EXPECT_EQ(parser.Parse(L"ab"), true);
+       1*:  115:  EXPECT_EQ(parser.Parse(L"ac"), true);
+       1*:  116:  EXPECT_EQ(parser.Parse(L"bc"), true);
+       1*:  117:  EXPECT_EQ(parser.Parse(L"abc"), true);
+       1*:  118:  EXPECT_EQ(parser.Parse(L"aabcc"), true);
+       1*:  119:  EXPECT_EQ(parser.Parse(L"aaa"), true);
+       1*:  120:  EXPECT_EQ(parser.Parse(L"ccc"), true);
+       1*:  121:  EXPECT_EQ(parser.Parse(L"accc"), true);
+       1*:  122:  EXPECT_EQ(parser.Parse(L"aaabbbccc"), true);
+       1*:  123:  EXPECT_EQ(parser.Parse(L"cba"), false);
+       1*:  124:  EXPECT_EQ(parser.Parse(L"aba"), false);
+       1*:  125:  EXPECT_EQ(parser.Parse(L"abba"), false);
+       1*:  126:  EXPECT_EQ(parser.Parse(L"ca"), false);
+       1*:  127:  EXPECT_EQ(parser.Parse(L"aabbcca"), false);
+       1*:  128:  EXPECT_EQ(parser.Parse(L"abcd"), false)
+       1*:  129:      << "`d` does not belong to language\n";
+       1*:  130:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+       1*:  131:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+       1*:  132:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+        1:  133:}
+------------------
+_ZN33LRFinitGrammar_FinitGrammar2_TestC2Ev:
+function _ZN33LRFinitGrammar_FinitGrammar2_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:  108:TEST(LRFinitGrammar, FinitGrammar2) {
+        1:  108-block  0
+call    0 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar2_TestD0Ev:
+function _ZN33LRFinitGrammar_FinitGrammar2_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:  108:TEST(LRFinitGrammar, FinitGrammar2) {
+        1:  108-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar2_TestD2Ev:
+function _ZN33LRFinitGrammar_FinitGrammar2_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:  108:TEST(LRFinitGrammar, FinitGrammar2) {
+        1:  108-block  0
+call    0 returned 1
+------------------
+_ZN33LRFinitGrammar_FinitGrammar2_Test8TestBodyEv:
+function _ZN33LRFinitGrammar_FinitGrammar2_Test8TestBodyEv called 1 returned 100% blocks executed 26%
+        1:  108:TEST(LRFinitGrammar, FinitGrammar2) {
+        2:  109:  WLRParser<1> parser("../TestCases/FinitGrammar2");
+        1:  109-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  109-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 1
+    $$$$$:  109-block  2
+    $$$$$:  109-block  3
+       1*:  110:  EXPECT_EQ(parser.Parse(L""), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  110-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  110-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  110-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  110-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  110-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  110-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  110-block  6
+call   25 never executed
+call   26 never executed
+        1:  110-block  7
+call   27 returned 1
+    $$$$$:  110-block  8
+    $$$$$:  110-block  9
+    $$$$$:  110-block 10
+    $$$$$:  110-block 11
+    $$$$$:  110-block 12
+call   28 never executed
+    $$$$$:  110-block 13
+    $$$$$:  110-block 14
+call   29 never executed
+    $$$$$:  110-block 15
+    $$$$$:  110-block 16
+call   30 never executed
+       1*:  111:  EXPECT_EQ(parser.Parse(L"a"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  111-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  111-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  111-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  111-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  111-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  111-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  111-block  6
+call   25 never executed
+call   26 never executed
+        1:  111-block  7
+call   27 returned 1
+    $$$$$:  111-block  8
+    $$$$$:  111-block  9
+    $$$$$:  111-block 10
+    $$$$$:  111-block 11
+    $$$$$:  111-block 12
+call   28 never executed
+    $$$$$:  111-block 13
+    $$$$$:  111-block 14
+call   29 never executed
+    $$$$$:  111-block 15
+    $$$$$:  111-block 16
+call   30 never executed
+       1*:  112:  EXPECT_EQ(parser.Parse(L"b"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  112-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  112-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  112-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  112-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  112-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  112-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  112-block  6
+call   25 never executed
+call   26 never executed
+        1:  112-block  7
+call   27 returned 1
+    $$$$$:  112-block  8
+    $$$$$:  112-block  9
+    $$$$$:  112-block 10
+    $$$$$:  112-block 11
+    $$$$$:  112-block 12
+call   28 never executed
+    $$$$$:  112-block 13
+    $$$$$:  112-block 14
+call   29 never executed
+    $$$$$:  112-block 15
+    $$$$$:  112-block 16
+call   30 never executed
+       1*:  113:  EXPECT_EQ(parser.Parse(L"c"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  113-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  113-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  113-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  113-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  113-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  113-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  113-block  6
+call   25 never executed
+call   26 never executed
+        1:  113-block  7
+call   27 returned 1
+    $$$$$:  113-block  8
+    $$$$$:  113-block  9
+    $$$$$:  113-block 10
+    $$$$$:  113-block 11
+    $$$$$:  113-block 12
+call   28 never executed
+    $$$$$:  113-block 13
+    $$$$$:  113-block 14
+call   29 never executed
+    $$$$$:  113-block 15
+    $$$$$:  113-block 16
+call   30 never executed
+       1*:  114:  EXPECT_EQ(parser.Parse(L"ab"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  114-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  114-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  114-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  114-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  114-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  114-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  114-block  6
+call   25 never executed
+call   26 never executed
+        1:  114-block  7
+call   27 returned 1
+    $$$$$:  114-block  8
+    $$$$$:  114-block  9
+    $$$$$:  114-block 10
+    $$$$$:  114-block 11
+    $$$$$:  114-block 12
+call   28 never executed
+    $$$$$:  114-block 13
+    $$$$$:  114-block 14
+call   29 never executed
+    $$$$$:  114-block 15
+    $$$$$:  114-block 16
+call   30 never executed
+       1*:  115:  EXPECT_EQ(parser.Parse(L"ac"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  115-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  115-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  115-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  115-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  115-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  115-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  115-block  6
+call   25 never executed
+call   26 never executed
+        1:  115-block  7
+call   27 returned 1
+    $$$$$:  115-block  8
+    $$$$$:  115-block  9
+    $$$$$:  115-block 10
+    $$$$$:  115-block 11
+    $$$$$:  115-block 12
+call   28 never executed
+    $$$$$:  115-block 13
+    $$$$$:  115-block 14
+call   29 never executed
+    $$$$$:  115-block 15
+    $$$$$:  115-block 16
+call   30 never executed
+       1*:  116:  EXPECT_EQ(parser.Parse(L"bc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  116-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  116-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  116-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  116-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  116-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  116-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  116-block  6
+call   25 never executed
+call   26 never executed
+        1:  116-block  7
+call   27 returned 1
+    $$$$$:  116-block  8
+    $$$$$:  116-block  9
+    $$$$$:  116-block 10
+    $$$$$:  116-block 11
+    $$$$$:  116-block 12
+call   28 never executed
+    $$$$$:  116-block 13
+    $$$$$:  116-block 14
+call   29 never executed
+    $$$$$:  116-block 15
+    $$$$$:  116-block 16
+call   30 never executed
+       1*:  117:  EXPECT_EQ(parser.Parse(L"abc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  117-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  117-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  117-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  117-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  117-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  117-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  117-block  6
+call   25 never executed
+call   26 never executed
+        1:  117-block  7
+call   27 returned 1
+    $$$$$:  117-block  8
+    $$$$$:  117-block  9
+    $$$$$:  117-block 10
+    $$$$$:  117-block 11
+    $$$$$:  117-block 12
+call   28 never executed
+    $$$$$:  117-block 13
+    $$$$$:  117-block 14
+call   29 never executed
+    $$$$$:  117-block 15
+    $$$$$:  117-block 16
+call   30 never executed
+       1*:  118:  EXPECT_EQ(parser.Parse(L"aabcc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  118-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  118-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  118-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  118-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  118-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  118-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  118-block  6
+call   25 never executed
+call   26 never executed
+        1:  118-block  7
+call   27 returned 1
+    $$$$$:  118-block  8
+    $$$$$:  118-block  9
+    $$$$$:  118-block 10
+    $$$$$:  118-block 11
+    $$$$$:  118-block 12
+call   28 never executed
+    $$$$$:  118-block 13
+    $$$$$:  118-block 14
+call   29 never executed
+    $$$$$:  118-block 15
+    $$$$$:  118-block 16
+call   30 never executed
+       1*:  119:  EXPECT_EQ(parser.Parse(L"aaa"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  119-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  119-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  119-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  119-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  119-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  119-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  119-block  6
+call   25 never executed
+call   26 never executed
+        1:  119-block  7
+call   27 returned 1
+    $$$$$:  119-block  8
+    $$$$$:  119-block  9
+    $$$$$:  119-block 10
+    $$$$$:  119-block 11
+    $$$$$:  119-block 12
+call   28 never executed
+    $$$$$:  119-block 13
+    $$$$$:  119-block 14
+call   29 never executed
+    $$$$$:  119-block 15
+    $$$$$:  119-block 16
+call   30 never executed
+       1*:  120:  EXPECT_EQ(parser.Parse(L"ccc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  120-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  120-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  120-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  120-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  120-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  120-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  120-block  6
+call   25 never executed
+call   26 never executed
+        1:  120-block  7
+call   27 returned 1
+    $$$$$:  120-block  8
+    $$$$$:  120-block  9
+    $$$$$:  120-block 10
+    $$$$$:  120-block 11
+    $$$$$:  120-block 12
+call   28 never executed
+    $$$$$:  120-block 13
+    $$$$$:  120-block 14
+call   29 never executed
+    $$$$$:  120-block 15
+    $$$$$:  120-block 16
+call   30 never executed
+       1*:  121:  EXPECT_EQ(parser.Parse(L"accc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  121-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  121-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  121-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  121-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  121-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  121-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  121-block  6
+call   25 never executed
+call   26 never executed
+        1:  121-block  7
+call   27 returned 1
+    $$$$$:  121-block  8
+    $$$$$:  121-block  9
+    $$$$$:  121-block 10
+    $$$$$:  121-block 11
+    $$$$$:  121-block 12
+call   28 never executed
+    $$$$$:  121-block 13
+    $$$$$:  121-block 14
+call   29 never executed
+    $$$$$:  121-block 15
+    $$$$$:  121-block 16
+call   30 never executed
+       1*:  122:  EXPECT_EQ(parser.Parse(L"aaabbbccc"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  122-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  122-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  122-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  122-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  122-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  122-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  122-block  6
+call   25 never executed
+call   26 never executed
+        1:  122-block  7
+call   27 returned 1
+    $$$$$:  122-block  8
+    $$$$$:  122-block  9
+    $$$$$:  122-block 10
+    $$$$$:  122-block 11
+    $$$$$:  122-block 12
+call   28 never executed
+    $$$$$:  122-block 13
+    $$$$$:  122-block 14
+call   29 never executed
+    $$$$$:  122-block 15
+    $$$$$:  122-block 16
+call   30 never executed
+       1*:  123:  EXPECT_EQ(parser.Parse(L"cba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  123-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  123-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  123-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  123-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  123-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  123-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  123-block  6
+call   25 never executed
+call   26 never executed
+        1:  123-block  7
+call   27 returned 1
+    $$$$$:  123-block  8
+    $$$$$:  123-block  9
+    $$$$$:  123-block 10
+    $$$$$:  123-block 11
+    $$$$$:  123-block 12
+call   28 never executed
+    $$$$$:  123-block 13
+    $$$$$:  123-block 14
+call   29 never executed
+    $$$$$:  123-block 15
+    $$$$$:  123-block 16
+call   30 never executed
+       1*:  124:  EXPECT_EQ(parser.Parse(L"aba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  124-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  124-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  124-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  124-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  124-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  124-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  124-block  6
+call   25 never executed
+call   26 never executed
+        1:  124-block  7
+call   27 returned 1
+    $$$$$:  124-block  8
+    $$$$$:  124-block  9
+    $$$$$:  124-block 10
+    $$$$$:  124-block 11
+    $$$$$:  124-block 12
+call   28 never executed
+    $$$$$:  124-block 13
+    $$$$$:  124-block 14
+call   29 never executed
+    $$$$$:  124-block 15
+    $$$$$:  124-block 16
+call   30 never executed
+       1*:  125:  EXPECT_EQ(parser.Parse(L"abba"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  125-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  125-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  125-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  125-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  125-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  125-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  125-block  6
+call   25 never executed
+call   26 never executed
+        1:  125-block  7
+call   27 returned 1
+    $$$$$:  125-block  8
+    $$$$$:  125-block  9
+    $$$$$:  125-block 10
+    $$$$$:  125-block 11
+    $$$$$:  125-block 12
+call   28 never executed
+    $$$$$:  125-block 13
+    $$$$$:  125-block 14
+call   29 never executed
+    $$$$$:  125-block 15
+    $$$$$:  125-block 16
+call   30 never executed
+       1*:  126:  EXPECT_EQ(parser.Parse(L"ca"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  126-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  126-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  126-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  126-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  126-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  126-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  126-block  6
+call   25 never executed
+call   26 never executed
+        1:  126-block  7
+call   27 returned 1
+    $$$$$:  126-block  8
+    $$$$$:  126-block  9
+    $$$$$:  126-block 10
+    $$$$$:  126-block 11
+    $$$$$:  126-block 12
+call   28 never executed
+    $$$$$:  126-block 13
+    $$$$$:  126-block 14
+call   29 never executed
+    $$$$$:  126-block 15
+    $$$$$:  126-block 16
+call   30 never executed
+       1*:  127:  EXPECT_EQ(parser.Parse(L"aabbcca"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  127-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  127-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  127-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  127-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  127-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  127-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  127-block  6
+call   25 never executed
+call   26 never executed
+        1:  127-block  7
+call   27 returned 1
+    $$$$$:  127-block  8
+    $$$$$:  127-block  9
+    $$$$$:  127-block 10
+    $$$$$:  127-block 11
+    $$$$$:  127-block 12
+call   28 never executed
+    $$$$$:  127-block 13
+    $$$$$:  127-block 14
+call   29 never executed
+    $$$$$:  127-block 15
+    $$$$$:  127-block 16
+call   30 never executed
+       1*:  128:  EXPECT_EQ(parser.Parse(L"abcd"), false)
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  128-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  128-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  128-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  128-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  128-block  4
+call   21 never executed
+branch 22 never executed
+branch 23 never executed
+    %%%%%:  128-block  5
+call   24 never executed
+call   25 never executed
+    $$$$$:  128-block  6
+    $$$$$:  128-block  7
+    $$$$$:  128-block  8
+    $$$$$:  128-block  9
+    $$$$$:  128-block 10
+call   26 never executed
+    $$$$$:  128-block 11
+    $$$$$:  128-block 12
+call   27 never executed
+    $$$$$:  128-block 13
+       1*:  129:      << "`d` does not belong to language\n";
+    %%%%%:  129-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  129-block  1
+call    3 never executed
+        1:  129-block  2
+call    4 returned 1
+    $$$$$:  129-block  3
+call    5 never executed
+       1*:  130:  EXPECT_EQ(parser.Parse(L"A"), false) << "`A` is nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  130-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  130-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  130-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  130-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  130-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  130-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  130-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  130-block  7
+call   28 never executed
+call   29 never executed
+        1:  130-block  8
+call   30 returned 1
+    $$$$$:  130-block  9
+    $$$$$:  130-block 10
+    $$$$$:  130-block 11
+    $$$$$:  130-block 12
+    $$$$$:  130-block 13
+call   31 never executed
+    $$$$$:  130-block 14
+    $$$$$:  130-block 15
+call   32 never executed
+    $$$$$:  130-block 16
+    $$$$$:  130-block 17
+call   33 never executed
+       1*:  131:  EXPECT_EQ(parser.Parse(L"S"), false) << "`S` is start nonterminal\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  131-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  131-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  131-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  131-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  131-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  131-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  131-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  131-block  7
+call   28 never executed
+call   29 never executed
+        1:  131-block  8
+call   30 returned 1
+    $$$$$:  131-block  9
+    $$$$$:  131-block 10
+    $$$$$:  131-block 11
+    $$$$$:  131-block 12
+    $$$$$:  131-block 13
+call   31 never executed
+    $$$$$:  131-block 14
+    $$$$$:  131-block 15
+call   32 never executed
+    $$$$$:  131-block 16
+    $$$$$:  131-block 17
+call   33 never executed
+       1*:  132:  EXPECT_EQ(parser.Parse(L"e"), false) << "`e` is alias for empty symbol\n";
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  132-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  132-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  132-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  132-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  132-block  4
+call   18 never executed
+branch 19 never executed
+branch 20 never executed
+    %%%%%:  132-block  5
+call   21 never executed
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  132-block  6
+call   25 never executed
+branch 26 never executed
+branch 27 never executed
+    %%%%%:  132-block  7
+call   28 never executed
+call   29 never executed
+        1:  132-block  8
+call   30 returned 1
+    $$$$$:  132-block  9
+    $$$$$:  132-block 10
+    $$$$$:  132-block 11
+    $$$$$:  132-block 12
+    $$$$$:  132-block 13
+call   31 never executed
+    $$$$$:  132-block 14
+    $$$$$:  132-block 15
+call   32 never executed
+    $$$$$:  132-block 16
+    $$$$$:  132-block 17
+call   33 never executed
+        1:  133:}
+call    0 returned 1
+    $$$$$:  133-block  0
+call    1 never executed
+------------------
+        -:  134:
+        4:  135:TEST_F(LR1BBS1, BBS1) {
+       1*:  136:  EXPECT_EQ(parser_.Parse(L""), true);
+       1*:  137:  EXPECT_EQ(parser_.Parse(L"()"), true);
+       1*:  138:  EXPECT_EQ(parser_.Parse(L"()()"), true);
+       1*:  139:  EXPECT_EQ(parser_.Parse(L"(())"), true);
+       1*:  140:  EXPECT_EQ(parser_.Parse(L"(()())"), true);
+       1*:  141:  EXPECT_EQ(parser_.Parse(L"(())(())"), true);
+       1*:  142:  EXPECT_EQ(parser_.Parse(L"("), false);
+       1*:  143:  EXPECT_EQ(parser_.Parse(L")("), false);
+       1*:  144:  EXPECT_EQ(parser_.Parse(L"())("), false);
+       1*:  145:  EXPECT_EQ(parser_.Parse(L"(((("), false);
+       1*:  146:  EXPECT_EQ(parser_.Parse(L"(()))"), false);
+       1*:  147:  EXPECT_EQ(parser_.Parse(L"((()(())"), false);
+        1:  148:}
+------------------
+_ZN17LR1BBS1_BBS1_TestC2Ev:
+function _ZN17LR1BBS1_BBS1_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:  135:TEST_F(LR1BBS1, BBS1) {
+        1:  135-block  0
+call    0 returned 1
+------------------
+_ZN17LR1BBS1_BBS1_TestD0Ev:
+function _ZN17LR1BBS1_BBS1_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:  135:TEST_F(LR1BBS1, BBS1) {
+        1:  135-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN17LR1BBS1_BBS1_TestD2Ev:
+function _ZN17LR1BBS1_BBS1_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:  135:TEST_F(LR1BBS1, BBS1) {
+        1:  135-block  0
+call    0 returned 1
+------------------
+_ZN17LR1BBS1_BBS1_Test8TestBodyEv:
+function _ZN17LR1BBS1_BBS1_Test8TestBodyEv called 1 returned 100% blocks executed 26%
+        1:  135:TEST_F(LR1BBS1, BBS1) {
+       1*:  136:  EXPECT_EQ(parser_.Parse(L""), true);
+        1:  136-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  136-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  136-block  2
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  136-block  3
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  136-block  4
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  136-block  5
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  136-block  6
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  136-block  7
+call   25 never executed
+call   26 never executed
+        1:  136-block  8
+call   27 returned 1
+    $$$$$:  136-block  9
+    $$$$$:  136-block 10
+    $$$$$:  136-block 11
+    $$$$$:  136-block 12
+    $$$$$:  136-block 13
+call   28 never executed
+    $$$$$:  136-block 14
+    $$$$$:  136-block 15
+call   29 never executed
+    $$$$$:  136-block 16
+    $$$$$:  136-block 17
+call   30 never executed
+       1*:  137:  EXPECT_EQ(parser_.Parse(L"()"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  137-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  137-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  137-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  137-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  137-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  137-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  137-block  6
+call   25 never executed
+call   26 never executed
+        1:  137-block  7
+call   27 returned 1
+    $$$$$:  137-block  8
+    $$$$$:  137-block  9
+    $$$$$:  137-block 10
+    $$$$$:  137-block 11
+    $$$$$:  137-block 12
+call   28 never executed
+    $$$$$:  137-block 13
+    $$$$$:  137-block 14
+call   29 never executed
+    $$$$$:  137-block 15
+    $$$$$:  137-block 16
+call   30 never executed
+       1*:  138:  EXPECT_EQ(parser_.Parse(L"()()"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  138-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  138-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  138-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  138-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  138-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  138-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  138-block  6
+call   25 never executed
+call   26 never executed
+        1:  138-block  7
+call   27 returned 1
+    $$$$$:  138-block  8
+    $$$$$:  138-block  9
+    $$$$$:  138-block 10
+    $$$$$:  138-block 11
+    $$$$$:  138-block 12
+call   28 never executed
+    $$$$$:  138-block 13
+    $$$$$:  138-block 14
+call   29 never executed
+    $$$$$:  138-block 15
+    $$$$$:  138-block 16
+call   30 never executed
+       1*:  139:  EXPECT_EQ(parser_.Parse(L"(())"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  139-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  139-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  139-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  139-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  139-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  139-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  139-block  6
+call   25 never executed
+call   26 never executed
+        1:  139-block  7
+call   27 returned 1
+    $$$$$:  139-block  8
+    $$$$$:  139-block  9
+    $$$$$:  139-block 10
+    $$$$$:  139-block 11
+    $$$$$:  139-block 12
+call   28 never executed
+    $$$$$:  139-block 13
+    $$$$$:  139-block 14
+call   29 never executed
+    $$$$$:  139-block 15
+    $$$$$:  139-block 16
+call   30 never executed
+       1*:  140:  EXPECT_EQ(parser_.Parse(L"(()())"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  140-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  140-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  140-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  140-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  140-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  140-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  140-block  6
+call   25 never executed
+call   26 never executed
+        1:  140-block  7
+call   27 returned 1
+    $$$$$:  140-block  8
+    $$$$$:  140-block  9
+    $$$$$:  140-block 10
+    $$$$$:  140-block 11
+    $$$$$:  140-block 12
+call   28 never executed
+    $$$$$:  140-block 13
+    $$$$$:  140-block 14
+call   29 never executed
+    $$$$$:  140-block 15
+    $$$$$:  140-block 16
+call   30 never executed
+       1*:  141:  EXPECT_EQ(parser_.Parse(L"(())(())"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  141-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  141-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  141-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  141-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  141-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  141-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  141-block  6
+call   25 never executed
+call   26 never executed
+        1:  141-block  7
+call   27 returned 1
+    $$$$$:  141-block  8
+    $$$$$:  141-block  9
+    $$$$$:  141-block 10
+    $$$$$:  141-block 11
+    $$$$$:  141-block 12
+call   28 never executed
+    $$$$$:  141-block 13
+    $$$$$:  141-block 14
+call   29 never executed
+    $$$$$:  141-block 15
+    $$$$$:  141-block 16
+call   30 never executed
+       1*:  142:  EXPECT_EQ(parser_.Parse(L"("), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  142-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  142-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  142-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  142-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  142-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  142-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  142-block  6
+call   25 never executed
+call   26 never executed
+        1:  142-block  7
+call   27 returned 1
+    $$$$$:  142-block  8
+    $$$$$:  142-block  9
+    $$$$$:  142-block 10
+    $$$$$:  142-block 11
+    $$$$$:  142-block 12
+call   28 never executed
+    $$$$$:  142-block 13
+    $$$$$:  142-block 14
+call   29 never executed
+    $$$$$:  142-block 15
+    $$$$$:  142-block 16
+call   30 never executed
+       1*:  143:  EXPECT_EQ(parser_.Parse(L")("), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  143-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  143-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  143-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  143-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  143-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  143-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  143-block  6
+call   25 never executed
+call   26 never executed
+        1:  143-block  7
+call   27 returned 1
+    $$$$$:  143-block  8
+    $$$$$:  143-block  9
+    $$$$$:  143-block 10
+    $$$$$:  143-block 11
+    $$$$$:  143-block 12
+call   28 never executed
+    $$$$$:  143-block 13
+    $$$$$:  143-block 14
+call   29 never executed
+    $$$$$:  143-block 15
+    $$$$$:  143-block 16
+call   30 never executed
+       1*:  144:  EXPECT_EQ(parser_.Parse(L"())("), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  144-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  144-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  144-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  144-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  144-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  144-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  144-block  6
+call   25 never executed
+call   26 never executed
+        1:  144-block  7
+call   27 returned 1
+    $$$$$:  144-block  8
+    $$$$$:  144-block  9
+    $$$$$:  144-block 10
+    $$$$$:  144-block 11
+    $$$$$:  144-block 12
+call   28 never executed
+    $$$$$:  144-block 13
+    $$$$$:  144-block 14
+call   29 never executed
+    $$$$$:  144-block 15
+    $$$$$:  144-block 16
+call   30 never executed
+       1*:  145:  EXPECT_EQ(parser_.Parse(L"(((("), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  145-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  145-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  145-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  145-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  145-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  145-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  145-block  6
+call   25 never executed
+call   26 never executed
+        1:  145-block  7
+call   27 returned 1
+    $$$$$:  145-block  8
+    $$$$$:  145-block  9
+    $$$$$:  145-block 10
+    $$$$$:  145-block 11
+    $$$$$:  145-block 12
+call   28 never executed
+    $$$$$:  145-block 13
+    $$$$$:  145-block 14
+call   29 never executed
+    $$$$$:  145-block 15
+    $$$$$:  145-block 16
+call   30 never executed
+       1*:  146:  EXPECT_EQ(parser_.Parse(L"(()))"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  146-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  146-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  146-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  146-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  146-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  146-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  146-block  6
+call   25 never executed
+call   26 never executed
+        1:  146-block  7
+call   27 returned 1
+    $$$$$:  146-block  8
+    $$$$$:  146-block  9
+    $$$$$:  146-block 10
+    $$$$$:  146-block 11
+    $$$$$:  146-block 12
+call   28 never executed
+    $$$$$:  146-block 13
+    $$$$$:  146-block 14
+call   29 never executed
+    $$$$$:  146-block 15
+    $$$$$:  146-block 16
+call   30 never executed
+       1*:  147:  EXPECT_EQ(parser_.Parse(L"((()(())"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  147-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  147-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  147-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  147-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  147-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  147-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  147-block  6
+call   25 never executed
+call   26 never executed
+        1:  147-block  7
+call   27 returned 1
+    $$$$$:  147-block  8
+    $$$$$:  147-block  9
+    $$$$$:  147-block 10
+    $$$$$:  147-block 11
+    $$$$$:  147-block 12
+call   28 never executed
+    $$$$$:  147-block 13
+    $$$$$:  147-block 14
+call   29 never executed
+    $$$$$:  147-block 15
+    $$$$$:  147-block 16
+call   30 never executed
+        1:  148:}
+------------------
+        -:  149:
+        4:  150:TEST_F(LR1BBS1, BBS1Random) {
+        1:  151:  std::mt19937_64 gen(std::random_device().operator()());
+        -:  152:  std::uniform_int_distribution<size_t> distrib(kRandomLowerBound,
+        1:  153:                                                kRandomUpperBound);
+       31:  154:  for (size_t iter_i = 0; iter_i < kRandomNumOfIters; ++iter_i) {
+       30:  155:    size_t brackets_count = distrib(gen);
+       30:  156:    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
+       30:  157:    std::wstring sequence;
+       30:  158:    size_t left_count = 0;
+       30:  159:    size_t left_balance = 0;
+      422:  160:    while (brackets_count - left_count != 0) {
+      392:  161:      if (left_balance == 0) {
+       79:  162:        sequence += L'(';
+       79:  163:        ++left_count;
+       79:  164:        ++left_balance;
+       79:  165:        continue;
+        -:  166:      }
+      313:  167:      if (gen() % 2 == 0) {
+      171:  168:        sequence += L'(';
+      171:  169:        ++left_count;
+      171:  170:        ++left_balance;
+        -:  171:      } else {
+      142:  172:        sequence += L')';
+      142:  173:        --left_balance;
+        -:  174:      }
+        -:  175:    }
+      138:  176:    while (left_balance > 0) {
+      108:  177:      sequence += L')';
+      108:  178:      --left_balance;
+        -:  179:    }
+      30*:  180:    EXPECT_EQ(parser_.Parse(sequence), true)
+      30*:  181:        << "Fail sequence: " << sequence << '\n';
+       30:  182:  }
+        1:  183:}
+------------------
+_ZN23LR1BBS1_BBS1Random_TestC2Ev:
+function _ZN23LR1BBS1_BBS1Random_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:  150:TEST_F(LR1BBS1, BBS1Random) {
+        1:  150-block  0
+call    0 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Random_TestD0Ev:
+function _ZN23LR1BBS1_BBS1Random_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:  150:TEST_F(LR1BBS1, BBS1Random) {
+        1:  150-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Random_TestD2Ev:
+function _ZN23LR1BBS1_BBS1Random_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:  150:TEST_F(LR1BBS1, BBS1Random) {
+        1:  150-block  0
+call    0 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Random_Test8TestBodyEv:
+function _ZN23LR1BBS1_BBS1Random_Test8TestBodyEv called 1 returned 100% blocks executed 52%
+        1:  150:TEST_F(LR1BBS1, BBS1Random) {
+        1:  151:  std::mt19937_64 gen(std::random_device().operator()());
+        1:  151-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  151-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  151-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  151-block  3
+call    9 returned 1
+    $$$$$:  151-block  4
+call   10 never executed
+    $$$$$:  151-block  5
+        -:  152:  std::uniform_int_distribution<size_t> distrib(kRandomLowerBound,
+        1:  153:                                                kRandomUpperBound);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+       31:  154:  for (size_t iter_i = 0; iter_i < kRandomNumOfIters; ++iter_i) {
+        1:  154-block  0
+       31:  154-block  1
+branch  0 taken 30
+branch  1 taken 1 (fallthrough)
+       30:  155:    size_t brackets_count = distrib(gen);
+       30:  155-block  0
+call    0 returned 30
+branch  1 taken 30 (fallthrough)
+branch  2 taken 0 (throw)
+       30:  156:    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
+       30:  157:    std::wstring sequence;
+       30:  157-block  0
+call    0 returned 30
+       30:  158:    size_t left_count = 0;
+       30:  159:    size_t left_balance = 0;
+      422:  160:    while (brackets_count - left_count != 0) {
+      422:  160-block  0
+branch  0 taken 392
+branch  1 taken 30 (fallthrough)
+      392:  161:      if (left_balance == 0) {
+      392:  161-block  0
+branch  0 taken 79 (fallthrough)
+branch  1 taken 313
+       79:  162:        sequence += L'(';
+       79:  162-block  0
+call    0 returned 79
+branch  1 taken 79 (fallthrough)
+branch  2 taken 0 (throw)
+       79:  163:        ++left_count;
+       79:  164:        ++left_balance;
+       79:  165:        continue;
+       79:  165-block  0
+        -:  166:      }
+      313:  167:      if (gen() % 2 == 0) {
+      313:  167-block  0
+call    0 returned 313
+branch  1 taken 313 (fallthrough)
+branch  2 taken 0 (throw)
+      313:  167-block  1
+branch  3 taken 171 (fallthrough)
+branch  4 taken 142
+      171:  168:        sequence += L'(';
+      171:  168-block  0
+call    0 returned 171
+branch  1 taken 171 (fallthrough)
+branch  2 taken 0 (throw)
+      171:  169:        ++left_count;
+      171:  170:        ++left_balance;
+      171:  170-block  0
+        -:  171:      } else {
+      142:  172:        sequence += L')';
+      142:  172-block  0
+call    0 returned 142
+branch  1 taken 142 (fallthrough)
+branch  2 taken 0 (throw)
+      142:  173:        --left_balance;
+      142:  173-block  0
+        -:  174:      }
+        -:  175:    }
+      138:  176:    while (left_balance > 0) {
+       30:  176-block  0
+      138:  176-block  1
+branch  0 taken 108
+branch  1 taken 30 (fallthrough)
+      108:  177:      sequence += L')';
+      108:  177-block  0
+call    0 returned 108
+branch  1 taken 108 (fallthrough)
+branch  2 taken 0 (throw)
+      108:  178:      --left_balance;
+      108:  178-block  0
+        -:  179:    }
+      30*:  180:    EXPECT_EQ(parser_.Parse(sequence), true)
+       30:  180-block  0
+call    0 returned 30
+branch  1 taken 30 (fallthrough)
+branch  2 taken 0 (throw)
+       30:  180-block  1
+call    3 returned 30
+branch  4 taken 30 (fallthrough)
+branch  5 taken 0 (throw)
+       30:  180-block  2
+call    6 returned 30
+branch  7 taken 0 (fallthrough)
+branch  8 taken 30
+    %%%%%:  180-block  3
+call    9 never executed
+branch 10 never executed
+branch 11 never executed
+call   12 never executed
+branch 13 never executed
+branch 14 never executed
+    %%%%%:  180-block  4
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  180-block  5
+call   18 never executed
+    $$$$$:  180-block  6
+    $$$$$:  180-block  7
+    $$$$$:  180-block  8
+call   19 never executed
+    $$$$$:  180-block  9
+    $$$$$:  180-block 10
+call   20 never executed
+    $$$$$:  180-block 11
+      30*:  181:        << "Fail sequence: " << sequence << '\n';
+    %%%%%:  181-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  181-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  181-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    %%%%%:  181-block  3
+call    9 never executed
+call   10 never executed
+       30:  181-block  4
+call   11 returned 30
+    $$$$$:  181-block  5
+    $$$$$:  181-block  6
+call   12 never executed
+       30:  182:  }
+call    0 returned 30
+    $$$$$:  182-block  0
+call    1 never executed
+        1:  183:}
+        1:  183-block  0
+------------------
+        -:  184:
+        4:  185:TEST_F(LR1BBS1, BBS1Stress) {
+        1:  186:  std::mt19937_64 gen(std::random_device().operator()());
+        -:  187:  std::uniform_int_distribution<size_t> distrib(kStressLowerBound,
+        1:  188:                                                kStressUpperBound);
+        2:  189:  for (size_t iter_i = 0; iter_i < kStressNumOfIters; ++iter_i) {
+        1:  190:    size_t brackets_count = distrib(gen);
+        1:  191:    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
+        1:  192:    std::wstring sequence;
+        1:  193:    size_t left_count = 0;
+        1:  194:    size_t left_balance = 0;
+  1996603:  195:    while (brackets_count - left_count != 0) {
+  1996602:  196:      if (left_balance == 0) {
+     1685:  197:        sequence += L'(';
+     1685:  198:        ++left_count;
+     1685:  199:        ++left_balance;
+     1685:  200:        continue;
+        -:  201:      }
+  1994917:  202:      if (gen() % 2 == 0) {
+   997741:  203:        sequence += L'(';
+   997741:  204:        ++left_count;
+   997741:  205:        ++left_balance;
+        -:  206:      } else {
+   997176:  207:        sequence += L')';
+   997176:  208:        --left_balance;
+        -:  209:      }
+        -:  210:    }
+     2251:  211:    while (left_balance > 0) {
+     2250:  212:      sequence += L')';
+     2250:  213:      --left_balance;
+        -:  214:    }
+       1*:  215:    EXPECT_EQ(parser_.Parse(sequence), true)
+       1*:  216:        << "Fail sequence: " << sequence << '\n';
+        1:  217:  }
+        1:  218:}
+------------------
+_ZN23LR1BBS1_BBS1Stress_TestC2Ev:
+function _ZN23LR1BBS1_BBS1Stress_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:  185:TEST_F(LR1BBS1, BBS1Stress) {
+        1:  185-block  0
+call    0 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Stress_TestD0Ev:
+function _ZN23LR1BBS1_BBS1Stress_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:  185:TEST_F(LR1BBS1, BBS1Stress) {
+        1:  185-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Stress_TestD2Ev:
+function _ZN23LR1BBS1_BBS1Stress_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:  185:TEST_F(LR1BBS1, BBS1Stress) {
+        1:  185-block  0
+call    0 returned 1
+------------------
+_ZN23LR1BBS1_BBS1Stress_Test8TestBodyEv:
+function _ZN23LR1BBS1_BBS1Stress_Test8TestBodyEv called 1 returned 100% blocks executed 52%
+        1:  185:TEST_F(LR1BBS1, BBS1Stress) {
+        1:  186:  std::mt19937_64 gen(std::random_device().operator()());
+        1:  186-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  186-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  186-block  2
+call    6 returned 1
+branch  7 taken 1 (fallthrough)
+branch  8 taken 0 (throw)
+        1:  186-block  3
+call    9 returned 1
+    $$$$$:  186-block  4
+call   10 never executed
+    $$$$$:  186-block  5
+        -:  187:  std::uniform_int_distribution<size_t> distrib(kStressLowerBound,
+        1:  188:                                                kStressUpperBound);
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        2:  189:  for (size_t iter_i = 0; iter_i < kStressNumOfIters; ++iter_i) {
+        1:  189-block  0
+        2:  189-block  1
+branch  0 taken 1
+branch  1 taken 1 (fallthrough)
+        1:  190:    size_t brackets_count = distrib(gen);
+        1:  190-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  191:    brackets_count += brackets_count % 2;  // to make 'brackets_count' even
+        1:  192:    std::wstring sequence;
+        1:  192-block  0
+call    0 returned 1
+        1:  193:    size_t left_count = 0;
+        1:  194:    size_t left_balance = 0;
+  1996603:  195:    while (brackets_count - left_count != 0) {
+  1996603:  195-block  0
+branch  0 taken 1996602
+branch  1 taken 1 (fallthrough)
+  1996602:  196:      if (left_balance == 0) {
+  1996602:  196-block  0
+branch  0 taken 1685 (fallthrough)
+branch  1 taken 1994917
+     1685:  197:        sequence += L'(';
+     1685:  197-block  0
+call    0 returned 1685
+branch  1 taken 1685 (fallthrough)
+branch  2 taken 0 (throw)
+     1685:  198:        ++left_count;
+     1685:  199:        ++left_balance;
+     1685:  200:        continue;
+     1685:  200-block  0
+        -:  201:      }
+  1994917:  202:      if (gen() % 2 == 0) {
+  1994917:  202-block  0
+call    0 returned 1994917
+branch  1 taken 1994917 (fallthrough)
+branch  2 taken 0 (throw)
+  1994917:  202-block  1
+branch  3 taken 997741 (fallthrough)
+branch  4 taken 997176
+   997741:  203:        sequence += L'(';
+   997741:  203-block  0
+call    0 returned 997741
+branch  1 taken 997741 (fallthrough)
+branch  2 taken 0 (throw)
+   997741:  204:        ++left_count;
+   997741:  205:        ++left_balance;
+   997741:  205-block  0
+        -:  206:      } else {
+   997176:  207:        sequence += L')';
+   997176:  207-block  0
+call    0 returned 997176
+branch  1 taken 997176 (fallthrough)
+branch  2 taken 0 (throw)
+   997176:  208:        --left_balance;
+   997176:  208-block  0
+        -:  209:      }
+        -:  210:    }
+     2251:  211:    while (left_balance > 0) {
+        1:  211-block  0
+     2251:  211-block  1
+branch  0 taken 2250
+branch  1 taken 1 (fallthrough)
+     2250:  212:      sequence += L')';
+     2250:  212-block  0
+call    0 returned 2250
+branch  1 taken 2250 (fallthrough)
+branch  2 taken 0 (throw)
+     2250:  213:      --left_balance;
+     2250:  213-block  0
+        -:  214:    }
+       1*:  215:    EXPECT_EQ(parser_.Parse(sequence), true)
+        1:  215-block  0
+call    0 returned 1
+branch  1 taken 1 (fallthrough)
+branch  2 taken 0 (throw)
+        1:  215-block  1
+call    3 returned 1
+branch  4 taken 1 (fallthrough)
+branch  5 taken 0 (throw)
+        1:  215-block  2
+call    6 returned 1
+branch  7 taken 0 (fallthrough)
+branch  8 taken 1
+    %%%%%:  215-block  3
+call    9 never executed
+branch 10 never executed
+branch 11 never executed
+call   12 never executed
+branch 13 never executed
+branch 14 never executed
+    %%%%%:  215-block  4
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  215-block  5
+call   18 never executed
+    $$$$$:  215-block  6
+    $$$$$:  215-block  7
+    $$$$$:  215-block  8
+call   19 never executed
+    $$$$$:  215-block  9
+    $$$$$:  215-block 10
+call   20 never executed
+    $$$$$:  215-block 11
+       1*:  216:        << "Fail sequence: " << sequence << '\n';
+    %%%%%:  216-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  216-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  216-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    %%%%%:  216-block  3
+call    9 never executed
+call   10 never executed
+        1:  216-block  4
+call   11 returned 1
+    $$$$$:  216-block  5
+    $$$$$:  216-block  6
+call   12 never executed
+        1:  217:  }
+call    0 returned 1
+    $$$$$:  217-block  0
+call    1 never executed
+        1:  218:}
+        1:  218-block  0
+------------------
+        -:  219:
+        -:  220:// todo: make random and stress version
+        4:  221:TEST_F(LR1BBS2, BBS2) {
+       1*:  222:  EXPECT_EQ(parser_.Parse(L"[]"), true);
+       1*:  223:  EXPECT_EQ(parser_.Parse(L"()[]{}"), true);
+       1*:  224:  EXPECT_EQ(parser_.Parse(L"({[]})"), true);
+       1*:  225:  EXPECT_EQ(parser_.Parse(L"[[]]{{}}[]()"), true);
+       1*:  226:  EXPECT_EQ(parser_.Parse(L"[}"), false);
+       1*:  227:  EXPECT_EQ(parser_.Parse(L"()[][}"), false);
+       1*:  228:  EXPECT_EQ(parser_.Parse(L"[{()})"), false);
+       1*:  229:  EXPECT_EQ(parser_.Parse(L"[[][]"), false);
+        1:  230:}
+------------------
+_ZN17LR1BBS2_BBS2_TestC2Ev:
+function _ZN17LR1BBS2_BBS2_TestC2Ev called 1 returned 100% blocks executed 100%
+        1:  221:TEST_F(LR1BBS2, BBS2) {
+        1:  221-block  0
+call    0 returned 1
+------------------
+_ZN17LR1BBS2_BBS2_TestD0Ev:
+function _ZN17LR1BBS2_BBS2_TestD0Ev called 1 returned 100% blocks executed 100%
+        1:  221:TEST_F(LR1BBS2, BBS2) {
+        1:  221-block  0
+call    0 returned 1
+call    1 returned 1
+------------------
+_ZN17LR1BBS2_BBS2_TestD2Ev:
+function _ZN17LR1BBS2_BBS2_TestD2Ev called 1 returned 100% blocks executed 100%
+        1:  221:TEST_F(LR1BBS2, BBS2) {
+        1:  221-block  0
+call    0 returned 1
+------------------
+_ZN17LR1BBS2_BBS2_Test8TestBodyEv:
+function _ZN17LR1BBS2_BBS2_Test8TestBodyEv called 1 returned 100% blocks executed 26%
+        1:  221:TEST_F(LR1BBS2, BBS2) {
+       1*:  222:  EXPECT_EQ(parser_.Parse(L"[]"), true);
+        1:  222-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  222-block  1
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  222-block  2
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  222-block  3
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  222-block  4
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  222-block  5
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  222-block  6
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  222-block  7
+call   25 never executed
+call   26 never executed
+        1:  222-block  8
+call   27 returned 1
+    $$$$$:  222-block  9
+    $$$$$:  222-block 10
+    $$$$$:  222-block 11
+    $$$$$:  222-block 12
+    $$$$$:  222-block 13
+call   28 never executed
+    $$$$$:  222-block 14
+    $$$$$:  222-block 15
+call   29 never executed
+    $$$$$:  222-block 16
+    $$$$$:  222-block 17
+call   30 never executed
+       1*:  223:  EXPECT_EQ(parser_.Parse(L"()[]{}"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  223-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  223-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  223-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  223-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  223-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  223-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  223-block  6
+call   25 never executed
+call   26 never executed
+        1:  223-block  7
+call   27 returned 1
+    $$$$$:  223-block  8
+    $$$$$:  223-block  9
+    $$$$$:  223-block 10
+    $$$$$:  223-block 11
+    $$$$$:  223-block 12
+call   28 never executed
+    $$$$$:  223-block 13
+    $$$$$:  223-block 14
+call   29 never executed
+    $$$$$:  223-block 15
+    $$$$$:  223-block 16
+call   30 never executed
+       1*:  224:  EXPECT_EQ(parser_.Parse(L"({[]})"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  224-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  224-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  224-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  224-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  224-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  224-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  224-block  6
+call   25 never executed
+call   26 never executed
+        1:  224-block  7
+call   27 returned 1
+    $$$$$:  224-block  8
+    $$$$$:  224-block  9
+    $$$$$:  224-block 10
+    $$$$$:  224-block 11
+    $$$$$:  224-block 12
+call   28 never executed
+    $$$$$:  224-block 13
+    $$$$$:  224-block 14
+call   29 never executed
+    $$$$$:  224-block 15
+    $$$$$:  224-block 16
+call   30 never executed
+       1*:  225:  EXPECT_EQ(parser_.Parse(L"[[]]{{}}[]()"), true);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  225-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  225-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  225-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  225-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  225-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  225-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  225-block  6
+call   25 never executed
+call   26 never executed
+        1:  225-block  7
+call   27 returned 1
+    $$$$$:  225-block  8
+    $$$$$:  225-block  9
+    $$$$$:  225-block 10
+    $$$$$:  225-block 11
+    $$$$$:  225-block 12
+call   28 never executed
+    $$$$$:  225-block 13
+    $$$$$:  225-block 14
+call   29 never executed
+    $$$$$:  225-block 15
+    $$$$$:  225-block 16
+call   30 never executed
+       1*:  226:  EXPECT_EQ(parser_.Parse(L"[}"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  226-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  226-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  226-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  226-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  226-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  226-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  226-block  6
+call   25 never executed
+call   26 never executed
+        1:  226-block  7
+call   27 returned 1
+    $$$$$:  226-block  8
+    $$$$$:  226-block  9
+    $$$$$:  226-block 10
+    $$$$$:  226-block 11
+    $$$$$:  226-block 12
+call   28 never executed
+    $$$$$:  226-block 13
+    $$$$$:  226-block 14
+call   29 never executed
+    $$$$$:  226-block 15
+    $$$$$:  226-block 16
+call   30 never executed
+       1*:  227:  EXPECT_EQ(parser_.Parse(L"()[][}"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  227-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  227-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  227-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  227-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  227-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  227-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  227-block  6
+call   25 never executed
+call   26 never executed
+        1:  227-block  7
+call   27 returned 1
+    $$$$$:  227-block  8
+    $$$$$:  227-block  9
+    $$$$$:  227-block 10
+    $$$$$:  227-block 11
+    $$$$$:  227-block 12
+call   28 never executed
+    $$$$$:  227-block 13
+    $$$$$:  227-block 14
+call   29 never executed
+    $$$$$:  227-block 15
+    $$$$$:  227-block 16
+call   30 never executed
+       1*:  228:  EXPECT_EQ(parser_.Parse(L"[{()})"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  228-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  228-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  228-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  228-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  228-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  228-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  228-block  6
+call   25 never executed
+call   26 never executed
+        1:  228-block  7
+call   27 returned 1
+    $$$$$:  228-block  8
+    $$$$$:  228-block  9
+    $$$$$:  228-block 10
+    $$$$$:  228-block 11
+    $$$$$:  228-block 12
+call   28 never executed
+    $$$$$:  228-block 13
+    $$$$$:  228-block 14
+call   29 never executed
+    $$$$$:  228-block 15
+    $$$$$:  228-block 16
+call   30 never executed
+       1*:  229:  EXPECT_EQ(parser_.Parse(L"[[][]"), false);
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  229-block  0
+call    4 returned 1
+branch  5 taken 1 (fallthrough)
+branch  6 taken 0 (throw)
+        1:  229-block  1
+call    7 returned 1
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0 (throw)
+        1:  229-block  2
+call   10 returned 1
+call   11 returned 1
+call   12 returned 1
+branch 13 taken 0 (fallthrough)
+branch 14 taken 1
+    %%%%%:  229-block  3
+call   15 never executed
+branch 16 never executed
+branch 17 never executed
+    %%%%%:  229-block  4
+call   18 never executed
+call   19 never executed
+branch 20 never executed
+branch 21 never executed
+    %%%%%:  229-block  5
+call   22 never executed
+branch 23 never executed
+branch 24 never executed
+    %%%%%:  229-block  6
+call   25 never executed
+call   26 never executed
+        1:  229-block  7
+call   27 returned 1
+    $$$$$:  229-block  8
+    $$$$$:  229-block  9
+    $$$$$:  229-block 10
+    $$$$$:  229-block 11
+    $$$$$:  229-block 12
+call   28 never executed
+    $$$$$:  229-block 13
+    $$$$$:  229-block 14
+call   29 never executed
+    $$$$$:  229-block 15
+    $$$$$:  229-block 16
+call   30 never executed
+        1:  230:}
+------------------

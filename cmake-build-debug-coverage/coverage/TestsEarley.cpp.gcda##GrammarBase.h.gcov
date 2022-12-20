@@ -1,0 +1,2035 @@
+        -:    0:Source:/home/ownstreamer/proga/C++/Parsers/src/GrammarBase.h
+        -:    0:Graph:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcno
+        -:    0:Data:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#pragma once
+        -:    2:
+        -:    3:#include <algorithm>
+        -:    4:#include <cassert>
+        -:    5:#include <cstddef>
+        -:    6:#include <iostream>
+        -:    7:#include <limits>
+        -:    8:#include <stack>
+        -:    9:#include <string>
+        -:   10:#include <unordered_map>
+        -:   11:#include <unordered_set>
+        -:   12:#include <vector>
+        -:   13:
+        -:   14:#include "KMP.h"
+        -:   15:
+        -:   16:enum ExitStatus { IncorrectGrammarInput = 11 };
+        -:   17:
+        -:   18:// abstract class for reading grammar
+        -:   19:template <typename CharT>
+        -:   20:class GrammarBase {
+        -:   21: public:
+        -:   22:  using String = utl::BasicString<CharT>;
+        -:   23:  using IndexT = int64_t;
+        -:   24:  template <typename T>
+        -:   25:  using Vector = std::vector<T>;
+        -:   26:  template <class Key, class Value, class Hash = std::hash<Key>>
+        -:   27:  using UMap = std::unordered_map<Key, Value, Hash>;
+        -:   28:  template <class Key, class Hash = std::hash<Key>>
+        -:   29:  using USet = std::unordered_set<Key, Hash>;
+        -:   30:  using RulesRightT = Vector<Vector<IndexT>>;
+        -:   31:  using RulesT = UMap<IndexT, RulesRightT>;
+        -:   32:
+        -:   33:  static constexpr IndexT kIncorrectSymbolInd =
+        -:   34:      std::numeric_limits<IndexT>::max();
+        -:   35:  static constexpr int64_t kEpsilonInd = 0;
+        -:   36:  static constexpr int64_t kAuxiliaryStartSymbolInd = 1;
+        -:   37:  static constexpr int64_t kStartSymbolInd = 2;
+        -:   38:
+function _ZN11GrammarBaseIwEC2Ev called 23 returned 100% blocks executed 100%
+       23:   39:  GrammarBase() = default;
+       23:   39-block  0
+call    0 returned 23
+call    1 returned 23
+call    2 returned 23
+        -:   40:
+        -:   41:  void Read(std::basic_istream<CharT>& input);
+        -:   42:  virtual void Print(std::basic_ostream<CharT>& out) const;
+        -:   43:
+        -:   44:  IndexT ToInd(CharT symbol) const;
+        -:   45:  IndexT NonterminalsCount() const;
+        -:   46:  IndexT TerminalsCount() const;
+        -:   47:  bool IsTerminal(IndexT symbol) const;
+        -:   48:  bool IsNonterminal(IndexT symbol) const;
+        -:   49:  bool IncorrectInput(IndexT ind) const;
+        -:   50:  bool Empty() const;
+        -:   51:  void Clear();
+        -:   52:
+        -:   53: protected:
+        -:   54:  static const String kAuxiliaryStr;
+        -:   55:  static constexpr CharT kSlash = L'\\';
+        -:   56:  static constexpr std::basic_string_view<CharT> kSlashStr = L"\\";
+        -:   57:  static constexpr std::basic_string_view<CharT> kSlashEscape = L"\\\\";
+        -:   58:  static constexpr CharT kDelim = L'`';
+        -:   59:  static const String kDelimSpecial;
+        -:   60:  static const String kRulesDelim;
+        -:   61:  static constexpr CharT kRulesDelimSymbol = L'|';
+        -:   62:  static constexpr std::basic_string_view<CharT> kRulesDelimEscape = L"\\|";
+        -:   63:  static constexpr std::basic_string_view<CharT> kArrowStr = L" -> ";
+        -:   64:
+        -:   65:  // terminals are <= -1, nonterminals >= 1
+        -:   66:  // epsilon is 0, auxiliary start symbol is 1, start symbol is 2
+        -:   67:  UMap<IndexT, String> map_ind_str_;
+        -:   68:  UMap<String, IndexT> map_str_ind_;
+        -:   69:  IndexT terminals_count_;     // except for epsilon
+        -:   70:  IndexT nonterminals_count_;  // except for auxiliary start symbol
+        -:   71:  RulesT rules_;
+        -:   72:
+        -:   73:  virtual void AfterRead() = 0;
+        -:   74:  virtual void AfterClear() = 0;
+        -:   75:
+        -:   76: private:
+        -:   77:  // printing
+        -:   78:  void PrintRules(std::basic_ostream<CharT>& out) const;
+        -:   79:  // reading
+        -:   80:  void ReadFirstLine(std::basic_istream<CharT>& input);
+        -:   81:  void ReadSymbols(std::basic_istream<CharT>& input);
+        -:   82:  bool ReadEscapeTerminals(const Vector<String>& split_res, IndexT& ind_i,
+        -:   83:                           IndexT ind_j);
+        -:   84:  void ReadRules(std::basic_istream<CharT>& input);
+        -:   85:  IndexT ReadLeftNonterminal(std::basic_istream<CharT>& input);
+        -:   86:  void ReadRightPart(IndexT left, const String& right_part);
+        -:   87:  void ReadNonterminalSequence(const Vector<String>& parts, size_t r_i,
+        -:   88:                               IndexT left, size_t& err_offt,
+        -:   89:                               Vector<IndexT>& right);
+        -:   90:  void ReadRuleSymbol(IndexT left, size_t& err_offt,
+        -:   91:                      const Vector<String>& symbols, Vector<IndexT>& right,
+        -:   92:                      CharT symbol);
+        -:   93:  void ReadEscapeSymbol(IndexT start_ind, size_t& err_offt,
+        -:   94:                        const Vector<String>& symbols, Vector<IndexT>& right,
+        -:   95:                        size_t& pos, CharT symbol);
+        -:   96:  void ReadRightPartPrintError(IndexT start_ind, size_t offset_for_error,
+        -:   97:                               const std::vector<String>& symbols);
+        -:   98:  bool ContainArrow(const std::vector<String>& symbols) const;
+        -:   99:  void PrintRightPartOfRule(std::basic_ostream<CharT>& out,
+        -:  100:                            Vector<String> symbols);
+        -:  101:};
+        -:  102:
+        -:  103:template <typename CharT>
+        -:  104:const GrammarBase<CharT>::String GrammarBase<CharT>::kAuxiliaryStr =
+        -:  105:    L"AUXILIARY";
+        -:  106:template <typename CharT>
+        -:  107:const GrammarBase<CharT>::String GrammarBase<CharT>::kDelimSpecial = L"";
+        -:  108:template <typename CharT>
+        -:  109:const GrammarBase<CharT>::String GrammarBase<CharT>::kRulesDelim = L" | ";
+        -:  110:
+        -:  111:template <typename CharT>
+function _ZNK11GrammarBaseIwE5ToIndEw called 4200947 returned 100% blocks executed 70%
+  4200947:  112:GrammarBase<CharT>::IndexT GrammarBase<CharT>::ToInd(CharT symbol) const {
+  4200947:  113:  auto itr = map_str_ind_.find(String(1, symbol));
+  4200947:  113-block  0
+call    0 returned 4200947
+call    1 returned 4200947
+branch  2 taken 4200947 (fallthrough)
+branch  3 taken 0 (throw)
+  4200947:  113-block  1
+call    4 returned 4200947
+branch  5 taken 4200947 (fallthrough)
+branch  6 taken 0 (throw)
+  4200947:  113-block  2
+call    7 returned 4200947
+call    8 returned 4200947
+    $$$$$:  113-block  3
+call    9 never executed
+    $$$$$:  113-block  4
+    $$$$$:  113-block  5
+call   10 never executed
+    $$$$$:  113-block  6
+  4200947:  114:  return (itr == map_str_ind_.end()) ? kIncorrectSymbolInd : itr->second;
+call    0 returned 4200947
+call    1 returned 4200947
+branch  2 taken 5 (fallthrough)
+branch  3 taken 4200942
+        5:  114-block  0
+  4200942:  114-block  1
+call    4 returned 4200942
+  4200947:  114-block  2
+  4200947:  114-block  3
+        -:  115:}
+        -:  116:template <typename CharT>
+        -:  117:GrammarBase<CharT>::IndexT GrammarBase<CharT>::NonterminalsCount() const {
+        -:  118:  return nonterminals_count_;
+        -:  119:}
+        -:  120:
+        -:  121:template <typename CharT>
+        -:  122:GrammarBase<CharT>::IndexT GrammarBase<CharT>::TerminalsCount() const {
+        -:  123:  return terminals_count_;
+        -:  124:}
+        -:  125:
+        -:  126:template <typename CharT>
+function _ZNK11GrammarBaseIwE10IsTerminalEl called 0 returned 0% blocks executed 0%
+    #####:  127:bool GrammarBase<CharT>::IsTerminal(IndexT symbol) const {
+    #####:  128:  return symbol < 0;
+    %%%%%:  128-block  0
+        -:  129:}
+        -:  130:
+        -:  131:template <typename CharT>
+function _ZNK11GrammarBaseIwE13IsNonterminalEl called 306224 returned 100% blocks executed 100%
+   306224:  132:bool GrammarBase<CharT>::IsNonterminal(IndexT symbol) const {
+   306224:  133:  return symbol > 0;
+   306224:  133-block  0
+        -:  134:}
+        -:  135:
+        -:  136:template <typename CharT>
+        -:  137:bool GrammarBase<CharT>::IncorrectInput(IndexT ind) const {
+        -:  138:  return ind >= 0;
+        -:  139:}
+        -:  140:
+        -:  141:template <typename CharT>
+function _ZNK11GrammarBaseIwE5EmptyEv called 352 returned 100% blocks executed 100%
+      352:  142:bool GrammarBase<CharT>::Empty() const {
+      352:  143:  return map_ind_str_.empty();
+      352:  143-block  0
+call    0 returned 352
+        -:  144:}
+        -:  145:
+        -:  146:template <typename CharT>
+function _ZN11GrammarBaseIwE5ClearEv called 23 returned 100% blocks executed 100%
+       23:  147:void GrammarBase<CharT>::Clear() {
+       23:  148:  map_ind_str_.clear();
+       23:  148-block  0
+call    0 returned 23
+       23:  149:  map_str_ind_.clear();
+call    0 returned 23
+       23:  150:  nonterminals_count_ = terminals_count_ = 0;
+       23:  151:  rules_.clear();
+call    0 returned 23
+       23:  152:}
+        -:  153:
+        -:  154:template <typename CharT>
+function _ZNK11GrammarBaseIwE5PrintERSt13basic_ostreamIwSt11char_traitsIwEE called 0 returned 0% blocks executed 0%
+    #####:  155:void GrammarBase<CharT>::Print(std::basic_ostream<CharT>& out) const {
+    #####:  156:  if (Empty()) {
+    %%%%%:  156-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  157:    out << "Grammar is not set\n";
+    %%%%%:  157-block  0
+call    0 never executed
+    #####:  158:    return;
+        -:  159:  }
+        -:  160:  // start nonterminal and epsilon
+    #####:  161:  out << map_ind_str_.find(kStartSymbolInd)->second << kDelim;
+    %%%%%:  161-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed
+branch  4 never executed
+    %%%%%:  161-block  1
+call    5 never executed
+branch  6 never executed
+branch  7 never executed
+    $$$$$:  161-block  2
+call    8 never executed
+    #####:  162:  out << map_ind_str_.find(kEpsilonInd)->second << '\n';
+    %%%%%:  162-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed
+branch  4 never executed
+    %%%%%:  162-block  1
+call    5 never executed
+branch  6 never executed
+branch  7 never executed
+    $$$$$:  162-block  2
+call    8 never executed
+        -:  163:  // nonterminals
+    #####:  164:  for (IndexT i = 3; i <= nonterminals_count_; ++i) {
+    %%%%%:  164-block  0
+    %%%%%:  164-block  1
+branch  0 never executed
+branch  1 never executed
+    #####:  165:    out << map_ind_str_.find(i)->second << kDelim;
+    %%%%%:  165-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  165-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    %%%%%:  165-block  2
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    %%%%%:  165-block  3
+    $$$$$:  165-block  4
+        -:  166:  }
+    #####:  167:  out << map_ind_str_.find(nonterminals_count_ + 1)->second << '\n';
+    %%%%%:  167-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  167-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    %%%%%:  167-block  2
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    $$$$$:  167-block  3
+    $$$$$:  167-block  4
+call   10 never executed
+        -:  168:  // terminals
+    #####:  169:  for (IndexT i = 1; i <= terminals_count_; ++i) {
+    %%%%%:  169-block  0
+    %%%%%:  169-block  1
+call    0 never executed
+    %%%%%:  169-block  2
+branch  1 never executed
+branch  2 never executed
+    $$$$$:  169-block  3
+call    3 never executed
+    #####:  170:    CharT end = (i == terminals_count_) ? '\n' : kDelim;
+    %%%%%:  170-block  0
+branch  0 never executed
+branch  1 never executed
+    %%%%%:  170-block  1
+    %%%%%:  170-block  2
+    #####:  171:    String symbol = map_ind_str_.find(-i)->second;
+    %%%%%:  171-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  171-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    $$$$$:  171-block  2
+    $$$$$:  171-block  3
+    #####:  172:    if (symbol == String(1, kDelim)) {
+    %%%%%:  172-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  172-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    $$$$$:  172-block  2
+call    9 never executed
+    $$$$$:  172-block  3
+    #####:  173:      out << kSlash << kDelim << end;
+    %%%%%:  173-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  173-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  173-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    #####:  174:    } else if (symbol == kSlashStr) {
+    %%%%%:  174-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    #####:  175:      out << kSlash << kSlash << end;
+    %%%%%:  175-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  175-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  175-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    #####:  176:    } else if (symbol == String(1, kRulesDelimSymbol)) {
+    %%%%%:  176-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  176-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    $$$$$:  176-block  2
+call    9 never executed
+    $$$$$:  176-block  3
+    #####:  177:      out << kSlash << kRulesDelimSymbol << end;
+    %%%%%:  177-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  177-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  177-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+        -:  178:    } else {
+    #####:  179:      out << symbol << end;
+    %%%%%:  179-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  179-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+        -:  180:    }
+        -:  181:  }
+    #####:  182:  PrintRules(out);
+    %%%%%:  182-block  0
+call    0 never executed
+        -:  183:}
+        -:  184:
+        -:  185:template <typename CharT>
+function _ZNK11GrammarBaseIwE10PrintRulesERSt13basic_ostreamIwSt11char_traitsIwEE called 0 returned 0% blocks executed 0%
+    #####:  186:void GrammarBase<CharT>::PrintRules(std::basic_ostream<CharT>& out) const {
+    #####:  187:  for (IndexT i = 2; i <= nonterminals_count_ + 1; ++i) {
+    %%%%%:  187-block  0
+    %%%%%:  187-block  1
+call    0 never executed
+    %%%%%:  187-block  2
+branch  1 never executed
+branch  2 never executed
+    $$$$$:  187-block  3
+call    3 never executed
+    #####:  188:    out << map_ind_str_.find(i)->second << kArrowStr;
+    %%%%%:  188-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  188-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    %%%%%:  188-block  2
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    $$$$$:  188-block  3
+    #####:  189:    RulesRightT right_parts = rules_.find(i)->second;
+    %%%%%:  189-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  189-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    $$$$$:  189-block  2
+        -:  190:    bool prev_was_nonterminal;
+function _ZZNK11GrammarBaseIwE10PrintRulesERSt13basic_ostreamIwSt11char_traitsIwEEENKUllmE_clElm called 0 returned 0% blocks executed 0%
+    #####:  191:    auto pred = [&prev_was_nonterminal, this](IndexT ind, size_t s_i) -> bool {
+    #####:  192:      return (IsNonterminal(ind) && s_i != 0) ||
+    %%%%%:  192-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  192-block  1
+branch  3 never executed
+branch  4 never executed
+branch  5 never executed
+branch  6 never executed
+    %%%%%:  192-block  2
+    %%%%%:  192-block  3
+    #####:  193:             (IsTerminal(ind) && prev_was_nonterminal);
+    %%%%%:  193-block  0
+call    0 never executed
+    %%%%%:  193-block  1
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  193-block  2
+        -:  194:    };
+function _ZZNK11GrammarBaseIwE10PrintRulesERSt13basic_ostreamIwSt11char_traitsIwEEENKUlmmE0_clEmm called 0 returned 0% blocks executed 0%
+    #####:  195:    auto end_pred = [&right_parts, this](size_t r_i, size_t s_i) -> bool {
+    #####:  196:      if (s_i == right_parts[r_i].size() - 1) {
+    %%%%%:  196-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    #####:  197:        return true;
+    %%%%%:  197-block  0
+        -:  198:      }
+    #####:  199:      String next_symbol = map_ind_str_.find(right_parts[r_i][s_i + 1])->second;
+    %%%%%:  199-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed
+branch  4 never executed
+    %%%%%:  199-block  1
+call    5 never executed
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    $$$$$:  199-block  2
+    #####:  200:      return next_symbol == String(1, kDelim);
+    %%%%%:  200-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  200-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+    $$$$$:  200-block  2
+call    7 never executed
+    $$$$$:  200-block  3
+    #####:  201:    };
+call    0 never executed
+    $$$$$:  201-block  0
+call    1 never executed
+        -:  202:    // r_i = right_index, s_i = symbol_index
+    #####:  203:    for (size_t r_i = 0; r_i < right_parts.size(); ++r_i) {
+    %%%%%:  203-block  0
+    %%%%%:  203-block  1
+    %%%%%:  203-block  2
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  204:      prev_was_nonterminal = false;
+    #####:  205:      for (size_t s_i = 0; s_i < right_parts[r_i].size(); ++s_i) {
+    %%%%%:  205-block  0
+    %%%%%:  205-block  1
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  205-block  2
+    %%%%%:  205-block  3
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    $$$$$:  205-block  4
+call    7 never executed
+    #####:  206:        auto iter_ind_str = map_ind_str_.find(right_parts[r_i][s_i]);
+    %%%%%:  206-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+branch  3 never executed
+branch  4 never executed
+    #####:  207:        String delim = pred(iter_ind_str->first, s_i) ? String(1, kDelim) : L"";
+    %%%%%:  207-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  207-block  1
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  207-block  2
+call    6 never executed
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    %%%%%:  207-block  3
+call   10 never executed
+call   11 never executed
+branch 12 never executed
+branch 13 never executed
+    %%%%%:  207-block  4
+branch 14 never executed
+branch 15 never executed
+    %%%%%:  207-block  5
+branch 16 never executed
+branch 17 never executed
+    $$$$$:  207-block  6
+branch 18 never executed
+branch 19 never executed
+    $$$$$:  207-block  7
+    $$$$$:  207-block  8
+branch 20 never executed
+branch 21 never executed
+    $$$$$:  207-block  9
+    #####:  208:        if (iter_ind_str->second == String(1, kDelim)) {
+    %%%%%:  208-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  208-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    $$$$$:  208-block  2
+call   10 never executed
+    $$$$$:  208-block  3
+    #####:  209:          String end = end_pred(r_i, s_i) ? String(1, kDelim) : L"";
+    %%%%%:  209-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  209-block  1
+branch  3 never executed
+branch  4 never executed
+    %%%%%:  209-block  2
+call    5 never executed
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    %%%%%:  209-block  3
+call    9 never executed
+call   10 never executed
+branch 11 never executed
+branch 12 never executed
+    %%%%%:  209-block  4
+branch 13 never executed
+branch 14 never executed
+    %%%%%:  209-block  5
+branch 15 never executed
+branch 16 never executed
+    $$$$$:  209-block  6
+branch 17 never executed
+branch 18 never executed
+    $$$$$:  209-block  7
+    $$$$$:  209-block  8
+branch 19 never executed
+branch 20 never executed
+    $$$$$:  209-block  9
+    #####:  210:          out << kDelim << kSlash << kDelim << end;
+    %%%%%:  210-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  210-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  210-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    %%%%%:  210-block  3
+call    9 never executed
+branch 10 never executed
+branch 11 never executed
+    #####:  211:          prev_was_nonterminal = true;
+    #####:  212:          continue;  // to avoid changing `prev_was_nonterminal`
+    %%%%%:  212-block  0
+    #####:  213:        }
+    %%%%%:  213-block  0
+call    0 never executed
+    $$$$$:  213-block  1
+call    1 never executed
+    #####:  214:        if (iter_ind_str->second == String(1, kSlash)) {
+    %%%%%:  214-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  214-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    $$$$$:  214-block  2
+call   10 never executed
+    $$$$$:  214-block  3
+    #####:  215:          out << delim << kSlash << kSlash;
+    %%%%%:  215-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  215-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  215-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    #####:  216:        } else if (iter_ind_str->second == String(1, kRulesDelimSymbol)) {
+    %%%%%:  216-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  216-block  1
+call    4 never executed
+call    5 never executed
+call    6 never executed
+call    7 never executed
+branch  8 never executed
+branch  9 never executed
+    $$$$$:  216-block  2
+call   10 never executed
+    $$$$$:  216-block  3
+    #####:  217:          out << delim << kSlash << kRulesDelimSymbol;
+    %%%%%:  217-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  217-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  217-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+        -:  218:        } else {
+    #####:  219:          out << delim << iter_ind_str->second;
+    %%%%%:  219-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  219-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+        -:  220:        }
+    #####:  221:        prev_was_nonterminal = IsNonterminal(iter_ind_str->first);
+    %%%%%:  221-block  0
+call    0 never executed
+call    1 never executed
+        -:  222:      }
+    #####:  223:      if (r_i != right_parts.size() - 1) {
+    %%%%%:  223-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  224:        out << kRulesDelim;
+    %%%%%:  224-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  225:      }
+        -:  226:    }
+    #####:  227:    out << '\n';
+    %%%%%:  227-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  228:  }
+    #####:  229:}
+    %%%%%:  229-block  0
+        -:  230:
+        -:  231:template <typename CharT>
+function _ZN11GrammarBaseIwE4ReadERSt13basic_istreamIwSt11char_traitsIwEE called 23 returned 100% blocks executed 53%
+       23:  232:void GrammarBase<CharT>::Read(std::basic_istream<CharT>& input) {
+       23:  233:  ReadFirstLine(input);
+       23:  233-block  0
+call    0 returned 23
+       23:  234:  ReadSymbols(input);
+call    0 returned 23
+       46:  235:  rules_.insert({kAuxiliaryStartSymbolInd, {{kStartSymbolInd}}});
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  235-block  0
+call    4 returned 23
+call    5 returned 23
+branch  6 taken 23 (fallthrough)
+branch  7 taken 0 (throw)
+       23:  235-block  1
+call    8 returned 23
+branch  9 taken 23 (fallthrough)
+branch 10 taken 0 (throw)
+       23:  235-block  2
+call   11 returned 23
+branch 12 taken 23 (fallthrough)
+branch 13 taken 0 (throw)
+       23:  235-block  3
+call   14 returned 23
+call   15 returned 23
+call   16 returned 23
+       46:  235-block  4
+branch 17 taken 23 (fallthrough)
+branch 18 taken 23
+       23:  235-block  5
+call   19 returned 23
+       23:  235-block  6
+call   20 returned 23
+    $$$$$:  235-block  7
+call   21 never executed
+    $$$$$:  235-block  8
+    $$$$$:  235-block  9
+call   22 never executed
+    $$$$$:  235-block 10
+    $$$$$:  235-block 11
+call   23 never executed
+    $$$$$:  235-block 12
+    $$$$$:  235-block 13
+    $$$$$:  235-block 14
+branch 24 never executed
+branch 25 never executed
+    $$$$$:  235-block 15
+call   26 never executed
+    $$$$$:  235-block 16
+    $$$$$:  235-block 17
+call   27 never executed
+    $$$$$:  235-block 18
+       23:  236:  ReadRules(input);
+call    0 returned 23
+       23:  237:  AfterRead();
+call    0 returned 23
+       23:  238:}
+        -:  239:
+        -:  240:template <typename CharT>
+function _ZN11GrammarBaseIwE13ReadFirstLineERSt13basic_istreamIwSt11char_traitsIwEE called 23 returned 100% blocks executed 56%
+       23:  241:void GrammarBase<CharT>::ReadFirstLine(std::basic_istream<CharT>& input) {
+       23:  242:  String line;
+       23:  242-block  0
+call    0 returned 23
+       23:  243:  Vector<String> split_res;
+call    0 returned 23
+       23:  244:  std::getline<CharT>(input, line, '\n');
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:  245:  split_res = utl::Split(line, String(1, kDelim));
+       23:  245-block  0
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  245-block  1
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  245-block  2
+call    7 returned 23
+call    8 returned 23
+call    9 returned 23
+call   10 returned 23
+    $$$$$:  245-block  3
+call   11 never executed
+    $$$$$:  245-block  4
+    $$$$$:  245-block  5
+call   12 never executed
+    $$$$$:  245-block  6
+       23:  246:  map_str_ind_.insert({split_res[0], kStartSymbolInd});
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  246-block  0
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  246-block  1
+call    7 returned 23
+    $$$$$:  246-block  2
+call    8 never executed
+    $$$$$:  246-block  3
+       23:  247:  map_ind_str_.insert({kStartSymbolInd, split_res[0]});
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  247-block  0
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  247-block  1
+call    7 returned 23
+    $$$$$:  247-block  2
+call    8 never executed
+    $$$$$:  247-block  3
+       23:  248:  map_str_ind_.insert({split_res[1], kEpsilonInd});
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  248-block  0
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  248-block  1
+call    7 returned 23
+    $$$$$:  248-block  2
+call    8 never executed
+    $$$$$:  248-block  3
+       23:  249:  map_ind_str_.insert({kEpsilonInd, split_res[1]});
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  249-block  0
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  249-block  1
+call    7 returned 23
+    $$$$$:  249-block  2
+call    8 never executed
+    $$$$$:  249-block  3
+       23:  250:  map_str_ind_.insert({kAuxiliaryStr, kAuxiliaryStartSymbolInd});
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:  250-block  0
+call    3 returned 23
+branch  4 taken 23 (fallthrough)
+branch  5 taken 0 (throw)
+       23:  250-block  1
+call    6 returned 23
+    $$$$$:  250-block  2
+call    7 never executed
+    $$$$$:  250-block  3
+       23:  251:  map_ind_str_.insert({kAuxiliaryStartSymbolInd, kAuxiliaryStr});
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:  251-block  0
+call    3 returned 23
+branch  4 taken 23 (fallthrough)
+branch  5 taken 0 (throw)
+       23:  251-block  1
+call    6 returned 23
+    $$$$$:  251-block  2
+call    7 never executed
+    $$$$$:  251-block  3
+       23:  252:}
+call    0 returned 23
+call    1 returned 23
+    $$$$$:  252-block  0
+call    2 never executed
+    $$$$$:  252-block  1
+call    3 never executed
+        -:  253:
+        -:  254:template <typename CharT>
+function _ZN11GrammarBaseIwE11ReadSymbolsERSt13basic_istreamIwSt11char_traitsIwEE called 23 returned 100% blocks executed 64%
+       23:  255:void GrammarBase<CharT>::ReadSymbols(std::basic_istream<CharT>& input) {
+        -:  256:  // nonterminals
+       23:  257:  String line;
+       23:  257-block  0
+call    0 returned 23
+       23:  258:  std::getline(input, line, L'\n');
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       46:  259:  Vector<String> split_res = utl::Split(line, String(1, kDelim));
+       23:  259-block  0
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  259-block  1
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 23
+    $$$$$:  259-block  2
+    $$$$$:  259-block  3
+       23:  260:  if (split_res.size() == 1 && split_res[0].empty()) {
+call    0 returned 23
+branch  1 taken 14 (fallthrough)
+branch  2 taken 9
+       14:  260-block  0
+call    3 returned 14
+call    4 returned 14
+branch  5 taken 10 (fallthrough)
+branch  6 taken 4
+       10:  260-block  1
+       13:  260-block  2
+       23:  260-block  3
+branch  7 taken 10 (fallthrough)
+branch  8 taken 13
+        -:  261:    // case when S is the only nonterminal
+       10:  262:    nonterminals_count_ = 1;
+       10:  262-block  0
+        -:  263:  } else {
+       13:  264:    nonterminals_count_ = static_cast<IndexT>(split_res.size() + 1);
+       13:  264-block  0
+call    0 returned 13
+        -:  265:  }
+       53:  266:  for (IndexT i = 0; i < nonterminals_count_ - 1; ++i) {
+       23:  266-block  0
+       53:  266-block  1
+branch  0 taken 30
+branch  1 taken 23 (fallthrough)
+       30:  267:    map_str_ind_.insert({split_res[i], i + 3});
+       30:  267-block  0
+call    0 returned 30
+call    1 returned 30
+branch  2 taken 30 (fallthrough)
+branch  3 taken 0 (throw)
+       30:  267-block  1
+call    4 returned 30
+branch  5 taken 30 (fallthrough)
+branch  6 taken 0 (throw)
+       30:  267-block  2
+call    7 returned 30
+    $$$$$:  267-block  3
+call    8 never executed
+    $$$$$:  267-block  4
+    $$$$$:  267-block  5
+       30:  268:    map_ind_str_.insert({i + 3, split_res[i]});
+call    0 returned 30
+call    1 returned 30
+branch  2 taken 30 (fallthrough)
+branch  3 taken 0 (throw)
+       30:  268-block  0
+call    4 returned 30
+branch  5 taken 30 (fallthrough)
+branch  6 taken 0 (throw)
+       30:  268-block  1
+call    7 returned 30
+    $$$$$:  268-block  2
+call    8 never executed
+    $$$$$:  268-block  3
+    $$$$$:  268-block  4
+        -:  269:  }
+        -:  270:  // terminals
+       23:  271:  std::getline(input, line, L'\n');
+       23:  271-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+       23:  272:  split_res = utl::Split(line, String(1, kDelim));
+       23:  272-block  0
+call    0 returned 23
+call    1 returned 23
+branch  2 taken 23 (fallthrough)
+branch  3 taken 0 (throw)
+       23:  272-block  1
+call    4 returned 23
+branch  5 taken 23 (fallthrough)
+branch  6 taken 0 (throw)
+       23:  272-block  2
+call    7 returned 23
+call    8 returned 23
+call    9 returned 23
+call   10 returned 23
+    $$$$$:  272-block  3
+call   11 never executed
+    $$$$$:  272-block  4
+    $$$$$:  272-block  5
+call   12 never executed
+    $$$$$:  272-block  6
+       23:  273:  terminals_count_ = static_cast<IndexT>(split_res.size());
+call    0 returned 23
+      140:  274:  for (IndexT i = 0, j = 0; i < split_res.size(); ++i, ++j) {
+      117:  274-block  0
+      140:  274-block  1
+call    0 returned 140
+branch  1 taken 117
+branch  2 taken 23 (fallthrough)
+      117:  275:    if (ReadEscapeTerminals(split_res, i, j)) {
+      117:  275-block  0
+call    0 returned 117
+branch  1 taken 117 (fallthrough)
+branch  2 taken 0 (throw)
+      117:  275-block  1
+branch  3 taken 3 (fallthrough)
+branch  4 taken 114
+        3:  276:      continue;
+        3:  276-block  0
+        -:  277:    }
+      114:  278:    map_str_ind_.insert({split_res[i], -j - 1});
+      114:  278-block  0
+call    0 returned 114
+call    1 returned 114
+branch  2 taken 114 (fallthrough)
+branch  3 taken 0 (throw)
+      114:  278-block  1
+call    4 returned 114
+branch  5 taken 114 (fallthrough)
+branch  6 taken 0 (throw)
+      114:  278-block  2
+call    7 returned 114
+    $$$$$:  278-block  3
+call    8 never executed
+    $$$$$:  278-block  4
+    $$$$$:  278-block  5
+      114:  279:    map_ind_str_.insert({-j - 1, split_res[i]});
+call    0 returned 114
+call    1 returned 114
+branch  2 taken 114 (fallthrough)
+branch  3 taken 0 (throw)
+      114:  279-block  0
+call    4 returned 114
+branch  5 taken 114 (fallthrough)
+branch  6 taken 0 (throw)
+      114:  279-block  1
+call    7 returned 114
+    $$$$$:  279-block  2
+call    8 never executed
+    $$$$$:  279-block  3
+    $$$$$:  279-block  4
+        -:  280:  }
+       23:  281:}
+       23:  281-block  0
+call    0 returned 23
+call    1 returned 23
+    $$$$$:  281-block  1
+call    2 never executed
+    $$$$$:  281-block  2
+call    3 never executed
+        -:  282:
+        -:  283:template <typename CharT>
+function _ZN11GrammarBaseIwE19ReadEscapeTerminalsERKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS7_EERll called 117 returned 100% blocks executed 54%
+      117:  284:bool GrammarBase<CharT>::ReadEscapeTerminals(const Vector<String>& split_res,
+        -:  285:                                             IndexT& ind_i, IndexT ind_j) {
+      117:  286:  if (split_res[ind_i].empty()) {
+      117:  286-block  0
+call    0 returned 117
+call    1 returned 117
+branch  2 taken 0 (fallthrough)
+branch  3 taken 117
+        -:  287:    // todo: make more informative
+    #####:  288:    std::wcerr << L"Empty symbol in terminals\n";
+    %%%%%:  288-block  0
+call    0 never executed
+    #####:  289:    exit(ExitStatus::IncorrectGrammarInput);
+call    0 never executed
+        -:  290:  }
+      117:  291:  if (split_res[ind_i] == kRulesDelimEscape) {
+      117:  291-block  0
+call    0 returned 117
+call    1 returned 117
+call    2 returned 117
+branch  3 taken 1 (fallthrough)
+branch  4 taken 116
+        1:  292:    map_str_ind_.insert({String(1, kRulesDelimSymbol), -ind_j - 1});
+        1:  292-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  292-block  1
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  292-block  2
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  292-block  3
+call   11 never executed
+    $$$$$:  292-block  4
+    $$$$$:  292-block  5
+    $$$$$:  292-block  6
+call   12 never executed
+    $$$$$:  292-block  7
+    $$$$$:  292-block  8
+call   13 never executed
+    $$$$$:  292-block  9
+call   14 never executed
+        1:  293:    map_ind_str_.insert({-ind_j - 1, String(1, kRulesDelimSymbol)});
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  293-block  0
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  293-block  1
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  293-block  2
+call   11 never executed
+    $$$$$:  293-block  3
+    $$$$$:  293-block  4
+call   12 never executed
+    $$$$$:  293-block  5
+    $$$$$:  293-block  6
+call   13 never executed
+    $$$$$:  293-block  7
+    $$$$$:  293-block  8
+call   14 never executed
+        1:  294:    return true;
+        -:  295:  }
+      116:  296:  if (split_res[ind_i] == kSlashEscape) {
+      116:  296-block  0
+call    0 returned 116
+call    1 returned 116
+call    2 returned 116
+branch  3 taken 1 (fallthrough)
+branch  4 taken 115
+        1:  297:    map_str_ind_.insert({String(1, kSlash), -ind_j - 1});
+        1:  297-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  297-block  1
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  297-block  2
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  297-block  3
+call   11 never executed
+    $$$$$:  297-block  4
+    $$$$$:  297-block  5
+    $$$$$:  297-block  6
+call   12 never executed
+    $$$$$:  297-block  7
+    $$$$$:  297-block  8
+call   13 never executed
+    $$$$$:  297-block  9
+call   14 never executed
+        1:  298:    map_ind_str_.insert({-ind_j - 1, String(1, kSlash)});
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  298-block  0
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  298-block  1
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  298-block  2
+call   11 never executed
+    $$$$$:  298-block  3
+    $$$$$:  298-block  4
+call   12 never executed
+    $$$$$:  298-block  5
+    $$$$$:  298-block  6
+call   13 never executed
+    $$$$$:  298-block  7
+    $$$$$:  298-block  8
+call   14 never executed
+        1:  299:    return true;
+        -:  300:  }
+      116:  301:  if (split_res[ind_i] == kSlashStr && ind_i != split_res.size() - 1 &&
+      115:  301-block  0
+call    0 returned 115
+call    1 returned 115
+call    2 returned 115
+branch  3 taken 1 (fallthrough)
+branch  4 taken 114
+        1:  301-block  1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0
+branch  8 taken 1 (fallthrough)
+branch  9 taken 0
+        1:  301-block  2
+      114:  301-block  3
+      115:  301-block  4
+branch 10 taken 1 (fallthrough)
+branch 11 taken 114
+        1:  302:      split_res[ind_i + 1] == kDelimSpecial) {
+        1:  302-block  0
+call    0 returned 1
+call    1 returned 1
+        1:  303:    map_str_ind_.insert({String(1, kDelim), -ind_j - 1});
+        1:  303-block  0
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  303-block  1
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  303-block  2
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  303-block  3
+call   11 never executed
+    $$$$$:  303-block  4
+    $$$$$:  303-block  5
+    $$$$$:  303-block  6
+call   12 never executed
+    $$$$$:  303-block  7
+    $$$$$:  303-block  8
+call   13 never executed
+    $$$$$:  303-block  9
+call   14 never executed
+        1:  304:    map_ind_str_.insert({-ind_j - 1, String(1, kDelim)});
+call    0 returned 1
+call    1 returned 1
+branch  2 taken 1 (fallthrough)
+branch  3 taken 0 (throw)
+        1:  304-block  0
+call    4 returned 1
+call    5 returned 1
+branch  6 taken 1 (fallthrough)
+branch  7 taken 0 (throw)
+        1:  304-block  1
+call    8 returned 1
+call    9 returned 1
+call   10 returned 1
+    $$$$$:  304-block  2
+call   11 never executed
+    $$$$$:  304-block  3
+    $$$$$:  304-block  4
+call   12 never executed
+    $$$$$:  304-block  5
+    $$$$$:  304-block  6
+call   13 never executed
+    $$$$$:  304-block  7
+        1:  305:    --terminals_count_;
+        1:  306:    ++ind_i;
+        1:  307:    return true;
+        -:  308:  }
+      114:  309:  if (split_res[ind_i].size() > 1) {
+      114:  309-block  0
+call    0 returned 114
+call    1 returned 114
+branch  2 taken 0 (fallthrough)
+branch  3 taken 114
+    #####:  310:    std::wcerr << L"Symbol in terminals consists of more then one character\n";
+    %%%%%:  310-block  0
+call    0 never executed
+    #####:  311:    exit(ExitStatus::IncorrectGrammarInput);
+call    0 never executed
+        -:  312:  }
+      114:  313:  return false;
+      114:  313-block  0
+        -:  314:}
+        -:  315:
+        -:  316:template <typename CharT>
+function _ZN11GrammarBaseIwE9ReadRulesERSt13basic_istreamIwSt11char_traitsIwEE called 23 returned 100% blocks executed 81%
+       23:  317:void GrammarBase<CharT>::ReadRules(std::basic_istream<CharT>& input) {
+       23:  318:  String line;
+       23:  318-block  0
+call    0 returned 23
+       23:  319:  Vector<String> split_res;
+call    0 returned 23
+        -:  320:  // todo: add case bad reading
+       76:  321:  for (size_t i = 0; i < nonterminals_count_; ++i) {
+       53:  321-block  0
+       76:  321-block  1
+branch  0 taken 53
+branch  1 taken 23 (fallthrough)
+       53:  322:    IndexT left = ReadLeftNonterminal(input);
+       53:  322-block  0
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+       53:  323:    std::getline(input, line, L' ');   // reading ->
+       53:  323-block  0
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+       53:  324:    std::getline(input, line, L'\n');  // reading all right parts
+       53:  324-block  0
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+       53:  325:    split_res = utl::Split(line, kRulesDelim);
+       53:  325-block  0
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+       53:  325-block  1
+call    3 returned 53
+call    4 returned 53
+      190:  326:    for (const auto& right_part : split_res) {
+call    0 returned 53
+call    1 returned 53
+      137:  326-block  0
+call    2 returned 137
+      137:  326-block  1
+call    3 returned 137
+      190:  326-block  2
+call    4 returned 190
+branch  5 taken 137
+branch  6 taken 53 (fallthrough)
+      137:  327:      ReadRightPart(left, right_part);
+call    0 returned 137
+branch  1 taken 137 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  328:    }
+        -:  329:  }
+       23:  330:}
+       23:  330-block  0
+call    0 returned 23
+call    1 returned 23
+    $$$$$:  330-block  1
+call    2 never executed
+    $$$$$:  330-block  2
+call    3 never executed
+        -:  331:
+        -:  332:template <typename CharT>
+function _ZN11GrammarBaseIwE19ReadLeftNonterminalERSt13basic_istreamIwSt11char_traitsIwEE called 53 returned 100% blocks executed 29%
+       53:  333:typename GrammarBase<CharT>::IndexT GrammarBase<CharT>::ReadLeftNonterminal(
+        -:  334:    std::basic_istream<CharT>& input) {
+       53:  335:  String line;
+       53:  335-block  0
+call    0 returned 53
+       53:  336:  std::getline(input, line, L' ');  // reading left nonterminal
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+       53:  337:  auto iter_symbol_to_num = map_str_ind_.find(line);
+       53:  337-block  0
+call    0 returned 53
+branch  1 taken 53 (fallthrough)
+branch  2 taken 0 (throw)
+     106*:  338:  if (iter_symbol_to_num == map_str_ind_.end() ||
+       53:  338-block  0
+call    0 returned 53
+call    1 returned 53
+branch  2 taken 53 (fallthrough)
+branch  3 taken 0
+    %%%%%:  338-block  1
+       53:  338-block  2
+       53:  338-block  3
+branch  4 taken 0 (fallthrough)
+branch  5 taken 53
+       53:  339:      iter_symbol_to_num->second <= 0) {
+       53:  339-block  0
+call    0 returned 53
+branch  1 taken 0 (fallthrough)
+branch  2 taken 53
+    #####:  340:    if (ContainArrow({line})) {
+    %%%%%:  340-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  340-block  1
+call    3 never executed
+call    4 never executed
+branch  5 never executed
+branch  6 never executed
+    %%%%%:  340-block  2
+call    7 never executed
+call    8 never executed
+call    9 never executed
+    %%%%%:  340-block  3
+branch 10 never executed
+branch 11 never executed
+    %%%%%:  340-block  4
+call   12 never executed
+    %%%%%:  340-block  5
+branch 13 never executed
+branch 14 never executed
+    $$$$$:  340-block  6
+call   15 never executed
+    $$$$$:  340-block  7
+    $$$$$:  340-block  8
+    $$$$$:  340-block  9
+branch 16 never executed
+branch 17 never executed
+    $$$$$:  340-block 10
+call   18 never executed
+    $$$$$:  340-block 11
+    #####:  341:      line = line.substr(0, line.find(L'\n'));
+    %%%%%:  341-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  341-block  1
+call    4 never executed
+call    5 never executed
+    #####:  342:      std::wcerr << L"No spaces around the arrow: " << line;
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  342-block  0
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    #####:  343:      exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  343-block  0
+call    0 never executed
+    #####:  344:    } else if (line.empty()) {
+    %%%%%:  344-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  345:      std::wcerr
+    #####:  346:          << L"No left nonterminal in rule or extra nonterminals listed\n";
+    %%%%%:  346-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  347:      exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  347-block  0
+call    0 never executed
+        -:  348:    }
+    #####:  349:    std::wcerr << L"Incorrect left nonterminal `" << line << L"` in rule";
+    %%%%%:  349-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  349-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  349-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    #####:  350:    std::wcerr << L" (maybe double spaces)\n";
+    %%%%%:  350-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  351:    exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  351-block  0
+call    0 never executed
+        -:  352:  }
+      106:  353:  return iter_symbol_to_num->second;
+       53:  353-block  0
+call    0 returned 53
+       53:  353-block  1
+       53:  354:}
+call    0 returned 53
+    $$$$$:  354-block  0
+call    1 never executed
+        -:  355:
+        -:  356:template <typename CharT>
+function _ZN11GrammarBaseIwE13ReadRightPartElRKNSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEE called 137 returned 100% blocks executed 72%
+      137:  357:void GrammarBase<CharT>::ReadRightPart(IndexT left, const String& right_part) {
+      137:  358:  if (right_part.empty()) {
+      137:  358-block  0
+call    0 returned 137
+branch  1 taken 0 (fallthrough)
+branch  2 taken 137
+    #####:  359:    std::wcerr << L"Incorrect right part of the rule with left nonterminal ";
+    %%%%%:  359-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  360:    std::wcerr << L'`' << map_ind_str_[left] << L"`\n";
+    %%%%%:  360-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  360-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    %%%%%:  360-block  2
+call    6 never executed
+branch  7 never executed
+branch  8 never executed
+    %%%%%:  360-block  3
+call    9 never executed
+branch 10 never executed
+branch 11 never executed
+    #####:  361:    exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  361-block  0
+call    0 never executed
+        -:  362:  }
+      137:  363:  if (right_part == map_ind_str_[kEpsilonInd]) {
+      137:  363-block  0
+call    0 returned 137
+branch  1 taken 137 (fallthrough)
+branch  2 taken 0 (throw)
+      137:  363-block  1
+call    3 returned 137
+branch  4 taken 30 (fallthrough)
+branch  5 taken 107
+       30:  364:    rules_[left].push_back(Vector<IndexT>(1, kEpsilonInd));
+       30:  364-block  0
+call    0 returned 30
+branch  1 taken 30 (fallthrough)
+branch  2 taken 0 (throw)
+       30:  364-block  1
+call    3 returned 30
+call    4 returned 30
+branch  5 taken 30 (fallthrough)
+branch  6 taken 0 (throw)
+       30:  364-block  2
+call    7 returned 30
+branch  8 taken 30 (fallthrough)
+branch  9 taken 0 (throw)
+       30:  364-block  3
+call   10 returned 30
+call   11 returned 30
+    $$$$$:  364-block  4
+call   12 never executed
+    $$$$$:  364-block  5
+    $$$$$:  364-block  6
+call   13 never executed
+    $$$$$:  364-block  7
+       30:  365:    return;
+        -:  366:  }
+      214:  367:  Vector<String> parts = utl::Split(right_part, String(1, kDelim));
+      107:  367-block  0
+call    0 returned 107
+call    1 returned 107
+branch  2 taken 107 (fallthrough)
+branch  3 taken 0 (throw)
+      107:  367-block  1
+call    4 returned 107
+branch  5 taken 107 (fallthrough)
+branch  6 taken 0 (throw)
+call    7 returned 107
+    $$$$$:  367-block  2
+    $$$$$:  367-block  3
+      107:  368:  Vector<IndexT> right;
+call    0 returned 107
+      107:  369:  size_t err_offt = map_ind_str_[left].size() + kArrowStr.size();
+call    0 returned 107
+branch  1 taken 107 (fallthrough)
+branch  2 taken 0 (throw)
+      107:  369-block  0
+call    3 returned 107
+call    4 returned 107
+      107:  370:  size_t r_i = 0;
+      107:  371:  if (parts[0].empty()) {
+call    0 returned 107
+call    1 returned 107
+branch  2 taken 3 (fallthrough)
+branch  3 taken 104
+        -:  372:    // handle case when `\`` is in the start of the rule
+       3*:  373:    if (parts.size() < 3 || parts[1] != kSlashStr || !parts[2].empty()) {
+        3:  373-block  0
+call    0 returned 3
+branch  1 taken 3 (fallthrough)
+branch  2 taken 0
+        3:  373-block  1
+call    3 returned 3
+call    4 returned 3
+call    5 returned 3
+branch  6 taken 3 (fallthrough)
+branch  7 taken 0
+        3:  373-block  2
+call    8 returned 3
+call    9 returned 3
+branch 10 taken 0 (fallthrough)
+branch 11 taken 3
+    %%%%%:  373-block  3
+        3:  373-block  4
+        3:  373-block  5
+branch 12 taken 0 (fallthrough)
+branch 13 taken 3
+    #####:  374:      ReadRightPartPrintError(left, err_offt, parts);
+    %%%%%:  374-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  375:      exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  375-block  0
+call    0 never executed
+        -:  376:    }
+        3:  377:    r_i++;
+        3:  377-block  0
+        -:  378:  }
+      348:  379:  for (; r_i < parts.size(); ++r_i) {
+      107:  379-block  0
+      241:  379-block  1
+      348:  379-block  2
+call    0 returned 348
+branch  1 taken 241
+branch  2 taken 107 (fallthrough)
+      241:  380:    if (parts[r_i] == kSlashStr) {
+      241:  380-block  0
+call    0 returned 241
+call    1 returned 241
+call    2 returned 241
+branch  3 taken 17 (fallthrough)
+branch  4 taken 224
+      17*:  381:      if (r_i != parts.size() - 1 && parts[r_i + 1] == kDelimSpecial) {
+       17:  381-block  0
+call    0 returned 17
+branch  1 taken 17 (fallthrough)
+branch  2 taken 0
+       17:  381-block  1
+call    3 returned 17
+call    4 returned 17
+branch  5 taken 17 (fallthrough)
+branch  6 taken 0
+       17:  381-block  2
+    %%%%%:  381-block  3
+       17:  381-block  4
+branch  7 taken 17 (fallthrough)
+branch  8 taken 0
+       17:  382:        ReadEscapeSymbol(left, err_offt, parts, right, r_i, kDelim);
+       17:  382-block  0
+call    0 returned 17
+branch  1 taken 17 (fallthrough)
+branch  2 taken 0 (throw)
+       64:  383:        continue;
+       17:  383-block  0
+       64:  383-block  1
+        -:  384:      }
+    #####:  385:      ReadRightPartPrintError(left, err_offt, parts);
+    %%%%%:  385-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  386:      exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  386-block  0
+call    0 never executed
+        -:  387:    }
+      224:  388:    auto iter_str_ind = map_str_ind_.find(parts[r_i]);
+      224:  388-block  0
+call    0 returned 224
+call    1 returned 224
+branch  2 taken 224 (fallthrough)
+branch  3 taken 0 (throw)
+      224:  389:    if (iter_str_ind == map_str_ind_.end()) {
+      224:  389-block  0
+call    0 returned 224
+call    1 returned 224
+branch  2 taken 47 (fallthrough)
+branch  3 taken 177
+       47:  390:      ReadNonterminalSequence(parts, r_i, left, err_offt, right);
+       47:  390-block  0
+call    0 returned 47
+branch  1 taken 47 (fallthrough)
+branch  2 taken 0 (throw)
+       47:  391:      continue;
+       47:  391-block  0
+        -:  392:    }
+      177:  393:    err_offt += parts[r_i].size() + 1;
+      177:  393-block  0
+call    0 returned 177
+call    1 returned 177
+      177:  394:    right.push_back(iter_str_ind->second);
+call    0 returned 177
+call    1 returned 177
+branch  2 taken 177 (fallthrough)
+branch  3 taken 0 (throw)
+        -:  395:  }
+      107:  396:  rules_[left].push_back(std::move(right));
+      107:  396-block  0
+call    0 returned 107
+branch  1 taken 107 (fallthrough)
+branch  2 taken 0 (throw)
+      107:  396-block  1
+call    3 returned 107
+call    4 returned 107
+branch  5 taken 107 (fallthrough)
+branch  6 taken 0 (throw)
+      107:  397:}
+      107:  397-block  0
+call    0 returned 107
+call    1 returned 107
+    $$$$$:  397-block  1
+call    2 never executed
+    $$$$$:  397-block  2
+call    3 never executed
+        -:  398:
+        -:  399:template <typename CharT>
+function _ZN11GrammarBaseIwE23ReadNonterminalSequenceERKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS7_EEmlRmRS1_IlSaIlEE called 47 returned 100% blocks executed 93%
+       47:  400:void GrammarBase<CharT>::ReadNonterminalSequence(const Vector<String>& parts,
+        -:  401:                                                 size_t r_i, IndexT left,
+        -:  402:                                                 size_t& err_offt,
+        -:  403:                                                 Vector<IndexT>& right) {
+      195:  404:  for (size_t s_i = 0; s_i < parts[r_i].size(); ++s_i) {
+       47:  404-block  0
+      148:  404-block  1
+      195:  404-block  2
+call    0 returned 195
+call    1 returned 195
+branch  2 taken 148
+branch  3 taken 47 (fallthrough)
+      148:  405:    if (parts[r_i][s_i] == kSlash) {
+      148:  405-block  0
+call    0 returned 148
+call    1 returned 148
+branch  2 taken 11 (fallthrough)
+branch  3 taken 137
+       11:  406:      if (s_i == parts[r_i].size() - 1) {
+       11:  406-block  0
+call    0 returned 11
+call    1 returned 11
+branch  2 taken 0 (fallthrough)
+branch  3 taken 11
+    #####:  407:        ReadRightPartPrintError(left, err_offt, parts);
+    %%%%%:  407-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  408:        exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  408-block  0
+call    0 never executed
+        -:  409:      }
+       11:  410:      if (parts[r_i][s_i + 1] == kSlash) {
+       11:  410-block  0
+call    0 returned 11
+call    1 returned 11
+branch  2 taken 9 (fallthrough)
+branch  3 taken 2
+        9:  411:        ReadEscapeSymbol(left, err_offt, parts, right, s_i, kSlash);
+        9:  411-block  0
+call    0 returned 9
+branch  1 taken 9 (fallthrough)
+branch  2 taken 0 (throw)
+        9:  412:        continue;
+        9:  412-block  0
+        -:  413:      }
+        2:  414:      if (parts[r_i][s_i + 1] == kRulesDelimSymbol) {
+        2:  414-block  0
+call    0 returned 2
+call    1 returned 2
+branch  2 taken 2 (fallthrough)
+branch  3 taken 0
+        2:  415:        ReadEscapeSymbol(left, err_offt, parts, right, s_i, kRulesDelimSymbol);
+        2:  415-block  0
+call    0 returned 2
+branch  1 taken 2 (fallthrough)
+branch  2 taken 0 (throw)
+        2:  416:        continue;
+        2:  416-block  0
+        -:  417:      }
+        -:  418:    }
+      137:  419:    ReadRuleSymbol(left, err_offt, parts, right, parts[r_i][s_i]);
+      137:  419-block  0
+call    0 returned 137
+call    1 returned 137
+call    2 returned 137
+branch  3 taken 137 (fallthrough)
+branch  4 taken 0 (throw)
+        -:  420:  }
+       47:  421:}
+       47:  421-block  0
+        -:  422:
+        -:  423:template <typename CharT>
+function _ZN11GrammarBaseIwE14ReadRuleSymbolElRmRKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS8_EERS2_IlSaIlEEw called 137 returned 100% blocks executed 65%
+      137:  424:void GrammarBase<CharT>::ReadRuleSymbol(IndexT left, size_t& err_offt,
+        -:  425:                                        const Vector<String>& symbols,
+        -:  426:                                        Vector<IndexT>& right, CharT symbol) {
+      137:  427:  auto iter_str_ind = map_str_ind_.find(String(1, symbol));
+      137:  427-block  0
+call    0 returned 137
+call    1 returned 137
+branch  2 taken 137 (fallthrough)
+branch  3 taken 0 (throw)
+      137:  427-block  1
+call    4 returned 137
+branch  5 taken 137 (fallthrough)
+branch  6 taken 0 (throw)
+      137:  427-block  2
+call    7 returned 137
+call    8 returned 137
+    $$$$$:  427-block  3
+call    9 never executed
+    $$$$$:  427-block  4
+    $$$$$:  427-block  5
+call   10 never executed
+    $$$$$:  427-block  6
+     274*:  428:  if (iter_str_ind == map_str_ind_.end() ||
+call    0 returned 137
+call    1 returned 137
+branch  2 taken 137 (fallthrough)
+branch  3 taken 0
+branch  4 taken 0 (fallthrough)
+branch  5 taken 137
+    %%%%%:  428-block  0
+      137:  428-block  1
+      137:  428-block  2
+branch  6 taken 0 (fallthrough)
+branch  7 taken 137
+      137:  429:      IsNonterminal(iter_str_ind->second)) {
+      137:  429-block  0
+call    0 returned 137
+call    1 returned 137
+    #####:  430:    ReadRightPartPrintError(left, err_offt, symbols);
+    %%%%%:  430-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  431:    exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  431-block  0
+call    0 never executed
+        -:  432:  }
+      137:  433:  ++err_offt;
+      137:  434:  right.push_back(iter_str_ind->second);
+      137:  434-block  0
+call    0 returned 137
+call    1 returned 137
+branch  2 taken 137 (fallthrough)
+branch  3 taken 0 (throw)
+      137:  435:}
+      137:  435-block  0
+        -:  436:
+        -:  437:template <typename CharT>
+function _ZN11GrammarBaseIwE16ReadEscapeSymbolElRmRKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS8_EERS2_IlSaIlEES1_w called 28 returned 100% blocks executed 55%
+       28:  438:void GrammarBase<CharT>::ReadEscapeSymbol(IndexT start_ind, size_t& err_offt,
+        -:  439:                                          const Vector<String>& symbols,
+        -:  440:                                          Vector<IndexT>& right, size_t& pos,
+        -:  441:                                          CharT symbol) {
+       28:  442:  auto iter_str_ind = map_str_ind_.find(String(1, symbol));
+       28:  442-block  0
+call    0 returned 28
+call    1 returned 28
+branch  2 taken 28 (fallthrough)
+branch  3 taken 0 (throw)
+       28:  442-block  1
+call    4 returned 28
+branch  5 taken 28 (fallthrough)
+branch  6 taken 0 (throw)
+       28:  442-block  2
+call    7 returned 28
+call    8 returned 28
+    $$$$$:  442-block  3
+call    9 never executed
+    $$$$$:  442-block  4
+    $$$$$:  442-block  5
+call   10 never executed
+    $$$$$:  442-block  6
+       28:  443:  if (iter_str_ind == map_str_ind_.end()) {
+call    0 returned 28
+call    1 returned 28
+branch  2 taken 0 (fallthrough)
+branch  3 taken 28
+    #####:  444:    ReadRightPartPrintError(start_ind, err_offt, symbols);
+    %%%%%:  444-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    #####:  445:    std::wcerr << symbol << " is not a terminal\n";
+    %%%%%:  445-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  445-block  1
+call    3 never executed
+branch  4 never executed
+branch  5 never executed
+    #####:  446:    exit(ExitStatus::IncorrectGrammarInput);
+    %%%%%:  446-block  0
+call    0 never executed
+        -:  447:  }
+       28:  448:  right.push_back(iter_str_ind->second);
+       28:  448-block  0
+call    0 returned 28
+call    1 returned 28
+branch  2 taken 28 (fallthrough)
+branch  3 taken 0 (throw)
+       28:  449:  ++pos;
+       28:  450:}
+       28:  450-block  0
+        -:  451:
+        -:  452:template <typename CharT>
+function _ZN11GrammarBaseIwE23ReadRightPartPrintErrorElmRKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS7_EE called 0 returned 0% blocks executed 0%
+    #####:  453:void GrammarBase<CharT>::ReadRightPartPrintError(
+        -:  454:    IndexT start_ind, size_t offset_for_error, const Vector<String>& symbols) {
+    #####:  455:  if (ContainArrow(symbols)) {
+    %%%%%:  455-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  456:    std::wcerr << L"Incorrect number of spaces between "
+    #####:  457:               << map_ind_str_[start_ind] << L" and rules_\n";
+    %%%%%:  457-block  0
+call    0 never executed
+call    1 never executed
+call    2 never executed
+call    3 never executed
+    #####:  458:    exit(ExitStatus::IncorrectGrammarInput);
+call    0 never executed
+        -:  459:  }
+        -:  460:  std::wcerr << L"Incorrect nonterminal, extra space or missing '`' "
+    #####:  461:             << L"in right part of the rule:\n";
+    %%%%%:  461-block  0
+call    0 never executed
+call    1 never executed
+    #####:  462:  std::wcerr << map_ind_str_[start_ind] << L" -> ";
+call    0 never executed
+call    1 never executed
+call    2 never executed
+    #####:  463:  PrintRightPartOfRule(std::wcerr, symbols);
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  463-block  0
+call    4 never executed
+    $$$$$:  463-block  1
+call    5 never executed
+    #####:  464:  std::wcerr << L'\n';
+call    0 never executed
+    #####:  465:  for (size_t i = 0; i < offset_for_error; ++i) {
+    %%%%%:  465-block  0
+branch  0 never executed
+branch  1 never executed
+    #####:  466:    std::wcerr << L' ';
+    %%%%%:  466-block  0
+call    0 never executed
+        -:  467:  }
+    #####:  468:  std::wcerr << L"^\n";
+    %%%%%:  468-block  0
+call    0 never executed
+    #####:  469:}
+        -:  470:
+        -:  471:template <typename CharT>
+function _ZNK11GrammarBaseIwE12ContainArrowERKSt6vectorINSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEESaIS7_EE called 0 returned 0% blocks executed 0%
+    #####:  472:bool GrammarBase<CharT>::ContainArrow(const Vector<String>& symbols) const {
+    #####:  473:  return !symbols.empty() && symbols[0].find(L"->") != symbols[0].npos;
+    %%%%%:  473-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+    %%%%%:  473-block  1
+call    3 never executed
+call    4 never executed
+call    5 never executed
+branch  6 never executed
+branch  7 never executed
+    %%%%%:  473-block  2
+    %%%%%:  473-block  3
+    %%%%%:  473-block  4
+        -:  474:}
+        -:  475:
+        -:  476:template <typename CharT>
+function _ZN11GrammarBaseIwE20PrintRightPartOfRuleERSt13basic_ostreamIwSt11char_traitsIwEESt6vectorINSt7__cxx1112basic_stringIwS3_SaIwEEESaISA_EE called 0 returned 0% blocks executed 0%
+    #####:  477:void GrammarBase<CharT>::PrintRightPartOfRule(std::basic_ostream<CharT>& out,
+        -:  478:                                              std::vector<String> symbols) {
+    #####:  479:  auto smb_iter = symbols.begin();
+    %%%%%:  479-block  0
+call    0 never executed
+        -:  480:  while (true) {
+    #####:  481:    out << *smb_iter;
+    %%%%%:  481-block  0
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    %%%%%:  481-block  1
+    #####:  482:    ++smb_iter;
+    %%%%%:  482-block  0
+call    0 never executed
+    #####:  483:    if (smb_iter == symbols.end()) {
+call    0 never executed
+call    1 never executed
+branch  2 never executed
+branch  3 never executed
+    #####:  484:      break;
+    %%%%%:  484-block  0
+        -:  485:    }
+    #####:  486:    out << kDelim;
+    %%%%%:  486-block  0
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+        -:  487:  }
+    #####:  488:}
+    %%%%%:  488-block  0

@@ -1,0 +1,910 @@
+        -:    0:Source:/home/ownstreamer/proga/C++/Parsers/src/BasicEarleyParser.h
+        -:    0:Graph:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcno
+        -:    0:Data:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#pragma once
+        -:    2:
+        -:    3:#include <fstream>
+        -:    4:#include <functional>
+        -:    5:#include <iostream>
+        -:    6:
+        -:    7:#include "GrammarBase.h"
+        -:    8:
+        -:    9:template <typename CharT>
+        -:   10:class BasicEarleyParser {
+        -:   11: public:
+        -:   12:  BasicEarleyParser() = default;
+        -:   13:  BasicEarleyParser(const std::string& filename);
+        -:   14:  BasicEarleyParser(std::basic_istream<CharT>& input);
+        -:   15:
+        -:   16:  void EnterGrammar(const std::string& filename);
+        -:   17:  void EnterGrammar(std::basic_istream<CharT>& input);
+        -:   18:  void PrintGrammar(std::basic_ostream<CharT>& out);
+        -:   19:  bool Parse(const std::basic_string<CharT>& word) const;
+        -:   20:
+        -:   21: private:
+        -:   22:  using String = utl::BasicString<CharT>;
+        -:   23:  using IndexT = int64_t;
+        -:   24:  template <typename T>
+        -:   25:  using Vector = std::vector<T>;
+        -:   26:  template <class Key, class Value, class Hash = std::hash<Key>>
+        -:   27:  using UMap = std::unordered_map<Key, Value, Hash>;
+        -:   28:  template <class Key, class Hash = std::hash<Key>>
+        -:   29:  using USet = std::unordered_set<Key, Hash>;
+        -:   30:  template <typename T>
+        -:   31:  using RefW = std::reference_wrapper<T>;
+        -:   32:
+        -:   33:  struct Situation;
+        -:   34:  class Grammar;
+        -:   35:
+        -:   36:  using SituationHasher = Situation::SituationHasher;
+        -:   37:  using USetSits = USet<Situation, SituationHasher>;
+        -:   38:  // SetD consist if situations where dot is before nonterminal
+        -:   39:  using SetD = UMap<IndexT, USetSits>;
+        -:   40:
+        -:   41:  Grammar grammar_;
+        -:   42:
+        -:   43:  void Complete(const Situation& curr_sit, std::stack<Situation>& stk_sits,
+        -:   44:                USetSits& handled_sits) const;
+        -:   45:  void Predict(Situation curr_sit, SetD& set_d, std::stack<Situation>& stk_sits,
+        -:   46:               USetSits& handled_sits) const;
+        -:   47:  void Clear();
+        -:   48:};
+        -:   49:
+        -:   50:template <typename CharT>
+        -:   51:struct BasicEarleyParser<CharT>::Situation {
+        -:   52: public:
+        -:   53:  struct SituationHasher {
+        -:   54:    static constexpr size_t kMult1 = 0x9e3779b9;
+        -:   55:    static constexpr size_t kOff1 = 6;
+        -:   56:    static constexpr size_t kOff2 = 2;
+        -:   57:    struct VectorHasher {
+function _ZNK17BasicEarleyParserIwE9Situation15SituationHasher12VectorHasherclERKSt6vectorIlSaIlEE called 909054 returned 100% blocks executed 100%
+   909054:   58:      constexpr size_t operator()(const Vector<IndexT>& vec) const {
+   909054:   59:        size_t seed = vec.size();
+   909054:   59-block  0
+call    0 returned 909054
+  4526780:   60:        for (IndexT elem : vec) {
+call    0 returned 909054
+call    1 returned 909054
+  3617726:   60-block  0
+call    2 returned 3617726
+  4526780:   60-block  1
+call    3 returned 4526780
+branch  4 taken 3617726
+branch  5 taken 909054 (fallthrough)
+  3617726:   61:          seed ^= elem + kMult1 + (seed << kOff1) + (seed >> kOff2);
+call    0 returned 3617726
+        -:   62:        }
+   909054:   63:        return seed;
+   909054:   63-block  0
+        -:   64:      }
+        -:   65:    };
+function _ZNK17BasicEarleyParserIwE9Situation15SituationHasherclERKS1_ called 909054 returned 100% blocks executed 100%
+   909054:   66:    constexpr size_t operator()(const Situation& sit) const {
+   909054:   67:      return VectorHasher()(sit.right_part.get()) + (sit.left_symbol << kOff1) +
+   909054:   67-block  0
+call    0 returned 909054
+call    1 returned 909054
+   909054:   68:             (sit.curr_pos >> kOff2);
+        -:   69:    }
+        -:   70:  };
+        -:   71:
+        -:   72:  RefW<const Vector<IndexT>> right_part;
+        -:   73:  RefW<const SetD> prev_d;
+        -:   74:  IndexT left_symbol;
+        -:   75:  size_t curr_pos;
+function _ZN17BasicEarleyParserIwE9SituationC2ESt17reference_wrapperIKSt6vectorIlSaIlEEES2_IKSt13unordered_mapIlSt13unordered_setIS1_NS1_15SituationHasherESt8equal_toIS1_ESaIS1_EESt4hashIlESB_IlESaISt4pairIKlSE_EEEElm called 252308 returned 100% blocks executed 100%
+   252308:   76:  Situation(RefW<const Vector<IndexT>> right_part, RefW<const SetD> prev_d,
+        -:   77:            IndexT left_symbol, size_t curr_pos = 0)
+   252308:   78:      : right_part(right_part),
+   252308:   79:        prev_d(prev_d),
+   252308:   80:        left_symbol(left_symbol),
+   252308:   81:        curr_pos(curr_pos) {}
+function _ZNK17BasicEarleyParserIwE9Situation9RoolEndedEv called 454086 returned 100% blocks executed 100%
+   454086:   82:  bool RoolEnded() const { return curr_pos == right_part.get().size(); }
+   454086:   82-block  0
+call    0 returned 454086
+call    1 returned 454086
+function _ZNK17BasicEarleyParserIwE9Situation13CurrSymbolIndEv called 712308 returned 100% blocks executed 100%
+   712308:   83:  IndexT CurrSymbolInd() const { return right_part.get()[curr_pos]; }
+   712308:   83-block  0
+call    0 returned 712308
+call    1 returned 712308
+function _ZNK17BasicEarleyParserIwE9SituationeqERKS1_ called 10458585 returned 100% blocks executed 100%
+ 10458585:   84:  bool operator==(const Situation& sit) const {
+ 20917170:   85:    return &right_part.get() == &sit.right_part.get() &&
+ 10458585:   85-block  0
+call    0 returned 10458585
+call    1 returned 10458585
+branch  2 taken 103934 (fallthrough)
+branch  3 taken 10354651
+ 10458585:   86:           &prev_d.get() == &sit.prev_d.get() &&
+ 10458585:   86-block  0
+call    0 returned 10458585
+call    1 returned 10458585
+ 20917170:   87:           left_symbol == sit.left_symbol && curr_pos == sit.curr_pos;
+branch  0 taken 10458585 (fallthrough)
+branch  1 taken 0
+   103934:   87-block  0
+branch  2 taken 103934 (fallthrough)
+branch  3 taken 0
+   103934:   87-block  1
+branch  4 taken 1161 (fallthrough)
+branch  5 taken 102773
+     1161:   87-block  2
+ 10457424:   87-block  3
+ 10458585:   87-block  4
+        -:   88:  }
+function _ZN17BasicEarleyParserIwE9SituationC2ERKS1_ called 1565794 returned 100% blocks executed 100%
+  1565794:   89:  Situation(const Situation& sit)
+  1565794:   90:      : right_part(sit.right_part),
+  1565794:   91:        prev_d(sit.prev_d),
+  1565794:   92:        left_symbol(sit.left_symbol),
+  1565794:   93:        curr_pos(sit.curr_pos) {}
+        -:   94:};
+        -:   95:
+        -:   96:template <typename CharT>
+        -:   97:class BasicEarleyParser<CharT>::Grammar : public GrammarBase<CharT> {
+        -:   98: public:
+        -:   99:  using RulesRightT = GrammarBase<CharT>::RulesRightT;
+        -:  100:  using RulesT = GrammarBase<CharT>::RulesT;
+        -:  101:  // todo: think how to make this function const
+function _ZNK17BasicEarleyParserIwE7Grammar17GetStartSituationERSt13unordered_mapIlSt13unordered_setINS0_9SituationENS4_15SituationHasherESt8equal_toIS4_ESaIS4_EESt4hashIlES6_IlESaISt4pairIKlS9_EEE called 167 returned 100% blocks executed 92%
+      167:  102:  [[nodiscard]] Situation GetStartSituation(SetD& start_set) const {
+     167*:  103:    assert(("Grammar is not set", !this->Empty()));
+      167:  103-block  0
+call    0 returned 167
+branch  1 taken 0 (fallthrough)
+branch  2 taken 167
+    %%%%%:  103-block  1
+call    3 never executed
+      167:  104:    auto itr = this->rules_.find(this->kAuxiliaryStartSymbolInd);
+      167:  104-block  0
+call    0 returned 167
+branch  1 taken 167 (fallthrough)
+branch  2 taken 0 (throw)
+      167:  105:    return {std::cref(itr->second[0]), std::cref(start_set),
+      167:  105-block  0
+call    0 returned 167
+call    1 returned 167
+call    2 returned 167
+      334:  106:            this->kAuxiliaryStartSymbolInd};
+call    0 returned 167
+call    1 returned 167
+      167:  106-block  0
+        -:  107:  }
+function _ZNK17BasicEarleyParserIwE7Grammar16IsFinalSituationERKNS0_9SituationE called 1261 returned 100% blocks executed 100%
+     1261:  108:  [[nodiscard]] bool IsFinalSituation(const Situation& sit) const {
+     1359:  109:    return sit.left_symbol == this->kAuxiliaryStartSymbolInd &&
+     1261:  109-block  0
+branch  0 taken 98 (fallthrough)
+branch  1 taken 1163
+       98:  109-block  1
+     1163:  109-block  2
+     1359:  110:           sit.curr_pos == 1;
+       98:  110-block  0
+branch  0 taken 98 (fallthrough)
+branch  1 taken 0
+     1261:  110-block  1
+        -:  111:  }
+        -:  112:  // returns 'true' if grammar generate epsilon
+function _ZNK17BasicEarleyParserIwE7Grammar15GenerateEpsilonEv called 9 returned 100% blocks executed 100%
+        9:  113:  [[nodiscard]] bool GenerateEpsilon() const {
+        9:  114:    return GenerateEpsilon(this->kStartSymbolInd);
+        9:  114-block  0
+call    0 returned 9
+        -:  115:  }
+        -:  116:  // returns 'true' if symbol generate epsilon
+function _ZNK17BasicEarleyParserIwE7Grammar15GenerateEpsilonEl called 101578 returned 100% blocks executed 100%
+   101578:  117:  [[nodiscard]] bool GenerateEpsilon(IndexT symbol) const {
+   101578:  118:    return proc_eps_generating_symbols_.contains(symbol);
+   101578:  118-block  0
+call    0 returned 101578
+        -:  119:  }
+function _ZNK17BasicEarleyParserIwE7Grammar9RightPartEl called 101569 returned 100% blocks executed 100%
+   101569:  120:  const RulesRightT& RightPart(IndexT left) const {
+   101569:  121:    return rules_without_eps_.find(left)->second;
+   101569:  121-block  0
+call    0 returned 101569
+call    1 returned 101569
+        -:  122:  }
+        -:  123:
+        -:  124: protected:
+function _ZN17BasicEarleyParserIwE7Grammar9AfterReadEv called 14 returned 100% blocks executed 70%
+       14:  125:  void AfterRead() override {
+        -:  126:    // process epsilon generating symbols
+       14:  127:    UMap<IndexT, std::vector<USet<IndexT>>> rules_for_eps_generating;
+       14:  127-block  0
+call    0 returned 14
+       14:  128:    RulesRightT right_parts_vec;
+call    0 returned 14
+       14:  129:    RulesRightT tmp;
+call    0 returned 14
+       62:  130:    for (auto& map : this->rules_) {
+call    0 returned 14
+call    1 returned 14
+       48:  130-block  0
+call    2 returned 48
+call    3 returned 48
+       62:  130-block  1
+call    4 returned 62
+branch  5 taken 48
+branch  6 taken 14 (fallthrough)
+    $$$$$:  130-block  2
+call    7 never executed
+       48:  131:      IndexT left = map.first;
+       48:  132:      std::vector<USet<IndexT>> right_parts_for_eps;
+call    0 returned 48
+      156:  133:      for (const auto& right : map.second) {
+call    0 returned 48
+call    1 returned 48
+      108:  133-block  0
+call    2 returned 108
+      108:  133-block  1
+call    3 returned 108
+      156:  133-block  2
+call    4 returned 156
+branch  5 taken 108
+branch  6 taken 48 (fallthrough)
+      108:  134:        if (right[0] == this->kEpsilonInd) {
+call    0 returned 108
+branch  1 taken 19 (fallthrough)
+branch  2 taken 89
+       19:  135:          start_eps_generating_symbols_.insert(left);
+       19:  135-block  0
+call    0 returned 19
+branch  1 taken 19 (fallthrough)
+branch  2 taken 0 (throw)
+       19:  136:          proc_eps_generating_symbols_.insert(left);
+       19:  136-block  0
+call    0 returned 19
+branch  1 taken 19 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  137:        } else {
+       89:  138:          right_parts_vec.push_back(right);
+       89:  138-block  0
+call    0 returned 89
+branch  1 taken 89 (fallthrough)
+branch  2 taken 0 (throw)
+       89:  139:          USet<IndexT> right_part;
+       89:  139-block  0
+call    0 returned 89
+      375:  140:          for (auto symbol : (right)) {
+call    0 returned 89
+call    1 returned 89
+      286:  140-block  0
+call    2 returned 286
+      286:  140-block  1
+call    3 returned 286
+      375:  140-block  2
+call    4 returned 375
+branch  5 taken 286
+branch  6 taken 89 (fallthrough)
+      286:  141:            right_part.insert(symbol);
+call    0 returned 286
+branch  1 taken 286 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  142:          }
+       89:  143:          right_parts_for_eps.push_back(std::move(right_part));
+       89:  143-block  0
+call    0 returned 89
+call    1 returned 89
+branch  2 taken 89 (fallthrough)
+branch  3 taken 0 (throw)
+       89:  144:        }
+       89:  144-block  0
+call    0 returned 89
+    $$$$$:  144-block  1
+call    1 never executed
+        -:  145:      }
+       48:  146:      rules_without_eps_.insert({left, std::move(right_parts_vec)});
+       48:  146-block  0
+call    0 returned 48
+call    1 returned 48
+call    2 returned 48
+branch  3 taken 48 (fallthrough)
+branch  4 taken 0 (throw)
+       48:  146-block  1
+call    5 returned 48
+    $$$$$:  146-block  2
+call    6 never executed
+    $$$$$:  146-block  3
+       48:  147:      rules_for_eps_generating.insert({left, std::move(right_parts_for_eps)});
+call    0 returned 48
+call    1 returned 48
+call    2 returned 48
+branch  3 taken 48 (fallthrough)
+branch  4 taken 0 (throw)
+       48:  147-block  0
+call    5 returned 48
+call    6 returned 48
+    $$$$$:  147-block  1
+call    7 never executed
+    $$$$$:  147-block  2
+        -:  148:    }
+       14:  149:    ProcEpsGeneratingSymbols(rules_for_eps_generating);
+       14:  149-block  0
+call    0 returned 14
+branch  1 taken 14 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  150:  }
+       14:  150-block  0
+call    0 returned 14
+call    1 returned 14
+call    2 returned 14
+    $$$$$:  150-block  1
+call    3 never executed
+    $$$$$:  150-block  2
+call    4 never executed
+    $$$$$:  150-block  3
+call    5 never executed
+        -:  151:
+function _ZN17BasicEarleyParserIwE7Grammar24ProcEpsGeneratingSymbolsERSt13unordered_mapIlSt6vectorISt13unordered_setIlSt4hashIlESt8equal_toIlESaIlEESaISA_EES6_S8_SaISt4pairIKlSC_EEE called 14 returned 100% blocks executed 86%
+       14:  152:  void ProcEpsGeneratingSymbols(
+        -:  153:      UMap<IndexT, std::vector<USet<IndexT>>>& rules_for_eps_generating) {
+       14:  154:    if (proc_eps_generating_symbols_.empty()) {
+       14:  154-block  0
+call    0 returned 14
+branch  1 taken 3 (fallthrough)
+branch  2 taken 11
+        3:  155:      return;
+        3:  155-block  0
+        -:  156:    }
+       11:  157:    USet<IndexT> unhandled_smb;
+       11:  157-block  0
+call    0 returned 11
+       34:  158:    for (IndexT i = 2; i <= this->nonterminals_count_ + 1; ++i) {
+       23:  158-block  0
+       34:  158-block  1
+branch  0 taken 23
+branch  1 taken 11 (fallthrough)
+       23:  159:      unhandled_smb.insert(i);
+       23:  159-block  0
+call    0 returned 23
+branch  1 taken 23 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  160:    }
+       11:  161:    std::stack<IndexT> stk;
+       11:  161-block  0
+call    0 returned 11
+branch  1 taken 11 (fallthrough)
+branch  2 taken 0 (throw)
+       30:  162:    for (IndexT ind : proc_eps_generating_symbols_) {
+       11:  162-block  0
+call    0 returned 11
+call    1 returned 11
+       19:  162-block  1
+call    2 returned 19
+       19:  162-block  2
+call    3 returned 19
+       30:  162-block  3
+call    4 returned 30
+branch  5 taken 19
+branch  6 taken 11 (fallthrough)
+       19:  163:      stk.push(ind);
+call    0 returned 19
+branch  1 taken 19 (fallthrough)
+branch  2 taken 0 (throw)
+       19:  164:      unhandled_smb.erase(ind);
+       19:  164-block  0
+call    0 returned 19
+branch  1 taken 19 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  165:    }
+       33:  166:    while (!stk.empty()) {
+       11:  166-block  0
+       33:  166-block  1
+call    0 returned 33
+branch  1 taken 22
+branch  2 taken 11 (fallthrough)
+       22:  167:      IndexT curr_ind = stk.top();
+       22:  167-block  0
+call    0 returned 22
+       22:  168:      stk.pop();
+call    0 returned 22
+       22:  169:      auto it_curr = unhandled_smb.begin();
+call    0 returned 22
+       32:  170:      while (it_curr != unhandled_smb.end()) {
+       32:  170-block  0
+call    0 returned 32
+call    1 returned 32
+branch  2 taken 10
+branch  3 taken 22 (fallthrough)
+       10:  171:        auto it_copy = it_curr;
+       10:  172:        auto iter = rules_for_eps_generating.find(*it_curr);
+       10:  172-block  0
+call    0 returned 10
+call    1 returned 10
+branch  2 taken 10 (fallthrough)
+branch  3 taken 0 (throw)
+       25:  173:        for (auto& right : iter->second) {
+       10:  173-block  0
+call    0 returned 10
+call    1 returned 10
+call    2 returned 10
+       15:  173-block  1
+call    3 returned 15
+       15:  173-block  2
+call    4 returned 15
+       25:  173-block  3
+call    5 returned 25
+branch  6 taken 15
+branch  7 taken 10 (fallthrough)
+       15:  174:          auto it_ind = right.begin();
+call    0 returned 15
+       46:  175:          while (it_ind != right.end()) {
+       46:  175-block  0
+call    0 returned 46
+call    1 returned 46
+branch  2 taken 34
+branch  3 taken 12 (fallthrough)
+       34:  176:            if (*it_ind == curr_ind) {
+       34:  176-block  0
+call    0 returned 34
+branch  1 taken 11 (fallthrough)
+branch  2 taken 23
+       11:  177:              it_ind = right.erase(it_ind);
+       11:  177-block  0
+call    0 returned 11
+branch  1 taken 11 (fallthrough)
+branch  2 taken 0 (throw)
+        -:  178:            } else {
+       23:  179:              ++it_ind;
+       23:  179-block  0
+call    0 returned 23
+        -:  180:            }
+       34:  181:            if (right.empty()) {
+       34:  181-block  0
+call    0 returned 34
+branch  1 taken 3 (fallthrough)
+branch  2 taken 31
+        3:  182:              proc_eps_generating_symbols_.insert(*it_curr);
+        3:  182-block  0
+call    0 returned 3
+call    1 returned 3
+branch  2 taken 3 (fallthrough)
+branch  3 taken 0 (throw)
+        3:  183:              stk.push(*it_curr);
+        3:  183-block  0
+call    0 returned 3
+call    1 returned 3
+branch  2 taken 3 (fallthrough)
+branch  3 taken 0 (throw)
+        3:  184:              it_curr = unhandled_smb.erase(it_curr);
+        3:  184-block  0
+call    0 returned 3
+branch  1 taken 3 (fallthrough)
+branch  2 taken 0 (throw)
+        3:  185:              break;
+        3:  185-block  0
+        -:  186:            }
+        -:  187:          }
+        -:  188:        }
+       10:  189:        if (it_curr == it_copy) {  // if there were no deletion
+       10:  189-block  0
+call    0 returned 10
+branch  1 taken 7 (fallthrough)
+branch  2 taken 3
+        7:  190:          ++it_curr;
+        7:  190-block  0
+call    0 returned 7
+        -:  191:        }
+        -:  192:      }
+        -:  193:    }
+       11:  194:  }
+       11:  194-block  0
+call    0 returned 11
+call    1 returned 11
+    $$$$$:  194-block  1
+call    2 never executed
+    $$$$$:  194-block  2
+call    3 never executed
+        -:  195:
+function _ZN17BasicEarleyParserIwE7Grammar10AfterClearEv called 0 returned 0% blocks executed 0%
+    #####:  196:  void AfterClear() override {
+    #####:  197:    rules_without_eps_.clear();
+    %%%%%:  197-block  0
+call    0 never executed
+    #####:  198:    start_eps_generating_symbols_.clear();
+call    0 never executed
+    #####:  199:    proc_eps_generating_symbols_.clear();
+call    0 never executed
+    #####:  200:  }
+        -:  201:
+        -:  202: private:
+        -:  203:  RulesT rules_without_eps_;
+        -:  204:  USet<IndexT> start_eps_generating_symbols_;  // for printing source grammar
+        -:  205:  USet<IndexT> proc_eps_generating_symbols_;
+        -:  206:};
+        -:  207:
+        -:  208:template <typename CharT>
+function _ZN17BasicEarleyParserIwEC2ERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 14 returned 100% blocks executed 80%
+       14:  209:BasicEarleyParser<CharT>::BasicEarleyParser(const std::string& filename) {
+       14:  209-block  0
+call    0 returned 14
+       14:  210:  EnterGrammar(filename);
+call    0 returned 14
+branch  1 taken 14 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  211:}
+       14:  211-block  0
+    $$$$$:  211-block  1
+call    0 never executed
+        -:  212:
+        -:  213:template <typename CharT>
+        -:  214:BasicEarleyParser<CharT>::BasicEarleyParser(std::basic_istream<CharT>& input) {
+        -:  215:  EnterGrammar(input);
+        -:  216:}
+        -:  217:
+        -:  218:template <typename CharT>
+function _ZN17BasicEarleyParserIwE12EnterGrammarERKNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE called 14 returned 100% blocks executed 71%
+       14:  219:void BasicEarleyParser<CharT>::EnterGrammar(const std::string& filename) {
+       14:  220:  std::wifstream file(filename);
+       14:  220-block  0
+call    0 returned 14
+branch  1 taken 14 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  221:  EnterGrammar(file);
+       14:  221-block  0
+call    0 returned 14
+branch  1 taken 14 (fallthrough)
+branch  2 taken 0 (throw)
+       14:  222:}
+       14:  222-block  0
+call    0 returned 14
+    $$$$$:  222-block  1
+call    1 never executed
+        -:  223:
+        -:  224:template <typename CharT>
+function _ZN17BasicEarleyParserIwE12EnterGrammarERSt13basic_istreamIwSt11char_traitsIwEE called 14 returned 100% blocks executed 100%
+       14:  225:void BasicEarleyParser<CharT>::EnterGrammar(std::basic_istream<CharT>& input) {
+       14:  226:  Clear();
+       14:  226-block  0
+call    0 returned 14
+       14:  227:  grammar_.Read(input);
+call    0 returned 14
+       14:  228:}
+        -:  229:
+        -:  230:template <typename CharT>
+        -:  231:void BasicEarleyParser<CharT>::PrintGrammar(std::basic_ostream<CharT>& out) {
+        -:  232:  grammar_.Print(out);
+        -:  233:}
+        -:  234:
+        -:  235:template <typename CharT>
+function _ZNK17BasicEarleyParserIwE5ParseERKNSt7__cxx1112basic_stringIwSt11char_traitsIwESaIwEEE called 176 returned 100% blocks executed 81%
+      176:  236:bool BasicEarleyParser<CharT>::Parse(
+        -:  237:    const std::basic_string<CharT>& word) const {
+     176*:  238:  assert(("Grammar is not set for Earley parser", !grammar_.Empty()));
+      176:  238-block  0
+call    0 returned 176
+branch  1 taken 0 (fallthrough)
+branch  2 taken 176
+    %%%%%:  238-block  1
+call    3 never executed
+      176:  239:  if (word.empty()) {
+      176:  239-block  0
+call    0 returned 176
+branch  1 taken 9 (fallthrough)
+branch  2 taken 167
+        9:  240:    return grammar_.GenerateEpsilon();
+        9:  240-block  0
+call    0 returned 9
+branch  1 taken 9 (fallthrough)
+branch  2 taken 0 (throw)
+        9:  240-block  1
+        -:  241:  }
+      167:  242:  std::vector<SetD> sets_vec(word.size() + 1);
+      167:  242-block  0
+call    0 returned 167
+call    1 returned 167
+call    2 returned 167
+branch  3 taken 167 (fallthrough)
+branch  4 taken 0 (throw)
+    $$$$$:  242-block  1
+      167:  243:  USetSits handled_sits;
+call    0 returned 167
+      167:  244:  USetSits next_handle_sits;
+call    0 returned 167
+      167:  245:  std::stack<Situation> stk_sits;
+call    0 returned 167
+branch  1 taken 167 (fallthrough)
+branch  2 taken 0 (throw)
+      167:  246:  std::stack<Situation> stk_next_d;
+      167:  246-block  0
+call    0 returned 167
+branch  1 taken 167 (fallthrough)
+branch  2 taken 0 (throw)
+      167:  247:  stk_next_d.push(grammar_.GetStartSituation(sets_vec[0]));
+      167:  247-block  0
+call    0 returned 167
+call    1 returned 167
+branch  2 taken 167 (fallthrough)
+branch  3 taken 0 (throw)
+      167:  247-block  1
+call    4 returned 167
+branch  5 taken 167 (fallthrough)
+branch  6 taken 0 (throw)
+    $$$$$:  247-block  2
+      167:  248:  next_handle_sits.insert(stk_next_d.top());
+      167:  248-block  0
+call    0 returned 167
+call    1 returned 167
+branch  2 taken 167 (fallthrough)
+branch  3 taken 0 (throw)
+   101465:  249:  for (size_t i = 0; i <= sets_vec.size(); ++i) {
+      167:  249-block  0
+   101298:  249-block  1
+   101465:  249-block  2
+call    0 returned 101465
+branch  1 taken 101396
+branch  2 taken 69 (fallthrough)
+   101396:  250:    handled_sits = std::move(next_handle_sits);
+   101396:  250-block  0
+call    0 returned 101396
+call    1 returned 101396
+   101396:  251:    stk_sits = std::move(stk_next_d);
+call    0 returned 101396
+call    1 returned 101396
+   555482:  252:    while (!stk_sits.empty()) {
+   555482:  252-block  0
+call    0 returned 555482
+branch  1 taken 454184
+branch  2 taken 101298 (fallthrough)
+   454184:  253:      Situation curr_sit = stk_sits.top();
+   454184:  253-block  0
+call    0 returned 454184
+call    1 returned 454184
+   454184:  254:      stk_sits.pop();
+call    0 returned 454184
+   454184:  255:      if (i == word.size() && grammar_.IsFinalSituation(curr_sit)) {
+call    0 returned 454184
+branch  1 taken 1261 (fallthrough)
+branch  2 taken 452923
+     1261:  255-block  0
+call    3 returned 1261
+branch  4 taken 98 (fallthrough)
+branch  5 taken 1163
+       98:  255-block  1
+   454086:  255-block  2
+   454184:  255-block  3
+branch  6 taken 98 (fallthrough)
+branch  7 taken 454086
+       98:  256:        return true;
+       98:  256-block  0
+        -:  257:      }
+   454086:  258:      if (curr_sit.RoolEnded()) {
+   454086:  258-block  0
+call    0 returned 454086
+branch  1 taken 148507 (fallthrough)
+branch  2 taken 305579
+   148507:  259:        Complete(std::move(curr_sit), stk_sits, handled_sits);
+   148507:  259-block  0
+call    0 returned 148507
+call    1 returned 148507
+branch  2 taken 148507 (fallthrough)
+branch  3 taken 0 (throw)
+   305579:  260:      } else if (grammar_.IsNonterminal(curr_sit.CurrSymbolInd())) {
+   305579:  260-block  0
+call    0 returned 305579
+call    1 returned 305579
+branch  2 taken 101569 (fallthrough)
+branch  3 taken 204010
+   101569:  261:        sets_vec[i][curr_sit.CurrSymbolInd()].insert(curr_sit);
+   101569:  261-block  0
+call    0 returned 101569
+call    1 returned 101569
+call    2 returned 101569
+branch  3 taken 101569 (fallthrough)
+branch  4 taken 0 (throw)
+   101569:  261-block  1
+call    5 returned 101569
+branch  6 taken 101569 (fallthrough)
+branch  7 taken 0 (throw)
+    $$$$$:  261-block  2
+   101569:  262:        Predict(std::move(curr_sit), sets_vec[i], stk_sits, handled_sits);
+   101569:  262-block  0
+call    0 returned 101569
+call    1 returned 101569
+call    2 returned 101569
+call    3 returned 101569
+branch  4 taken 101569 (fallthrough)
+branch  5 taken 0 (throw)
+   101569:  262-block  1
+    $$$$$:  262-block  2
+   407601:  263:      } else if (i < word.size() &&
+   204010:  263-block  0
+call    0 returned 204010
+branch  1 taken 203591 (fallthrough)
+branch  2 taken 419
+   101981:  263-block  1
+   102029:  263-block  2
+   204010:  263-block  3
+branch  3 taken 101981 (fallthrough)
+branch  4 taken 102029
+   203591:  264:                 curr_sit.CurrSymbolInd() == grammar_.ToInd(word[i])) {
+   203591:  264-block  0
+call    0 returned 203591
+call    1 returned 203591
+call    2 returned 203591
+branch  3 taken 203591 (fallthrough)
+branch  4 taken 0 (throw)
+   203591:  264-block  1
+branch  5 taken 101981 (fallthrough)
+branch  6 taken 101610
+        -:  265:        // scan()
+   101981:  266:        ++curr_sit.curr_pos;
+   101981:  267:        stk_next_d.push(curr_sit);
+   101981:  267-block  0
+call    0 returned 101981
+branch  1 taken 101981 (fallthrough)
+branch  2 taken 0 (throw)
+   101981:  268:        next_handle_sits.insert(std::move(curr_sit));
+   101981:  268-block  0
+call    0 returned 101981
+call    1 returned 101981
+branch  2 taken 101981 (fallthrough)
+branch  3 taken 0 (throw)
+        -:  269:      }
+        -:  270:    }
+        -:  271:  }
+       69:  272:  return false;
+       69:  272-block  0
+      167:  273:}
+      167:  273-block  0
+call    0 returned 167
+call    1 returned 167
+call    2 returned 167
+call    3 returned 167
+call    4 returned 167
+    $$$$$:  273-block  1
+call    5 never executed
+    $$$$$:  273-block  2
+call    6 never executed
+    $$$$$:  273-block  3
+call    7 never executed
+    $$$$$:  273-block  4
+call    8 never executed
+    $$$$$:  273-block  5
+call    9 never executed
+        -:  274:
+        -:  275:template <typename CharT>
+function _ZNK17BasicEarleyParserIwE8CompleteERKNS0_9SituationERSt5stackIS1_St5dequeIS1_SaIS1_EEERSt13unordered_setIS1_NS1_15SituationHasherESt8equal_toIS1_ES6_E called 148507 returned 100% blocks executed 93%
+   148507:  276:void BasicEarleyParser<CharT>::Complete(const Situation& curr_sit,
+        -:  277:                                        std::stack<Situation>& stk_sits,
+        -:  278:                                        USetSits& handled_sits) const {
+   148507:  279:  auto itr = curr_sit.prev_d.get().find(curr_sit.left_symbol);
+   148507:  279-block  0
+call    0 returned 148507
+call    1 returned 148507
+branch  2 taken 148507 (fallthrough)
+branch  3 taken 0 (throw)
+   148507:  280:  if (itr == curr_sit.prev_d.get().end()) {
+   148507:  280-block  0
+call    0 returned 148507
+call    1 returned 148507
+call    2 returned 148507
+branch  3 taken 683 (fallthrough)
+branch  4 taken 147824
+      683:  281:    return;
+      683:  281-block  0
+        -:  282:  }
+   296217:  283:  for (const auto& prev_sit : itr->second) {
+   147824:  283-block  0
+call    0 returned 147824
+call    1 returned 147824
+call    2 returned 147824
+   148393:  283-block  1
+call    3 returned 148393
+   148393:  283-block  2
+call    4 returned 148393
+   296217:  283-block  3
+call    5 returned 296217
+branch  6 taken 148393
+branch  7 taken 147824 (fallthrough)
+   148393:  284:    Situation new_sit = {std::cref(prev_sit.right_part),
+call    0 returned 148393
+call    1 returned 148393
+   148393:  285:                         std::cref(prev_sit.prev_d), prev_sit.left_symbol,
+   148393:  286:                         prev_sit.curr_pos + 1};
+call    0 returned 148393
+   148393:  287:    if (!handled_sits.contains(new_sit)) {
+call    0 returned 148393
+branch  1 taken 148393 (fallthrough)
+branch  2 taken 0 (throw)
+   148393:  287-block  0
+branch  3 taken 148230 (fallthrough)
+branch  4 taken 163
+   148230:  288:      handled_sits.insert(new_sit);
+   148230:  288-block  0
+call    0 returned 148230
+branch  1 taken 148230 (fallthrough)
+branch  2 taken 0 (throw)
+   148230:  289:      stk_sits.push(std::move(new_sit));
+   148230:  289-block  0
+call    0 returned 148230
+call    1 returned 148230
+branch  2 taken 148230 (fallthrough)
+branch  3 taken 0 (throw)
+        -:  290:    }
+        -:  291:  }
+        -:  292:}
+        -:  293:
+        -:  294:template <typename CharT>
+function _ZNK17BasicEarleyParserIwE7PredictENS0_9SituationERSt13unordered_mapIlSt13unordered_setIS1_NS1_15SituationHasherESt8equal_toIS1_ESaIS1_EESt4hashIlES5_IlESaISt4pairIKlS8_EEERSt5stackIS1_St5dequeIS1_S7_EERS8_ called 101569 returned 100% blocks executed 96%
+   101569:  295:void BasicEarleyParser<CharT>::Predict(Situation curr_sit, SetD& set_d,
+        -:  296:                                       std::stack<Situation>& stk_sits,
+        -:  297:                                       USetSits& handled_sits) const {
+   101569:  298:  IndexT left_part = curr_sit.CurrSymbolInd();
+   101569:  298-block  0
+call    0 returned 101569
+   101569:  299:  if (grammar_.GenerateEpsilon(left_part)) {
+call    0 returned 101569
+branch  1 taken 101108 (fallthrough)
+branch  2 taken 461
+   101108:  300:    ++curr_sit.curr_pos;
+   101108:  301:    if (!handled_sits.contains(curr_sit)) {
+   101108:  301-block  0
+call    0 returned 101108
+branch  1 taken 101078 (fallthrough)
+branch  2 taken 30
+   101078:  302:      handled_sits.insert(curr_sit);
+   101078:  302-block  0
+call    0 returned 101078
+   101078:  303:      stk_sits.push(curr_sit);
+call    0 returned 101078
+        -:  304:    }
+        -:  305:  }
+   205317:  306:  for (const auto& right_part : grammar_.RightPart(left_part)) {
+   101569:  306-block  0
+call    0 returned 101569
+branch  1 taken 101569 (fallthrough)
+branch  2 taken 0 (throw)
+   101569:  306-block  1
+call    3 returned 101569
+call    4 returned 101569
+   103748:  306-block  2
+call    5 returned 103748
+   103748:  306-block  3
+call    6 returned 103748
+   205317:  306-block  4
+call    7 returned 205317
+branch  8 taken 103748
+branch  9 taken 101569 (fallthrough)
+   103748:  307:    Situation new_sit = {std::cref(right_part), std::cref(set_d), left_part};
+call    0 returned 103748
+call    1 returned 103748
+call    2 returned 103748
+   103748:  308:    if (!handled_sits.contains(new_sit)) {
+call    0 returned 103748
+branch  1 taken 103748 (fallthrough)
+branch  2 taken 0 (throw)
+   103748:  308-block  0
+branch  3 taken 102780 (fallthrough)
+branch  4 taken 968
+   102780:  309:      handled_sits.insert(new_sit);
+   102780:  309-block  0
+call    0 returned 102780
+branch  1 taken 102780 (fallthrough)
+branch  2 taken 0 (throw)
+   102780:  310:      stk_sits.push(std::move(new_sit));
+   102780:  310-block  0
+call    0 returned 102780
+call    1 returned 102780
+branch  2 taken 102780 (fallthrough)
+branch  3 taken 0 (throw)
+        -:  311:    }
+        -:  312:  }
+   101569:  313:}
+   101569:  313-block  0
+        -:  314:
+        -:  315:template <typename CharT>
+function _ZN17BasicEarleyParserIwE5ClearEv called 14 returned 100% blocks executed 100%
+       14:  316:void BasicEarleyParser<CharT>::Clear() {
+       14:  317:  grammar_.Clear();
+       14:  317-block  0
+call    0 returned 14
+       14:  318:}
+        -:  319:
+        -:  320:using WEarleyParser = BasicEarleyParser<wchar_t>;
+        -:  321:using EarleyParser = BasicEarleyParser<char>;

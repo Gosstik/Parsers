@@ -13,9 +13,9 @@ class LR1BBSConsts {
   static constexpr size_t kRandomLowerBound = 5;
   static constexpr size_t kRandomUpperBound = 10;
   static constexpr size_t kRandomNumOfIters = 30;
-  static constexpr size_t kStressLowerBound = 90000;
-  static constexpr size_t kStressUpperBound = 99999;
-  static constexpr size_t kStressNumOfIters = 20;
+  static constexpr size_t kStressLowerBound = 999000;
+  static constexpr size_t kStressUpperBound = 1000000;
+  static constexpr size_t kStressNumOfIters = 10;
 };
 
 class LR1BBS1 : public ::testing::Test, public LR1BBSConsts {

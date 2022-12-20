@@ -1,0 +1,251 @@
+        -:    0:Source:/home/ownstreamer/proga/C++/Parsers/src/utility/KMP.h
+        -:    0:Graph:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcno
+        -:    0:Data:/home/ownstreamer/proga/C++/Parsers/cmake-build-debug-coverage/GoogleTests/CMakeFiles/Google_Tests_run.dir/src/TestsEarley.cpp.gcda
+        -:    0:Runs:1
+        -:    1:#pragma once
+        -:    2:
+        -:    3:#include <string>
+        -:    4:#include <vector>
+        -:    5:
+        -:    6:/// Knuth–Morris–Pratt algorithm
+        -:    7:
+        -:    8:namespace utl {
+        -:    9:template <typename CharT>
+        -:   10:using BasicString = std::basic_string<CharT>;
+        -:   11:
+        -:   12:template <typename CharT>
+        -:   13:std::vector<BasicString<CharT>> Split(const BasicString<CharT>& src,
+        -:   14:                                      const BasicString<CharT>& delim);
+        -:   15:// LPS - longest proper prefix
+        -:   16:template <typename CharT>
+function _ZN3utl14CreateLPSArrayIwEEvRKNSt7__cxx1112basic_stringIT_St11char_traitsIS3_ESaIS3_EEEmRSt6vectorImSaImEE called 218 returned 100% blocks executed 86%
+      218:   17:void CreateLPSArray(const BasicString<CharT>& pattern, size_t pat_len,
+        -:   18:                    std::vector<size_t>& lps) {
+      218:   19:  size_t len = 0;  // length of the previous longest prefix suffix
+      218:   20:  lps[0] = 0;      // lps[0] is always 0
+      218:   20-block  0
+call    0 returned 218
+      218:   21:  size_t pos = 1;
+      322:   22:  while (pos < pat_len) {
+      322:   22-block  0
+branch  0 taken 104
+branch  1 taken 218 (fallthrough)
+      104:   23:    if (pattern[pos] == pattern[len]) {
+      104:   23-block  0
+call    0 returned 104
+call    1 returned 104
+branch  2 taken 52 (fallthrough)
+branch  3 taken 52
+       52:   24:      lps[pos++] = ++len;
+       52:   24-block  0
+call    0 returned 52
+        -:   25:    } else {
+       52:   26:      if (len != 0) {
+       52:   26-block  0
+branch  0 taken 0 (fallthrough)
+branch  1 taken 52
+    #####:   27:        len = lps[len - 1];
+    %%%%%:   27-block  0
+call    0 never executed
+        -:   28:      } else {
+       52:   29:        lps[pos++] = 0;
+       52:   29-block  0
+call    0 returned 52
+        -:   30:      }
+        -:   31:    }
+        -:   32:  }
+      218:   33:}
+        -:   34:
+        -:   35:template <typename CharT>
+function _ZN3utl9KMPSearchIwEEvRKNSt7__cxx1112basic_stringIT_St11char_traitsIS3_ESaIS3_EEES9_RSt6vectorImSaImEE called 218 returned 100% blocks executed 83%
+      218:   36:void KMPSearch(const BasicString<CharT>& pattern, const BasicString<CharT>& string,
+        -:   37:               std::vector<size_t>& match_indexes) {
+      218:   38:  size_t pat_len = pattern.size();
+      218:   38-block  0
+call    0 returned 218
+      218:   39:  size_t str_len = string.size();
+call    0 returned 218
+        -:   40:
+      218:   41:  std::vector<size_t> lps(pat_len);
+call    0 returned 218
+call    1 returned 218
+branch  2 taken 218 (fallthrough)
+branch  3 taken 0 (throw)
+    $$$$$:   41-block  0
+      218:   42:  CreateLPSArray(pattern, pat_len, lps);
+call    0 returned 218
+        -:   43:
+      218:   44:  size_t pos_s = 0;  // index for string
+      218:   45:  size_t pos_p = 0;  // index for pattern
+     1992:   46:  while ((str_len - pos_s) >= (pat_len - pos_p)) {
+     1992:   46-block  0
+branch  0 taken 1774
+branch  1 taken 218 (fallthrough)
+     1774:   47:    if (pattern[pos_p] == string[pos_s]) {
+     1774:   47-block  0
+call    0 returned 1774
+call    1 returned 1774
+branch  2 taken 551 (fallthrough)
+branch  3 taken 1223
+      551:   48:      pos_p++;
+      551:   49:      pos_s++;
+      551:   49-block  0
+        -:   50:    }
+     1774:   51:    if (pos_p == pat_len) {
+     1774:   51-block  0
+branch  0 taken 373 (fallthrough)
+branch  1 taken 1401
+      373:   52:      match_indexes.push_back(pos_s - pos_p);
+      373:   52-block  0
+call    0 returned 373
+branch  1 taken 373 (fallthrough)
+branch  2 taken 0 (throw)
+    $$$$$:   52-block  1
+      373:   53:      pos_p = lps[pos_p - 1];
+      373:   53-block  0
+call    0 returned 373
+        -:   54:    }
+        -:   55:    // mismatch after j matches
+     1401:   56:    else if (pos_s < str_len && pattern[pos_p] != string[pos_s]) {
+     1401:   56-block  0
+branch  0 taken 1401 (fallthrough)
+branch  1 taken 0
+     1401:   56-block  1
+call    2 returned 1401
+call    3 returned 1401
+branch  4 taken 1233 (fallthrough)
+branch  5 taken 168
+     1233:   56-block  2
+      168:   56-block  3
+     1401:   56-block  4
+branch  6 taken 1233 (fallthrough)
+branch  7 taken 168
+     1233:   57:      if (pos_p != 0) {
+     1233:   57-block  0
+branch  0 taken 59 (fallthrough)
+branch  1 taken 1174
+       59:   58:        pos_p = lps[pos_p - 1];
+       59:   58-block  0
+call    0 returned 59
+        -:   59:      } else {
+     1174:   60:        ++pos_s;
+     1174:   60-block  0
+        -:   61:      }
+        -:   62:    }
+        -:   63:  }
+      218:   64:}
+      218:   64-block  0
+call    0 returned 218
+    $$$$$:   64-block  1
+call    1 never executed
+        -:   65:
+        -:   66:template <typename CharT>
+function _ZN3utl5SplitIwEESt6vectorINSt7__cxx1112basic_stringIT_St11char_traitsIS4_ESaIS4_EEESaIS8_EERKS8_SC_ called 229 returned 100% blocks executed 67%
+      229:   67:std::vector<BasicString<CharT>> Split(const BasicString<CharT>& src,
+        -:   68:                                      const BasicString<CharT>& delim) {
+      229:   69:  if (src.empty() || src.size() < delim.size()) {
+      229:   69-block  0
+call    0 returned 229
+branch  1 taken 219 (fallthrough)
+branch  2 taken 10
+      219:   69-block  1
+call    3 returned 219
+call    4 returned 219
+branch  5 taken 1 (fallthrough)
+branch  6 taken 218
+       11:   69-block  2
+      218:   69-block  3
+      229:   69-block  4
+branch  7 taken 11 (fallthrough)
+branch  8 taken 218
+       22:   70:    return {src};
+       11:   70-block  0
+call    0 returned 11
+branch  1 taken 11 (fallthrough)
+branch  2 taken 0 (throw)
+       11:   70-block  1
+call    3 returned 11
+call    4 returned 11
+branch  5 taken 11 (fallthrough)
+branch  6 taken 0 (throw)
+       11:   70-block  2
+call    7 returned 11
+       22:   70-block  3
+branch  8 taken 11 (fallthrough)
+branch  9 taken 11
+       11:   70-block  4
+call   10 returned 11
+       11:   70-block  5
+    $$$$$:   70-block  6
+call   11 never executed
+    $$$$$:   70-block  7
+    $$$$$:   70-block  8
+    $$$$$:   70-block  9
+branch 12 never executed
+branch 13 never executed
+    $$$$$:   70-block 10
+call   14 never executed
+    $$$$$:   70-block 11
+        -:   71:  }
+      218:   72:  std::vector<size_t> match_indexes;
+      218:   72-block  0
+call    0 returned 218
+      218:   73:  utl::KMPSearch(delim, src, match_indexes);
+call    0 returned 218
+branch  1 taken 218 (fallthrough)
+branch  2 taken 0 (throw)
+      218:   74:  std::vector<BasicString<CharT>> result;
+      218:   74-block  0
+call    0 returned 218
+      218:   75:  size_t prev_match_ind = 0;
+      591:   76:  for (auto index : match_indexes) {
+call    0 returned 218
+call    1 returned 218
+      373:   76-block  0
+call    2 returned 373
+      591:   76-block  1
+call    3 returned 591
+branch  4 taken 373
+branch  5 taken 218 (fallthrough)
+      373:   77:    size_t substr_size = index - prev_match_ind;
+      373:   78:    result.emplace_back(src.substr(prev_match_ind, substr_size));
+call    0 returned 373
+branch  1 taken 373 (fallthrough)
+branch  2 taken 0 (throw)
+      373:   78-block  0
+call    3 returned 373
+branch  4 taken 373 (fallthrough)
+branch  5 taken 0 (throw)
+      373:   78-block  1
+call    6 returned 373
+    $$$$$:   78-block  2
+call    7 never executed
+    $$$$$:   78-block  3
+      373:   79:    prev_match_ind = index + delim.size();
+call    0 returned 373
+call    1 returned 373
+        -:   80:  }
+      218:   81:  result.emplace_back(src.substr(prev_match_ind));
+      218:   81-block  0
+call    0 returned 218
+branch  1 taken 218 (fallthrough)
+branch  2 taken 0 (throw)
+      218:   81-block  1
+call    3 returned 218
+branch  4 taken 218 (fallthrough)
+branch  5 taken 0 (throw)
+      218:   81-block  2
+call    6 returned 218
+    $$$$$:   81-block  3
+call    7 never executed
+    $$$$$:   81-block  4
+      218:   82:  return result;
+call    0 returned 218
+      218:   83:}
+call    0 returned 218
+call    1 returned 218
+    $$$$$:   83-block  0
+call    2 never executed
+    $$$$$:   83-block  1
+call    3 never executed
+        -:   84:}  // namespace dev

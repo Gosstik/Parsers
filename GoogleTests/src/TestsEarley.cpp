@@ -9,9 +9,9 @@ class EarleyBBSConsts {
   static constexpr size_t kRandomLowerBound = 5;
   static constexpr size_t kRandomUpperBound = 10;
   static constexpr size_t kRandomNumOfIters = 30;
-  static constexpr size_t kStressLowerBound = 9000;
-  static constexpr size_t kStressUpperBound = 9999;
-  static constexpr size_t kStressNumOfIters = 20;
+  static constexpr size_t kStressLowerBound = 49900;
+  static constexpr size_t kStressUpperBound = 50000;
+  static constexpr size_t kStressNumOfIters = 10;
 };
 
 class EarleyBBS1 : public ::testing::Test, public EarleyBBSConsts {
